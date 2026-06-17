@@ -1,0 +1,113 @@
+/* Hero */
+.hero {
+  background-color: var(--color-cream);
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  padding-block: var(--space-24);
+}
+
+.heroInner {
+  max-width: 720px;
+}
+
+.heroEyebrow {
+  display: inline-block;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent-orange);
+  margin-bottom: var(--space-4);
+}
+
+.heroTitle {
+  font-size: clamp(var(--fs-4xl), 6vw, 5rem);
+  font-weight: 800;
+  color: var(--color-dark);
+  line-height: 1.05;
+  margin-bottom: var(--space-6);
+}
+
+.heroAccent {
+  color: var(--color-accent-blue);
+}
+
+.heroSubtitle {
+  font-size: var(--fs-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+  max-width: 50ch;
+}
+
+.heroCta {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Features */
+.features {
+  padding-block: var(--space-24);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+
+.featureCard {
+  padding: var(--space-8);
+  background-color: var(--color-grey-light);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.featureIcon {
+  font-size: 2.5rem;
+  color: var(--color-accent-orange);
+  margin-bottom: var(--space-4);
+}
+
+.featureCard h3 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-3);
+  color: var(--color-dark);
+}
+
+.featureCard p {
+  font-size: var(--fs-base);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* CTA Banner */
+.ctaBanner {
+  background-color: var(--color-accent-blue);
+  color: var(--color-white);
+  padding-block: var(--space-16);
+  text-align: center;
+}
+
+.ctaBanner h2 {
+  font-size: var(--fs-4xl);
+  color: var(--color-white);
+  margin-bottom: var(--space-4);
+}
+
+.ctaBanner p {
+  font-size: var(--fs-lg);
+  opacity: 0.85;
+  margin-bottom: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding-block: var(--space-16);
+  }
+}
