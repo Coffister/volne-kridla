@@ -14,6 +14,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Domov />} />
+          <Route path="/domov" element={<Domov />} />
           <Route path="/volne-kridla" element={<VolneKridla />} />
           <Route path="/o-mne" element={<OMne />} />
           <Route path="/fotogaleria" element={<Fotogaleria />} />

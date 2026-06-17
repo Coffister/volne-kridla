@@ -1,54 +1,113 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
-const navLinks = [
-  { to: '/', label: 'Domov' },
-  { to: '/volne-kridla', label: 'Voľné Krídla' },
-  { to: '/o-mne', label: 'O mne' },
-  { to: '/fotogaleria', label: 'Fotogaléria' },
-  { to: '/blog', label: 'Blog' },
+const volneKridlaDropdown = [
+  { label: 'O voľnom lietaní', href: '/volne-kridla#about' },
+  { label: 'Najčastejšie otázky', href: '/volne-kridla#faq' },
+  { label: 'Tipy, triky a zaujímavosti', href: '/volne-kridla#tips' },
+  { label: 'Target tréning', href: '/volne-kridla#target' },
 ]
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+  const location = useLocation()
 
-  const toggleMenu = () => setIsOpen((prev) => !prev)
-  const closeMenu = () => setIsOpen(false)
+  useEffect(() => {
+    setMenuOpen(false)
+    setDropdownOpen(false)
+  }, [location])
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  function scrollToForm(e) {
+    e.preventDefault()
+    const el = document.getElementById('contact-form')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    setMenuOpen(false)
+  }
 
   return (
     <header className={styles.header}>
       <nav className={styles.nav} aria-label="Hlavná navigácia">
-        <div className={styles.logo}>
-          <NavLink to="/" onClick={closeMenu}>
-            Voľné Krídla
-          </NavLink>
-        </div>
+        <NavLink to="/" className={styles.logo} aria-label="Voľné Krídla – domov">
+          <img
+            src="https://volnekridla.sk/wp-content/uploads/2025/08/Volne-Kridla.svg"
+            alt="Voľné Krídla"
+            className={styles.logoImg}
+          />
+        </NavLink>
 
         <button
-          className={styles.menuToggle}
-          onClick={toggleMenu}
-          aria-expanded={isOpen}
+          className={`${styles.hamburger} ${menuOpen ? styles.open : ''}`}
+          onClick={() => setMenuOpen((p) => !p)}
+          aria-expanded={menuOpen}
           aria-label="Otvoriť menu"
         >
-          <span className={styles.hamburger} aria-hidden="true" />
+          <span /><span /><span />
         </button>
 
-        <ul className={`${styles.navList} ${isOpen ? styles.isOpen : ''}`}>
-          {navLinks.map(({ to, label }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end={to === '/'}
-                className={({ isActive }) =>
-                  isActive ? `${styles.link} ${styles.active}` : styles.link
-                }
-                onClick={closeMenu}
-              >
-                {label}
-              </NavLink>
-            </li>
-          ))}
+        <ul className={`${styles.navList} ${menuOpen ? styles.menuOpen : ''}`}>
+          <li>
+            <NavLink to="/" end className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+              Domov
+            </NavLink>
+          </li>
+
+          <li className={styles.hasDropdown} ref={dropdownRef}>
+            <button
+              className={`${styles.link} ${styles.dropdownToggle} ${location.pathname === '/volne-kridla' ? styles.active : ''}`}
+              onClick={() => setDropdownOpen((p) => !p)}
+              aria-expanded={dropdownOpen}
+            >
+              Voľné krídla <i className="fa-solid fa-chevron-down" aria-hidden="true" />
+            </button>
+            <ul className={`${styles.dropdown} ${dropdownOpen ? styles.dropdownOpen : ''}`}>
+              <li>
+                <NavLink to="/volne-kridla" end className={styles.dropdownLink} onClick={() => setDropdownOpen(false)}>
+                  Voľné krídla
+                </NavLink>
+              </li>
+              {volneKridlaDropdown.map(({ label, href }) => (
+                <li key={href}>
+                  <a href={href} className={styles.dropdownLink} onClick={() => setDropdownOpen(false)}>
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+
+          <li>
+            <NavLink to="/o-mne" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+              O mne
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/fotogaleria" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+              Fotogaléria
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/blog" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>
+              Blog
+            </NavLink>
+          </li>
+          <li>
+            <a href="#contact-form" className={styles.ctaBtn} onClick={scrollToForm}>
+              Začať lietať
+            </a>
+          </li>
         </ul>
       </nav>
     </header>
