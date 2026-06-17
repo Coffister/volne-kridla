@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async'
 import BookingForm from '../../components/BookingForm/BookingForm'
 import styles from './Domov.module.css'
+import wordmarkSvg from '../../assets/images/volne-kridla.svg'
+import heroImg from '../../assets/images/IMG_0199-3.webp'
 
 const services = [
   {
@@ -57,16 +59,62 @@ export default function Domov() {
         <meta name="description" content="Spoznaj fascinujúci svet voľného lietania, buduj dôveru a preži spoločné dobrodružstvo so svojím opereným parťákom – bezpečne a s radosťou." />
       </Helmet>
 
+      {/* Squircle SVG defs — referenced by clip-path: url(#squircle) */}
+      <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }} aria-hidden="true">
+        <defs>
+          <clipPath id="squircle" clipPathUnits="objectBoundingBox">
+            <path d="M 0.5,0 C 0.8289,0 1,0.1711 1,0.5 C 1,0.8289 0.8289,1 0.5,1 C 0.1711,1 0,0.8289 0,0.5 C 0,0.1711 0.1711,0 0.5,0 Z" />
+          </clipPath>
+        </defs>
+      </svg>
+
       {/* Hero */}
       <section className={styles.hero}>
-        <div className={`container ${styles.heroInner}`}>
-          <h2 className={styles.heroLabel}>Nielen škola pre papagáje</h2>
-          <h4 className={styles.heroSub}>Tréning voľných krídel</h4>
-          <h1 className={styles.heroTitle}>Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.</h1>
-          <p className={styles.heroQuote}>"Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť."</p>
-          <a href="#contact-form" className={styles.heroCta} onClick={e => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }) }}>
-            Začať lietať
-          </a>
+        <div className="container">
+          {/* Full-width wordmark */}
+          <img
+            src={wordmarkSvg}
+            alt="Voľné krídla"
+            className={styles.heroWordmark}
+          />
+
+          {/* Floating pill tag */}
+          <div className={styles.heroTag}>Nielen škola pre papagáje</div>
+
+          {/* Two-column layout */}
+          <div className={styles.heroGrid}>
+            {/* Left — text */}
+            <div className={styles.heroText}>
+              <p className={styles.heroLabel}>Tréning voľných krídel</p>
+              <h1 className={styles.heroTitle}>
+                Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
+              </h1>
+              <p className={styles.heroQuote}>
+                &ldquo;Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť.&rdquo;
+              </p>
+              <div className={styles.heroBtns}>
+                <a
+                  href="#contact-form"
+                  className={styles.heroBtnPrimary}
+                  onClick={e => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }) }}
+                >
+                  Začať lietať
+                </a>
+                <a href="/volne-kridla" className={styles.heroBtnSecondary}>
+                  Zistiť viac
+                </a>
+              </div>
+            </div>
+
+            {/* Right — image with squircle clip */}
+            <div className={styles.heroImageWrap}>
+              <img
+                src={heroImg}
+                alt="Papagáj vo voľnom lete"
+                className={styles.heroImage}
+              />
+            </div>
+          </div>
         </div>
       </section>
 

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="791" height="502" viewBox="0 0 791 502" role="img" aria-labelledby="title">
+  <title id="title">Vo&#x013E;n&#x00E9; kr&#x00ED;dla</title>
+  <defs>
+    <filter id="shadow" x="-6%" y="-8%" width="112%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="0" flood-color="#2755aa" flood-opacity=".58"/>
+    </filter>
+  </defs>
+  <text
+    x="395.5"
+    y="203"
+    text-anchor="middle"
+    filter="url(#shadow)"
+    fill="#ffffef"
+    font-family="League Spartan, Poppins, Arial, sans-serif"
+    font-size="176"
+    font-weight="900"
+    letter-spacing="-7">Vo&#x013E;n&#x00E9;</text>
+  <text
+    x="395.5"
+    y="374"
+    text-anchor="middle"
+    filter="url(#shadow)"
+    fill="#ffffef"
+    font-family="League Spartan, Poppins, Arial, sans-serif"
+    font-size="176"
+    font-weight="900"
+    letter-spacing="-7">kr&#x00ED;dla</text>
+</svg>
