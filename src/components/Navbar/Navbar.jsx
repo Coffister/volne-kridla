@@ -42,7 +42,7 @@ export default function Navbar() {
       <nav className={styles.nav} aria-label="Hlavná navigácia">
         <NavLink to="/" className={styles.logo} aria-label="Voľné Krídla – domov">
           <img
-            src="https://volnekridla.sk/wp-content/uploads/2025/08/Volne-Kridla.svg"
+            src="https://volnekridla.sk/wp-content/uploads/2025/08/logo-border-stroke.webp"
             alt="Voľné Krídla"
             className={styles.logoImg}
           />
