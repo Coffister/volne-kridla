@@ -2,7 +2,9 @@ import { Helmet } from 'react-helmet-async'
 import BookingForm from '../../components/BookingForm/BookingForm'
 import styles from './Domov.module.css'
 import wordmarkSvg from '../../assets/images/volne-kridla.svg'
-import heroImg from '../../assets/images/IMG_0199-3.webp'
+
+const ROW1 = ['Konzultácia výživy', 'Voľné lietanie', 'Target tréning', 'Individuálny prístup', 'Tipy a triky', 'Rozsiahlá komunita', 'Target tréning', 'Konzultácie výchovy']
+const ROW2 = ['Individuálny prístup', 'Tipy a triky', 'Konzultácie výchovy', 'Target tréning', 'Konzultácia výživy', 'Voľné lietanie', 'Rozsiahlá komunita', 'Target tréning']
 
 const services = [
   {
@@ -59,7 +61,7 @@ export default function Domov() {
         <meta name="description" content="Spoznaj fascinujúci svet voľného lietania, buduj dôveru a preži spoločné dobrodružstvo so svojím opereným parťákom – bezpečne a s radosťou." />
       </Helmet>
 
-      {/* Squircle SVG defs — referenced by clip-path: url(#squircle) */}
+      {/* Squircle SVG defs */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <clipPath id="squircle" clipPathUnits="objectBoundingBox">
@@ -71,51 +73,57 @@ export default function Domov() {
       {/* Hero */}
       <section className={styles.hero}>
         <div className="container">
-          {/* Full-width wordmark */}
-          <img
-            src={wordmarkSvg}
-            alt="Voľné krídla"
-            className={styles.heroWordmark}
-          />
-
-          {/* Floating pill tag */}
+          <img src={wordmarkSvg} alt="Voľné krídla" className={styles.heroWordmark} />
           <div className={styles.heroTag}>Nielen škola pre papagáje</div>
+        </div>
 
-          {/* Two-column layout */}
-          <div className={styles.heroGrid}>
-            {/* Left — text */}
-            <div className={styles.heroText}>
-              <p className={styles.heroLabel}>Tréning voľných krídel</p>
-              <h1 className={styles.heroTitle}>
-                Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
-              </h1>
-              <p className={styles.heroQuote}>
-                &ldquo;Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť.&rdquo;
-              </p>
-              <div className={styles.heroBtns}>
-                <a
-                  href="#contact-form"
-                  className={styles.heroBtnPrimary}
-                  onClick={e => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }) }}
-                >
-                  Začať lietať
-                </a>
-                <a href="/volne-kridla" className={styles.heroBtnSecondary}>
-                  Zistiť viac
-                </a>
+        {/* Cream panel */}
+        <div className={styles.heroPanel}>
+          <div className="container">
+            <div className={styles.heroGrid}>
+              {/* Left — text */}
+              <div className={styles.heroText}>
+                <p className={styles.heroLabel}>Tréning voľných krídel</p>
+                <h1 className={styles.heroTitle}>
+                  Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
+                </h1>
+                <p className={styles.heroQuote}>
+                  &ldquo;Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť.&rdquo;
+                </p>
+                <div className={styles.heroBtns}>
+                  <a
+                    href="#contact-form"
+                    className={styles.heroBtnPrimary}
+                    onClick={e => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  >
+                    Začať lietať
+                  </a>
+                  <a href="/volne-kridla" className={styles.heroBtnSecondary}>
+                    Zistiť viac
+                  </a>
+                </div>
               </div>
-            </div>
 
-            {/* Right — image with squircle clip */}
-            <div className={styles.heroImageWrap}>
-              <img
-                src={heroImg}
-                alt="Papagáj vo voľnom lete"
-                className={styles.heroImage}
-              />
+              {/* Right — placeholder with squircle */}
+              <div className={styles.heroImageWrap}>
+                <div className={styles.heroImage} role="img" aria-label="Papagáj vo voľnom lete" />
+              </div>
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Marquee pill ticker */}
+      <section className={styles.marqueeSection} aria-hidden="true">
+        {[ROW1, ROW2].map((row, ri) => (
+          <div key={ri} className={styles.marqueeRow}>
+            <div className={styles.marqueeTrack}>
+              {[...row, ...row].map((label, i) => (
+                <span key={i} className={styles.marqueePill}>{label}</span>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* Services */}

@@ -26,10 +26,20 @@ body {
   font-family: var(--font-body);
   font-size: var(--fs-base);
   color: var(--color-text);
-  background-color: var(--color-white);
+  background: #73A5DF;
+  background-image: linear-gradient(180deg, rgba(115, 165, 223, 1) 0%, rgba(239, 245, 255, 1) 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: local;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #FFA629;
+  color: #FFFFEF;
 }
 
 img,
