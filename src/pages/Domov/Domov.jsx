@@ -75,11 +75,9 @@ export default function Domov() {
         <div className="container">
           <img src={wordmarkSvg} alt="Voľné krídla" className={styles.heroWordmark} />
           <div className={styles.heroTag}>Nielen škola pre papagáje</div>
-        </div>
 
-        {/* Cream panel */}
-        <div className={styles.heroPanel}>
-          <div className="container">
+          {/* Cream panel — inside container so border-radius math is local */}
+          <div className={styles.heroPanel}>
             <div className={styles.heroGrid}>
               {/* Left — text */}
               <div className={styles.heroText}>
@@ -104,7 +102,7 @@ export default function Domov() {
                 </div>
               </div>
 
-              {/* Right — placeholder with squircle */}
+              {/* Right — placeholder image */}
               <div className={styles.heroImageWrap}>
                 <div className={styles.heroImage} role="img" aria-label="Papagáj vo voľnom lete" />
               </div>

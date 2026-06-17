@@ -34,11 +34,12 @@
   margin-bottom: -20px;
 }
 
-/* Cream panel containing the 2-col layout */
+/* Cream panel — sits inside .container (1300px), so radius math is local */
+/* border-radius: 32px, padding: 16px → image gets 32-16 = 16px radius */
 .heroPanel {
   background: #FFFFEF;
   border-radius: 32px 32px 0 0;
-  padding: 48px 48px 0 48px;
+  padding: 16px 16px 0 16px;
   position: relative;
 }
 
@@ -149,16 +150,16 @@
   max-width: 44%;
   display: flex;
   align-items: flex-end;
-  padding-bottom: 0;
 }
 
+/* border-radius = panel radius (32px) - panel padding (16px) = 16px */
 .heroImage {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
-  clip-path: url(#squircle);
-  background: #d4e8f5;
+  border-radius: 16px 16px 0 0;
+  background: #c8dff0;
 }
 
 /* ============================
@@ -553,12 +554,17 @@
   }
 
   .heroPanel {
-    padding: 32px 24px 0;
+    padding: 12px 12px 0;
     border-radius: 24px 24px 0 0;
   }
 
+  /* At 12px panel padding: image radius = 24-12 = 12px */
+  .heroImage {
+    border-radius: 12px 12px 0 0;
+  }
+
   .heroText {
-    padding-bottom: 32px;
+    padding-bottom: 24px;
   }
 }
 
@@ -581,6 +587,12 @@
   }
 
   .heroPanel {
-    padding: 24px 16px 0;
+    padding: 8px 8px 0;
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* At 8px panel padding: image radius = 20-8 = 12px */
+  .heroImage {
+    border-radius: 12px 12px 0 0;
   }
 }
