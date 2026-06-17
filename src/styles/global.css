@@ -93,6 +93,7 @@ button {
 
 main {
   flex: 1;
+  padding-top: 84px;
 }
 
 .container {
