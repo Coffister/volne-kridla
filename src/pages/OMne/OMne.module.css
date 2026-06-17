@@ -1,82 +1,85 @@
-.pageHero {
-  background-color: var(--color-cream);
+.intro {
+  background: var(--color-cream);
   padding-block: var(--space-16);
 }
 
-.bio {
-  padding-block: var(--space-16);
-}
-
-.bioGrid {
+.introGrid {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: var(--space-16);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
   align-items: center;
 }
 
-.bioImage {
-  aspect-ratio: 3 / 4;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background-color: var(--color-grey-light);
-}
-
-.imagePlaceholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 6rem;
-  color: var(--color-accent-blue);
-  opacity: 0.3;
-}
-
-.bioText h2 {
-  font-size: var(--fs-3xl);
-  margin-bottom: var(--space-6);
-  color: var(--color-dark);
-}
-
-.bioText p {
-  font-size: var(--fs-lg);
-  line-height: 1.7;
+.introText p {
+  font-size: var(--fs-xl);
   color: var(--color-text);
+  line-height: 1.7;
+}
+
+.introImg img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  max-height: 480px;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: var(--space-6);
+}
+
+.bodyText {
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 70ch;
   margin-bottom: var(--space-4);
 }
 
-.stats {
-  display: flex;
-  gap: var(--space-8);
-  margin-block: var(--space-8);
+.story {
+  padding-block: var(--space-16);
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.storyImgs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  max-width: 700px;
 }
 
-.statValue {
-  font-family: var(--font-heading);
-  font-size: var(--fs-4xl);
-  font-weight: 800;
-  color: var(--color-accent-orange);
-  line-height: 1;
+.storyImgs img {
+  width: 100%;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  aspect-ratio: 4/3;
 }
 
-.statLabel {
-  font-size: var(--fs-sm);
+.early {
+  padding-block: var(--space-16);
+  background: var(--color-cream-warm);
+}
+
+.booking {
+  padding-block: var(--space-16);
+  background: var(--color-cream);
+}
+
+.bookingDesc {
+  font-size: var(--fs-lg);
   color: var(--color-text);
+  margin-bottom: var(--space-8);
+  margin-top: calc(-1 * var(--space-4));
 }
 
-@media (max-width: 900px) {
-  .bioGrid {
+@media (max-width: 768px) {
+  .introGrid {
     grid-template-columns: 1fr;
   }
-
-  .bioImage {
-    aspect-ratio: 16 / 9;
-    max-height: 360px;
+  .storyImgs {
+    grid-template-columns: 1fr;
   }
 }

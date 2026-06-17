@@ -1,113 +1,381 @@
 /* Hero */
 .hero {
   background-color: var(--color-cream);
-  min-height: calc(100vh - var(--nav-height));
+  padding-block: var(--space-24);
+  min-height: 80vh;
   display: flex;
   align-items: center;
-  padding-block: var(--space-24);
 }
 
 .heroInner {
   max-width: 720px;
 }
 
-.heroEyebrow {
-  display: inline-block;
+.heroLabel {
+  font-family: var(--font-heading);
   font-size: var(--fs-sm);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-accent-orange);
+  margin-bottom: var(--space-2);
+}
+
+.heroSub {
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: 400;
+  color: var(--color-text);
   margin-bottom: var(--space-4);
 }
 
 .heroTitle {
-  font-size: clamp(var(--fs-4xl), 6vw, 5rem);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
   color: var(--color-dark);
-  line-height: 1.05;
-  margin-bottom: var(--space-6);
+  line-height: 1.1;
+  margin-bottom: var(--space-4);
 }
 
-.heroAccent {
-  color: var(--color-accent-blue);
-}
-
-.heroSubtitle {
-  font-size: var(--fs-xl);
+.heroQuote {
+  font-size: var(--fs-lg);
+  font-style: italic;
   color: var(--color-text);
   margin-bottom: var(--space-8);
-  max-width: 50ch;
+  opacity: 0.8;
 }
 
 .heroCta {
-  display: flex;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-8);
+  background-color: var(--color-accent-orange);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-/* Features */
-.features {
-  padding-block: var(--space-24);
+.heroCta:hover {
+  background-color: var(--color-accent-blue);
+  transform: translateY(-2px);
 }
 
-.featureGrid {
+/* Section title */
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: var(--space-8);
+}
+
+/* Services */
+.services {
+  padding-block: var(--space-16);
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.serviceCard {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.serviceCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.serviceImg {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  background: var(--color-grey-light);
+}
+
+.serviceCard h3 {
+  font-size: var(--fs-xl);
+  padding: var(--space-4) var(--space-5) var(--space-2);
+  color: var(--color-dark);
+}
+
+.serviceCard p {
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+/* Why */
+.why {
+  background-color: var(--color-cream-warm);
+  padding-block: var(--space-16);
+}
+
+.whyBody {
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 70ch;
+}
+
+/* Steps */
+.steps {
+  padding-block: var(--space-16);
+}
+
+.stepsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
 }
 
-.featureCard {
-  padding: var(--space-8);
-  background-color: var(--color-grey-light);
+.stepCard {
+  padding: var(--space-6);
+  background: var(--color-grey-light);
   border-radius: var(--radius-lg);
+}
+
+.stepNum {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--fs-5xl);
+  font-weight: 800;
+  color: var(--color-accent-orange);
+  opacity: 0.5;
+  line-height: 1;
+  margin-bottom: var(--space-3);
+}
+
+.stepCard h3 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-2);
+  color: var(--color-dark);
+}
+
+.stepCard p {
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Training banner */
+.trainingBanner {
+  background-color: var(--color-dark);
+  padding-block: var(--space-12);
   text-align: center;
 }
 
-.featureIcon {
-  font-size: 2.5rem;
-  color: var(--color-accent-orange);
-  margin-bottom: var(--space-4);
+.trainingBanner h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--fs-3xl), 4vw, var(--fs-5xl));
+  font-weight: 800;
+  color: var(--color-white);
 }
 
-.featureCard h3 {
+/* Beyond */
+.beyond {
+  padding-block: var(--space-16);
+}
+
+.beyondBody {
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 70ch;
+}
+
+/* Pillars */
+.pillars {
+  background-color: var(--color-cream);
+  padding-block: var(--space-16);
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.pillarCard {
+  padding: var(--space-6);
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.pillarCard h3 {
   font-size: var(--fs-xl);
   margin-bottom: var(--space-3);
   color: var(--color-dark);
 }
 
-.featureCard p {
-  font-size: var(--fs-base);
+.pillarCard p {
+  font-size: var(--fs-sm);
   color: var(--color-text);
   line-height: 1.6;
 }
 
-/* CTA Banner */
-.ctaBanner {
-  background-color: var(--color-accent-blue);
+/* Franka */
+.franka {
+  padding-block: var(--space-16);
+  background: var(--color-cream-warm);
+}
+
+.frankaSub {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent-orange);
+  margin-bottom: var(--space-2);
+}
+
+.frankaTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--fs-3xl), 4vw, var(--fs-5xl));
+  font-weight: 800;
+  color: var(--color-dark);
+  line-height: 1.1;
+}
+
+.frankaName {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--fs-4xl), 6vw, 6rem);
+  font-weight: 900;
+  color: var(--color-accent-blue);
+  line-height: 1;
+  margin-bottom: var(--space-6);
+}
+
+.frankaBody {
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+/* Instagram */
+.instagram {
+  background: var(--color-accent-blue);
+  padding-block: var(--space-12);
+  text-align: center;
+}
+
+.instagram h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+  font-weight: 700;
   color: var(--color-white);
+  margin-bottom: var(--space-6);
+}
+
+.igBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-8);
+  background: var(--color-white);
+  color: var(--color-accent-blue);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.igBtn:hover {
+  background: var(--color-accent-orange);
+  color: var(--color-white);
+  transform: translateY(-2px);
+}
+
+/* Testimonials */
+.testimonials {
+  padding-block: var(--space-16);
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.testimonialCard {
+  padding: var(--space-5);
+  background: var(--color-grey-light);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.testimonialQuote {
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.testimonialName {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-accent-blue);
+}
+
+/* Final CTA */
+.finalCta {
+  background: var(--color-dark);
   padding-block: var(--space-16);
   text-align: center;
 }
 
-.ctaBanner h2 {
-  font-size: var(--fs-4xl);
+.finalCta h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(var(--fs-2xl), 4vw, var(--fs-4xl));
+  font-weight: 700;
   color: var(--color-white);
-  margin-bottom: var(--space-4);
+  max-width: 20ch;
+  margin-inline: auto;
+  line-height: 1.2;
 }
 
-.ctaBanner p {
+/* Booking */
+.booking {
+  padding-block: var(--space-16);
+  background: var(--color-cream);
+}
+
+.bookingDesc {
   font-size: var(--fs-lg);
-  opacity: 0.85;
+  color: var(--color-text);
   margin-bottom: var(--space-8);
+  margin-top: calc(-1 * var(--space-4));
 }
 
-@media (max-width: 768px) {
-  .featureGrid {
+/* Responsive */
+@media (max-width: 900px) {
+  .serviceGrid, .stepsGrid, .pillarsGrid, .testimonialsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .serviceGrid, .stepsGrid, .pillarsGrid, .testimonialsGrid {
     grid-template-columns: 1fr;
   }
-
-  .hero {
-    padding-block: var(--space-16);
-  }
+  .hero { min-height: auto; padding-block: var(--space-16); }
 }

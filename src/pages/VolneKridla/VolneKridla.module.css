@@ -1,87 +1,155 @@
-.pageHero {
-  background-color: var(--color-cream);
+.intro {
   padding-block: var(--space-16);
+  background: var(--color-cream);
 }
 
-.services {
-  padding-block: var(--space-16);
+.introText {
+  font-size: var(--fs-lg);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 70ch;
+  margin-bottom: var(--space-4);
 }
 
-.serviceGrid {
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: var(--space-6);
+}
+
+.subTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: var(--space-6);
+}
+
+.bodyText {
+  font-size: var(--fs-base);
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 70ch;
+  margin-bottom: var(--space-4);
+}
+
+.why { padding-block: var(--space-16); }
+.training { padding-block: var(--space-16); background: var(--color-cream-warm); }
+
+.rules { padding-block: var(--space-16); }
+
+.rulesGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
 }
 
-.serviceCard {
-  padding: var(--space-8);
-  border: 1px solid var(--color-border);
+.ruleCard {
+  padding: var(--space-6);
+  background: var(--color-grey-light);
   border-radius: var(--radius-lg);
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-.serviceCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
-}
-
-.serviceIcon {
-  font-size: 2rem;
+.ruleNum {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--fs-4xl);
+  font-weight: 800;
   color: var(--color-accent-orange);
-  margin-bottom: var(--space-4);
-}
-
-.serviceCard h3 {
-  font-size: var(--fs-xl);
+  opacity: 0.5;
+  line-height: 1;
   margin-bottom: var(--space-3);
 }
 
-.serviceMeta {
+.ruleCard h3 { font-size: var(--fs-xl); margin-bottom: var(--space-2); color: var(--color-dark); }
+.ruleCard p { font-size: var(--fs-sm); color: var(--color-text); line-height: 1.6; }
+
+.benefits { padding-block: var(--space-16); background: var(--color-cream); }
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.benefitCard {
+  padding: var(--space-6);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.benefitCard h3 { font-size: var(--fs-xl); margin-bottom: var(--space-3); color: var(--color-dark); }
+.benefitCard p { font-size: var(--fs-sm); color: var(--color-text); line-height: 1.6; }
+
+.tips { padding-block: var(--space-16); }
+
+.clickerList {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  max-width: 70ch;
 }
 
-.price {
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  color: var(--color-accent-blue);
+.clickerItem {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
 }
 
-.duration {
-  font-size: var(--fs-sm);
-  color: var(--color-text);
+.clickerNum {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: var(--color-accent-orange);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  margin-top: 2px;
 }
 
-.serviceCard p {
+.clickerItem strong {
+  display: block;
+  font-size: var(--fs-base);
+  color: var(--color-dark);
+  margin-bottom: var(--space-1);
+}
+
+.clickerItem p {
   font-size: var(--fs-sm);
   color: var(--color-text);
   line-height: 1.6;
 }
 
-.booking {
-  background-color: var(--color-cream-warm);
-  padding-block: var(--space-16);
+.faq { padding-block: var(--space-16); background: var(--color-cream-warm); }
+
+.faqItem {
+  max-width: 70ch;
+  padding: var(--space-5);
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
 }
 
-.bookingContent {
-  max-width: 680px;
-}
+.faqItem h3 { font-size: var(--fs-lg); color: var(--color-dark); margin-bottom: var(--space-3); }
+.faqItem p { font-size: var(--fs-sm); color: var(--color-text); line-height: 1.6; }
+
+.target { padding-block: var(--space-16); }
+
+.booking { padding-block: var(--space-16); background: var(--color-cream); }
+.bookingDesc { font-size: var(--fs-lg); color: var(--color-text); margin-bottom: var(--space-8); margin-top: calc(-1 * var(--space-4)); }
 
 @media (max-width: 900px) {
-  .serviceGrid {
-    grid-template-columns: 1fr 1fr;
-  }
+  .rulesGrid, .benefitsGrid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 600px) {
-  .serviceGrid {
-    grid-template-columns: 1fr;
-  }
+  .rulesGrid, .benefitsGrid { grid-template-columns: 1fr; }
 }
