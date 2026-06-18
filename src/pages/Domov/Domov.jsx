@@ -30,7 +30,6 @@ const TABS = {
       'Príprava na vonkajšie prostredie a rušivé podnety',
       'Bezpečné a štruktúrované lekcie krok za krokom',
     ],
-    cta: 'Zistiť viac o kurze',
     href: '/volne-kridla',
   },
   trening: {
@@ -42,7 +41,6 @@ const TABS = {
       'Vybudovanie dôvery a istoty pri lete',
       'Bezpečné nastavenie podmienok pre prvý let',
     ],
-    cta: 'Pokračovať ďalej',
     href: '/volne-kridla',
   },
 }
@@ -67,7 +65,6 @@ export default function Domov() {
         <meta name="description" content="Spoznaj fascinujúci svet voľného lietania, buduj dôveru a preži spoločné dobrodružstvo so svojím opereným parťákom – bezpečne a s radosťou." />
       </Helmet>
 
-      {/* Squircle clip-path definition */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <clipPath id="squircle" clipPathUnits="objectBoundingBox">
@@ -81,7 +78,7 @@ export default function Domov() {
         <div className="container">
           <img src={wordmarkSvg} alt="Voľné krídla" className={styles.wordmark} />
           <span className={styles.heroTag}>Nielen škola pre papagáje</span>
-          {/* Panel: border-radius 32px, padding 16px → image radius = 16px */}
+          {/* Panel br: 40px | Padding: 8px | Image br = 40-8 = 32px */}
           <div className={styles.heroPanel}>
             <div className={styles.heroGrid}>
               <div className={styles.heroContent}>
@@ -131,33 +128,45 @@ export default function Domov() {
             <h2 className={styles.secTitle}>O Voľných krídlach</h2>
             <p className={styles.secSub}>Aký druh tréningu je pre mňa vhodný?</p>
           </header>
-          <div className={styles.tabs}>
-            {Object.entries(TABS).map(([key, t]) => (
-              <button
-                key={key}
-                className={`${styles.tab} ${activeTab === key ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(key)}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-          <div className={styles.aboutGrid}>
-            <div className={styles.aboutImgWrap}>
-              <div className={styles.aboutImg} role="img" aria-label={tab.label} />
+          <div className={styles.aboutCard}>
+            <div className={styles.tabs}>
+              {Object.entries(TABS).map(([key, t]) => (
+                <button
+                  key={key}
+                  className={`${styles.tab} ${activeTab === key ? styles.tabActive : ''}`}
+                  onClick={() => setActiveTab(key)}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
-            <div className={styles.aboutContent}>
-              <h3 className={styles.aboutHeading}>{tab.heading}</h3>
-              <p className={styles.aboutBody}>{tab.body}</p>
-              <ul className={styles.checkList}>
-                {tab.items.map(item => (
-                  <li key={item} className={styles.checkItem}>
-                    <span className={styles.checkDot} aria-hidden="true">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <a href={tab.href} className={styles.btnPrimary}>{tab.cta}</a>
+            <div className={styles.aboutGrid}>
+              <div className={styles.aboutLeft}>
+                <div className={styles.aboutImg} role="img" aria-label={tab.label} />
+                <p className={styles.aboutImgLabel}>Tréning nikdy nekončí</p>
+              </div>
+              <div className={styles.aboutRight}>
+                <h3 className={styles.aboutHeading}>{tab.heading}</h3>
+                <p className={styles.aboutBody}>{tab.body}</p>
+                <div className={styles.featureBox}>
+                  {tab.items.map(item => (
+                    <div key={item} className={styles.featureItem}>
+                      <span className={styles.featureIcon} aria-hidden="true">✓</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.aboutFooter}>
+                  <span className={styles.aboutTag}>Čo vás naučím?</span>
+                  <a
+                    href="#kontakt"
+                    className={styles.btnPrimary}
+                    onClick={e => { e.preventDefault(); document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  >
+                    Potrebujem pomôcť
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -199,7 +208,7 @@ export default function Domov() {
             rel="noopener noreferrer"
             className={styles.btnIg}
           >
-            Navštíviť náš Instagram
+            Nahliadni do nášho sveta
           </a>
         </div>
       </section>
@@ -208,24 +217,24 @@ export default function Domov() {
       <section className={styles.testimonials}>
         <div className="container">
           <header className={styles.secHead}>
-            <h2 className={styles.secTitle}>Vidíš ich? Tí už spravili prvý krok.</h2>
-            <p className={styles.secSub}>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</p>
+            <h2 className={styles.secTitleDark}>Vidíš ich? Tí už spravili prvý krok.</h2>
+            <p className={styles.secSubDark}>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</p>
           </header>
           <Swiper
             modules={[Navigation, Pagination]}
             spaceBetween={24}
             navigation
             pagination={{ clickable: true }}
-            breakpoints={{ 0: { slidesPerView: 1 }, 700: { slidesPerView: 2 } }}
+            breakpoints={{ 0: { slidesPerView: 1 } }}
             className={styles.swiper}
           >
             {TESTIMONIALS.map(t => (
               <SwiperSlide key={t.name} className={styles.tCard}>
-                <div className={styles.tImg} role="img" />
                 <div className={styles.tBody}>
                   <p className={styles.tQuote}>„{t.quote}"</p>
                   <span className={styles.tName}>{t.name}</span>
                 </div>
+                <div className={styles.tImg} role="img" />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -235,10 +244,11 @@ export default function Domov() {
       {/* ─── BOOKING ─── */}
       <section className={styles.booking} id="kontakt">
         <div className="container">
-          <span className={styles.floatTag}>Posledný krok k slobode</span>
-          {/* Panel: border-radius 40px, padding 24px → image radius = 16px */}
+          <span className={styles.floatTagLight}>Posledný krok k slobode</span>
           <div className={styles.bookingPanel}>
-            <div className={styles.bookingImg} role="img" aria-label="Konzultácia" />
+            <div className={styles.bookingLeft}>
+              <div className={styles.bookingImg} role="img" aria-label="Konzultácia" />
+            </div>
             <div className={styles.bookingFormWrap}>
               <BookingForm />
             </div>

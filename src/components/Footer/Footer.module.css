@@ -1,8 +1,18 @@
 .footer {
-  background-color: var(--color-dark);
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  padding-block: var(--space-4);
-  font-size: var(--fs-xs);
+  background: #FFFFEF;
   font-family: var(--font-body);
+}
+
+.footerInner {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copyright,
+.designer {
+  font-size: 0.8rem;
+  color: #999;
+  font-weight: 500;
 }
