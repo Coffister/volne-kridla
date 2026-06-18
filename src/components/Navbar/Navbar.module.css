@@ -1,7 +1,7 @@
-/* Outer wrapper — fixed, creates the 84px header space */
+/* Outer wrapper — fixed, reserves 80px for the navbar */
 .headerWrapper {
   width: 100vw;
-  height: 84px;
+  height: 80px;
   position: fixed;
   top: 0;
   left: 0;

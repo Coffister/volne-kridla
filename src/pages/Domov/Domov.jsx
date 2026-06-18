@@ -1,59 +1,65 @@
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 import BookingForm from '../../components/BookingForm/BookingForm'
 import styles from './Domov.module.css'
 import wordmarkSvg from '../../assets/images/volne-kridla.svg'
 
-const ROW1 = ['Konzultácia výživy', 'Voľné lietanie', 'Target tréning', 'Individuálny prístup', 'Tipy a triky', 'Rozsiahlá komunita', 'Target tréning', 'Konzultácie výchovy']
-const ROW2 = ['Individuálny prístup', 'Tipy a triky', 'Konzultácie výchovy', 'Target tréning', 'Konzultácia výživy', 'Voľné lietanie', 'Rozsiahlá komunita', 'Target tréning']
-
-const services = [
-  {
-    title: 'Online konzultácia',
-    desc: 'Riešenie správania a tréningu prostredníctvom video hovoru. Spoločne prejdeme konkrétne problémy, situácie z bežného dňa a nastavíme postup, ktorý viete okamžite aplikovať pri tréningu.',
-    img: 'https://volnekridla.sk/wp-content/uploads/2026/02/Untitled-3-February-2026-13.46.44-2.webp',
-  },
-  {
-    title: 'Osobná konzultácia',
-    desc: 'Riešenie správania a tréningu prostredníctvom osobného stretnutia. Spoločne prejdeme konkrétne problémy, pozorujeme správanie papagája a nastavíme postup, ktorý budete aplikovať pri tréningu papagája.',
-    img: 'https://volnekridla.sk/wp-content/uploads/2025/08/Layer-6.png',
-  },
-  {
-    title: 'Kurz voľného lietania',
-    desc: 'Kurz je určený pre majiteľov papagájov, ktorí nechcú riskovať ani trénovať metódou pokus–omyl. Naučíte sa systematicky budovať spoľahlivé privolanie a pripravovať papagája na situácie, v ktorých si mu môžete dovoliť slobodu.',
-    img: 'https://volnekridla.sk/wp-content/uploads/2025/08/Layer-6.png',
-  },
+const MARQUEE_ROW1 = [
+  'Konzultácia výživy', 'Voľné lietanie', 'Target tréning',
+  'Individuálny prístup', 'Tipy a triky', 'Rozsiahlá komunita',
+  'Target tréning', 'Konzultácie výchovy',
+]
+const MARQUEE_ROW2 = [
+  'Individuálny prístup', 'Tipy a triky', 'Konzultácie výchovy',
+  'Target tréning', 'Konzultácia výživy', 'Voľné lietanie',
+  'Rozsiahlá komunita', 'Target tréning',
 ]
 
-const pillars = [
-  {
-    title: 'Pozorovanie a pochopenie',
-    desc: 'Sledujeme tempo papagája, pozorujeme jeho reč tela a na základe nej papagája počúvame a nenutíme ho do tréningu.',
+const TABS = {
+  letanie: {
+    label: 'Voľné lietanie',
+    heading: 'Kurz voľného lietania',
+    body: 'Kurz je určený pre majiteľov papagájov, ktorí nechcú riskovať ani trénovať metódou pokus–omyl. Naučíte sa systematicky budovať spoľahlivé privolanie a pripravovať papagája na situácie, v ktorých si mu môžete dovoliť slobodu.',
+    items: [
+      'Systematické budovanie spoľahlivého privolania',
+      'Príprava na vonkajšie prostredie a rušivé podnety',
+      'Bezpečné a štruktúrované lekcie krok za krokom',
+    ],
+    cta: 'Zistiť viac o kurze',
+    href: '/volne-kridla',
   },
-  {
-    title: 'Budovanie dôvery',
-    desc: 'Pomocou jemných krokov a pozitívneho prístupu vytvárame bezpečný priestor, v ktorom sa papagáj učí spolupracovať.',
+  trening: {
+    label: 'Tréning',
+    heading: 'Prečo učiť papagája lietať?',
+    body: 'Hoci sú papagáje na let stvorené, nevedia ho prirodzene len tak robiť a robiť ho dobre v každom veku. Musia sa to naučiť a správne zvládnuť zručnosti. Letanie vonku je oveľa odlišné od lietania v interiéri (vietor, rozptyľovanie, dravce, preťaženie podnetmi atď.).',
+    items: [
+      'Tréning prispôsobený tempu papagája',
+      'Vybudovanie dôvery a istoty pri lete',
+      'Bezpečné nastavenie podmienok pre prvý let',
+    ],
+    cta: 'Pokračovať ďalej',
+    href: '/volne-kridla',
   },
-  {
-    title: 'Tréning cez hru a motiváciu',
-    desc: 'Každé učenie je založené na odmeňovaní, hre a radosti. Tak sa papagáj učí s chuťou a bez stresu.',
-  },
-]
+}
 
-const testimonials = [
+const TESTIMONIALS = [
   { name: 'Natália a Arny 🦜', quote: 'Osloviť Franku z @volne.kridla bolo jedným z najlepších rozhodnutí, aké som mohla urobiť. Odporúčam to každému, kto chce skutočne porozumieť svojmu operencovi.' },
-  { name: 'Alenka a Noro 🦜', quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom 🦜 vďaka tebe je naša spolupráca na úplne inej úrovni.' },
+  { name: 'Alenka a Noro 🦜', quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom. Vďaka tebe je naša spolupráca na úplne inej úrovni.' },
   { name: 'Mirka a Lariska 🦜', quote: 'Franka bola prvý človek, ktorý mi otvoril dvere do sveta papagájov a ich tréningu. Keď som začínala, trpezlivo mi vysvetlila všetko od základov.' },
   { name: 'Feri, Danka a Zeri 🦜', quote: 'Voľné lietanie s našou Zeri je super skúsenosť. Ukazuje, že papagáj vie dôverovať a cítiť sa slobodne ale nedá sa to urobiť zo dňa na deň.' },
   { name: 'Henrieta a Patrik 🦜', quote: 'S výcvikovým procesom v tréningovej škole Voľné krídla som veľmi spokojná. Rovnako aj s prístupom aj dosiahnutými výsledkami.' },
   { name: 'Laura a AZU 🦜', quote: 'S konzultáciámi som bola veľmi spokojná. Hneď po prvej konzultácii sme nastavili správny jedálniček aj tréningy a už po krátkom čase sme videli výsledky.' },
-  { name: 'Roman a Richie 🦜', quote: 'Najlepší hodnotiteľ je sám náš Richie, ktorý po podrobných a citlivých radách od Franky začal pekne napredovať v každom smere.' },
-  { name: 'Natalia a Tori', quote: 'K celému príbehu Toriho sa ešte dostanem, no po rokoch strachu z ľudí a nevyhovujúcich podmienok, čo viedlo k jeho sebazraňovaniu, sme videli obrovský posun.' },
-  { name: 'Miška & Arianka', quote: 'Chcela by som sa veľmi pekne poďakovať Franke za obrovskú pomoc s mojou Arou araraunou. Povedzme, že sme mali obdobie, keď sme nevedeli čo ďalej.' },
-  { name: 'Ivanka & Dinko', quote: 'S Frankou trénujeme už mesiac a hneď od prvého rozhovoru mi bolo jasné, že som sa obrátila na tú správnu osobu. Jej rady sú praktické a vždy vysvetlí prečo.' },
-  { name: 'Helenka & Maxík', quote: 'Rada by som sa podelila o skúsenosť s Frankou z @volne.kridla, ktorá sa venuje papagájom už 14 rokov. Posledného pol roka nám veľmi pomohla.' },
 ]
 
 export default function Domov() {
+  const [activeTab, setActiveTab] = useState('trening')
+  const tab = TABS[activeTab]
+
   return (
     <>
       <Helmet>
@@ -61,7 +67,7 @@ export default function Domov() {
         <meta name="description" content="Spoznaj fascinujúci svet voľného lietania, buduj dôveru a preži spoločné dobrodružstvo so svojím opereným parťákom – bezpečne a s radosťou." />
       </Helmet>
 
-      {/* Squircle SVG defs */}
+      {/* Squircle clip-path definition */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }} aria-hidden="true">
         <defs>
           <clipPath id="squircle" clipPathUnits="objectBoundingBox">
@@ -70,191 +76,173 @@ export default function Domov() {
         </defs>
       </svg>
 
-      {/* Hero */}
+      {/* ─── HERO ─── */}
       <section className={styles.hero}>
         <div className="container">
-          <img src={wordmarkSvg} alt="Voľné krídla" className={styles.heroWordmark} />
-          <div className={styles.heroTag}>Nielen škola pre papagáje</div>
-
-          {/* Cream panel — inside container so border-radius math is local */}
+          <img src={wordmarkSvg} alt="Voľné krídla" className={styles.wordmark} />
+          <span className={styles.heroTag}>Nielen škola pre papagáje</span>
+          {/* Panel: border-radius 32px, padding 16px → image radius = 16px */}
           <div className={styles.heroPanel}>
             <div className={styles.heroGrid}>
-              {/* Left — text */}
-              <div className={styles.heroText}>
-                <p className={styles.heroLabel}>Tréning voľných krídel</p>
+              <div className={styles.heroContent}>
+                <p className={styles.heroLabel}>Tréning voľného letu</p>
                 <h1 className={styles.heroTitle}>
-                  Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
+                  Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži
                 </h1>
                 <p className={styles.heroQuote}>
-                  &ldquo;Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť.&rdquo;
+                  „Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť."
                 </p>
                 <div className={styles.heroBtns}>
                   <a
-                    href="#contact-form"
-                    className={styles.heroBtnPrimary}
-                    onClick={e => { e.preventDefault(); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' }) }}
+                    href="#kontakt"
+                    className={styles.btnPrimary}
+                    onClick={e => { e.preventDefault(); document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' }) }}
                   >
                     Začať lietať
                   </a>
-                  <a href="/volne-kridla" className={styles.heroBtnSecondary}>
-                    Zistiť viac
-                  </a>
+                  <a href="/volne-kridla" className={styles.btnOutline}>Zistiť viac</a>
                 </div>
               </div>
-
-              {/* Right — placeholder image */}
-              <div className={styles.heroImageWrap}>
-                <div className={styles.heroImage} role="img" aria-label="Papagáj vo voľnom lete" />
+              <div className={styles.heroImgWrap}>
+                <div className={styles.heroImg} role="img" aria-label="Papagáj vo voľnom lete" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Marquee pill ticker */}
-      <section className={styles.marqueeSection} aria-hidden="true">
-        {[ROW1, ROW2].map((row, ri) => (
+      {/* ─── MARQUEE ─── */}
+      <section className={styles.marquee} aria-hidden="true">
+        {[MARQUEE_ROW1, MARQUEE_ROW2].map((row, ri) => (
           <div key={ri} className={styles.marqueeRow}>
             <div className={styles.marqueeTrack}>
               {[...row, ...row].map((label, i) => (
-                <span key={i} className={styles.marqueePill}>{label}</span>
+                <span key={i} className={styles.pill}>{label}</span>
               ))}
             </div>
           </div>
         ))}
       </section>
 
-      {/* Services */}
-      <section className={styles.services}>
+      {/* ─── O VOĽNÝCH KRÍDLACH ─── */}
+      <section className={styles.about}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Aký druh tréningu je pre vás vhodný?</h2>
-          <div className={styles.serviceGrid}>
-            {services.map((s) => (
-              <div key={s.title} className={styles.serviceCard}>
-                <img src={s.img} alt={s.title} className={styles.serviceImg} loading="lazy" />
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-              </div>
+          <header className={styles.secHead}>
+            <h2 className={styles.secTitle}>O Voľných krídlach</h2>
+            <p className={styles.secSub}>Aký druh tréningu je pre mňa vhodný?</p>
+          </header>
+          <div className={styles.tabs}>
+            {Object.entries(TABS).map(([key, t]) => (
+              <button
+                key={key}
+                className={`${styles.tab} ${activeTab === key ? styles.tabActive : ''}`}
+                onClick={() => setActiveTab(key)}
+              >
+                {t.label}
+              </button>
             ))}
+          </div>
+          <div className={styles.aboutGrid}>
+            <div className={styles.aboutImgWrap}>
+              <div className={styles.aboutImg} role="img" aria-label={tab.label} />
+            </div>
+            <div className={styles.aboutContent}>
+              <h3 className={styles.aboutHeading}>{tab.heading}</h3>
+              <p className={styles.aboutBody}>{tab.body}</p>
+              <ul className={styles.checkList}>
+                {tab.items.map(item => (
+                  <li key={item} className={styles.checkItem}>
+                    <span className={styles.checkDot} aria-hidden="true">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a href={tab.href} className={styles.btnPrimary}>{tab.cta}</a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Why */}
-      <section className={styles.why}>
-        <div className="container">
-          <h1 className={styles.sectionTitle}>Prečo učiť papagája lietať?</h1>
-          <p className={styles.whyBody}>
-            Hoci sú papagáje na let stvorené, nevedia ho prirodzene len tak robiť a robiť ho dobre v každom veku. Musia sa to naučiť a správne zvládnuť zručnosti. Letanie vonku je oveľa odlišné od lietania v interiéri (vietor, rozptyľovanie, dravce, preťaženie podnetmi atď.). A preto je veľmi dôležitý správne vedený tréning.
-          </p>
-        </div>
-      </section>
-
-      {/* Steps */}
-      <section className={styles.steps}>
-        <div className="container">
-          <div className={styles.stepsGrid}>
-            {[
-              { num: '01', title: 'Začni malými krokmi', desc: 'Najskôr si potrebuje zvyknúť na nové prostredie, traky a základné povely.' },
-              { num: '02', title: 'Maj trpezlivosť', desc: 'Postupne zvyšujte náročnosť a vzdialenosť.' },
-              { num: '03', title: 'Bezpečie a pokoj', desc: 'Tréning by sa mal vykonávať v tichej a bezpečnej oblasti (ideálne pole, ihrisko) bez rušenia.' },
-            ].map((s) => (
-              <div key={s.num} className={styles.stepCard}>
-                <span className={styles.stepNum}>{s.num}</span>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Training never ends */}
-      <section className={styles.trainingBanner}>
-        <div className="container">
-          <h1>Tréning nikdy nekončí</h1>
-        </div>
-      </section>
-
-      {/* Beyond obedience */}
-      <section className={styles.beyond}>
-        <div className="container">
-          <h1 className={styles.sectionTitle}>Nejde len o to aby &quot;poslúchal&quot;</h1>
-          <p className={styles.beyondBody}>
-            Je to spôsob, ako spolu komunikovať, tráviť čas a posilniť puto medzi človekom a papagájom. Naučiť papagája priletieť na povel, otočiť sa, kývnuť alebo mávnuť krídlom je nielen zábavné, ale aj veľmi prospešné pre jeho psychickú pohodu. Papagáje sú inteligentné tvory, ktoré potrebujú mentálnu stimuláciu a práve tréning im dáva zmysel, aktivitu a pocit úspechu. Pre človeka je to zase nádherný spôsob, ako lepšie spoznať svojho opereného parťáka.
-          </p>
-        </div>
-      </section>
-
-      {/* Three pillars */}
-      <section className={styles.pillars}>
-        <div className="container">
-          <div className={styles.pillarsGrid}>
-            {pillars.map((p) => (
-              <div key={p.title} className={styles.pillarCard}>
-                <h3>{p.title}</h3>
-                <p>{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Franka */}
+      {/* ─── FRANKA ─── */}
       <section className={styles.franka}>
         <div className="container">
-          <p className={styles.frankaSub}>Kto vlastne som?</p>
-          <h1 className={styles.frankaTitle}>Ahoj, volám sa</h1>
-          <h1 className={styles.frankaName}>Franka</h1>
-          <p className={styles.frankaBody}>
-            a mojou vášňou sú tieto inteligentné operené tvory, venujem sa ich výchove no najmä tréningu voľného letu. Nejde o to, že vám počas pár minút nadiktujem, čo máte robiť. Spolu si vysvetlíme, prečo veci fungujú tak, ako fungujú, aby ste tomu naozaj porozumeli. Mojím cieľom je, aby ste pochopili ako papagáj rozmýšľa a reaguje.
-          </p>
+          <span className={styles.floatTag}>Kto vlastne som?</span>
+          <div className={styles.frankaGrid}>
+            <div className={styles.frankaImgWrap}>
+              <div className={styles.frankaImg} role="img" aria-label="Franka" />
+            </div>
+            <div className={styles.frankaContent}>
+              <p className={styles.frankaSub}>Ahoj, volám sa</p>
+              <h2 className={styles.frankaName}>Franka</h2>
+              <p className={styles.frankaBody}>
+                a mojou vášňou sú tieto inteligentné operené tvory, venujem sa ich výchove no najmä
+                tréningu voľného letu. Nejde o to, že vám počas pár minút nadiktujem, čo máte robiť.
+                Spolu si vysvetlíme, prečo veci fungujú tak, ako fungujú, aby ste tomu naozaj
+                porozumeli. Mojím cieľom je, aby ste pochopili ako papagáj rozmýšľa a reaguje.
+              </p>
+              <a href="/o-mne" className={styles.btnOutline}>Zistiť o mne viac</a>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Instagram CTA */}
+      {/* ─── INSTAGRAM ─── */}
       <section className={styles.instagram}>
         <div className="container">
-          <h1>Sleduj každý náš let zblízka!</h1>
+          <h2 className={styles.igTitle}>Sleduj každý náš let zblízka!</h2>
+          <p className={styles.igSub}>
+            Na Instagrame ťa čakajú zákulisné momenty, tréningy aj tie najkrajšie zábery z voľného letu!
+          </p>
           <a
             href="https://www.instagram.com/volne.kridla"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.igBtn}
+            className={styles.btnIg}
           >
-            Začať sledovať
+            Navštíviť náš Instagram
           </a>
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* ─── TESTIMONIALS ─── */}
       <section className={styles.testimonials}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Vidíš ich? Tí už spravili prvý krok.</h2>
-          <div className={styles.testimonialsGrid}>
-            {testimonials.map((t) => (
-              <div key={t.name} className={styles.testimonialCard}>
-                <p className={styles.testimonialQuote}>"{t.quote}"</p>
-                <span className={styles.testimonialName}>{t.name}</span>
-              </div>
+          <header className={styles.secHead}>
+            <h2 className={styles.secTitle}>Vidíš ich? Tí už spravili prvý krok.</h2>
+            <p className={styles.secSub}>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</p>
+          </header>
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={24}
+            navigation
+            pagination={{ clickable: true }}
+            breakpoints={{ 0: { slidesPerView: 1 }, 700: { slidesPerView: 2 } }}
+            className={styles.swiper}
+          >
+            {TESTIMONIALS.map(t => (
+              <SwiperSlide key={t.name} className={styles.tCard}>
+                <div className={styles.tImg} role="img" />
+                <div className={styles.tBody}>
+                  <p className={styles.tQuote}>„{t.quote}"</p>
+                  <span className={styles.tName}>{t.name}</span>
+                </div>
+              </SwiperSlide>
             ))}
+          </Swiper>
+        </div>
+      </section>
+
+      {/* ─── BOOKING ─── */}
+      <section className={styles.booking} id="kontakt">
+        <div className="container">
+          <span className={styles.floatTag}>Posledný krok k slobode</span>
+          {/* Panel: border-radius 40px, padding 24px → image radius = 16px */}
+          <div className={styles.bookingPanel}>
+            <div className={styles.bookingImg} role="img" aria-label="Konzultácia" />
+            <div className={styles.bookingFormWrap}>
+              <BookingForm />
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className={styles.finalCta}>
-        <div className="container">
-          <h1>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</h1>
-        </div>
-      </section>
-
-      {/* Booking Form */}
-      <section className={styles.booking} id="contact-form">
-        <div className="container">
-          <h2 className={styles.sectionTitle}>Posledný krok k slobode</h2>
-          <p className={styles.bookingDesc}>Objednávka konzultácie</p>
-          <BookingForm />
         </div>
       </section>
     </>
