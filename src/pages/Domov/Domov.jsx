@@ -252,13 +252,20 @@ export default function Domov() {
 
       {/* ─── INSTAGRAM ─── */}
       <section className={styles.instagram}>
-        <div className={styles.igBg} aria-hidden="true" />
         <div className="container">
           <div className={styles.igContent}>
             <h2 className={styles.igTitle}>Sleduj každý náš let zblízka!</h2>
+            <div className={styles.igDivider} aria-hidden="true">
+              <span className={styles.igDividerLine} />
+              <svg className={styles.igCamera} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span className={styles.igDividerLine} />
+            </div>
             <p className={styles.igSub}>
               Na Instagrame ťa čakajú zákulisné momenty, tréningy aj tie najkrajšie zábery z
-              voľného lietania.
+              voľného letu!
             </p>
             <a
               href="https://www.instagram.com/volne.kridla"
@@ -266,7 +273,7 @@ export default function Domov() {
               rel="noopener noreferrer"
               className={styles.btnIg}
             >
-              Začni sledovať
+              Nahliadni do nášho sveta
             </a>
           </div>
         </div>
@@ -286,7 +293,7 @@ export default function Domov() {
             spaceBetween={32}
             centeredSlides
             navigation
-            pagination={{ clickable: true }}
+            pagination={{ type: 'progressbar' }}
             slidesPerView={1}
             className={styles.swiper}
           >
@@ -294,14 +301,16 @@ export default function Domov() {
               <SwiperSlide key={t.name} className={styles.tCard}>
                 <div className={styles.tBody}>
                   <p className={styles.tQuote}>„{t.quote}"</p>
+                </div>
+                <div className={styles.tRight}>
+                  <div
+                    className={styles.tImg}
+                    style={t.img ? { backgroundImage: `url(${t.img})` } : undefined}
+                    role="img"
+                    aria-label={t.name}
+                  />
                   <span className={styles.tName}>{t.name}</span>
                 </div>
-                <div
-                  className={styles.tImg}
-                  style={t.img ? { backgroundImage: `url(${t.img})` } : undefined}
-                  role="img"
-                  aria-label={t.name}
-                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -315,11 +324,12 @@ export default function Domov() {
             <span className={styles.sectionTagAlt}>Posledný krok k slobode</span>
           </div>
           <div className={styles.bookingPanel}>
-            <div className={styles.bookingLeft}>
-              <div className={styles.bookingImg} role="img" aria-label="Konzultácia" />
-            </div>
-            <div className={styles.bookingFormWrap}>
+            <div className={styles.bookingFormCard}>
               <BookingForm />
+            </div>
+            <div className={styles.bookingRight}>
+              <div className={styles.bookingRightImg} role="img" aria-label="Konzultácia s Frankou" />
+              <a href="/o-mne" className={styles.btnCta}>Zisti o mne viac</a>
             </div>
           </div>
         </div>
