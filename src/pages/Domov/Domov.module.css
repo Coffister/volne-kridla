@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════
-   DOMOV — desktop-first (full HD baseline)
-   All px values derived from 1920px Figma frame.
-   Container = 1300px centred (310px side margins).
+   DOMOV — desktop-first, values from live WP site
+   Container = 1140px centred (390px side margins at 1920px)
    ═══════════════════════════════════════════════════ */
 
 
@@ -9,38 +8,38 @@
 
 .secTitle {
   font-family: var(--font-heading);
-  font-size: 64px;
-  font-weight: 800;
+  font-size: 72px;
+  font-weight: 600;
   color: #FFFFEF;
-  line-height: 0.88;
-  letter-spacing: -1.92px;
+  line-height: 60px;
+  letter-spacing: -3px;
+  -webkit-text-stroke: 10px #2755A9;
+  paint-order: stroke fill;
 }
 
 
 /* ─── Shared: float / section tags ─── */
 
-/* Used above sections on sky background */
 .sectionTag {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 24px;
   background: #FFFFEF;
-  border: 4px solid #333;
-  border-radius: 32px;
-  box-shadow: 0 9px 0 #333;
+  border: 5px solid #333;
+  border-radius: 24px;
+  box-shadow: 0 6px 0 #333;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
   color: #333;
 }
 
-/* Variant used on dark/blue background (booking, franka) */
 .sectionTagAlt {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 24px;
   background: #FFFFEF;
-  border: 4px solid #333;
-  border-radius: 32px;
-  box-shadow: 0 9px 0 #333;
+  border: 5px solid #333;
+  border-radius: 24px;
+  box-shadow: 0 6px 0 #333;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
@@ -69,20 +68,19 @@
 
 /* ─── Shared: CTA buttons ─── */
 
-/* Primary CTA — cream bg, hard border + shadow */
 .btnCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
+  padding: 16px 40px;
   background: #FFFFEF;
   color: #333;
   font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 16px;
-  border: 4px solid #333;
-  box-shadow: 0 5px 0 #333;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 32px;
+  border: 5px solid #333;
+  box-shadow: 0 4px 0 #333;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -91,21 +89,20 @@
 
 .btnCta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 7px 0 #333;
+  box-shadow: 0 6px 0 #333;
 }
 
-/* Ghost / secondary — cream bg, no border */
 .btnGhost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
-  background: #FFFFEF;
+  padding: 16px 40px 16px 20px;
+  background: transparent;
   color: #333;
   font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 600;
-  border-radius: 16px;
+  font-weight: 700;
+  border-radius: 32px;
   border: none;
   text-decoration: none;
   white-space: nowrap;
@@ -113,37 +110,30 @@
 }
 
 .btnGhost:hover {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 
 /* ════════════════════════════════════════
    HERO
-   From Figma:
-   - wordmark: y=346, h=212
-   - heroTag: y=529 (flush with panel top)
-   - panel: y=577, h=593, w=1299, rounded-40px
-   - image: left=583px from panel left, w=700, h=556, top=19px
-   - content: left=45px from panel left
+   WP: panel border-radius=64px, min-height=60vh, padding=16px
+   Left col padding=80px all sides
+   Image carousel border-radius=60px
    ════════════════════════════════════════ */
 
 .hero {
-  /* Push wordmark to Figma y=346 (main starts at 140px, so push 206px) */
-  padding-top: 206px;
+  padding-top: 115px;
 }
 
 .wordmark {
   display: block;
   width: 100%;
-  /* Natural SVG height ~212px */
   margin-bottom: 0;
 }
 
-/* Wrapper that centres the float tag and gives it -29px margin
-   so its bottom aligns with the panel top (tag height≈48px, gap≈19px) */
 .heroTagWrap {
   text-align: center;
-  margin-top: -29px;
+  margin-top: -24px;
   margin-bottom: 0;
   position: relative;
   z-index: 2;
@@ -151,55 +141,51 @@
 
 .heroTag {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 24px;
   background: #FFFFEF;
-  border: 4px solid #333;
-  border-radius: 32px;
-  box-shadow: 0 9px 0 #333;
+  border: 5px solid #333;
+  border-radius: 24px;
+  box-shadow: 0 6px 0 #333;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
   color: #333;
-  transform: rotate(-3deg);
+  transform: rotate(-2deg);
 }
 
-/* Panel: h=593, full rounded-40px */
 .heroPanel {
   position: relative;
   background: #FFFFEF;
-  border-radius: 40px;
-  height: 593px;
+  border-radius: 64px;
+  height: 640px;
   display: flex;
+  padding: 16px;
   overflow: hidden;
 }
 
-/* Left column: takes remaining space after 700px image */
 .heroContent {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  /* 45px left-pad (355-310), 48px top-pad (label at ~73px from panel; label is ~24px, so pad≈48), 48px bottom */
-  padding: 48px 0 48px 45px;
+  padding: 80px 40px 60px 80px;
 }
 
 .heroLabel {
   font-family: var(--font-body);
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 600;
   color: #333;
-  letter-spacing: -1.2px;
-  line-height: 0.99;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 .heroTitle {
   font-family: var(--font-heading);
-  font-size: 48px;
+  font-size: 74px;
   font-weight: 700;
   color: #2755A9;
-  line-height: 0.88;
-  width: 481px;
+  line-height: 54px;
+  letter-spacing: -5px;
   flex: 1;
   align-self: flex-start;
   margin-bottom: 24px;
@@ -210,8 +196,7 @@
   font-size: 24px;
   font-weight: 400;
   color: #333;
-  line-height: 0.99;
-  width: 481px;
+  line-height: 1.33;
   margin-bottom: 40px;
 }
 
@@ -221,28 +206,22 @@
   align-items: center;
 }
 
-/* Right column: fixed 700px image — 716px total (700 content + 16px right pad) */
 .heroImgWrap {
   flex-shrink: 0;
-  width: 716px;
-  padding: 19px 16px 18px 0;
-  display: flex;
-  align-items: flex-end;
+  width: 480px;
+  align-self: stretch;
 }
 
-/* Swiper carousel fills the heroImgWrap area */
 .heroSwiper {
-  width: 700px;
-  height: 556px;
-  border-radius: 32px;
+  width: 100%;
+  height: 100%;
+  border-radius: 60px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
-/* Image: 700px w, 556px h, fully rounded 32px */
 .heroImg {
-  width: 700px;
-  height: 556px;
+  width: 100%;
+  height: 100%;
   border-radius: 0;
   background-color: #c8dff0;
   background-size: cover;
@@ -252,23 +231,23 @@
 
 /* ════════════════════════════════════════
    MARQUEE
-   From Figma: white box w=1299, h=173, rounded-32, gap=43px below hero panel
-   Two pill rows h=58 each inside a box with ~36px vertical padding
+   WP: 80px gap from hero, box padding=16px, row height=60px
+   Pill padding=16px 48px, track gap=20px
    ════════════════════════════════════════ */
 
 .marqueeSection {
-  padding-top: 43px;
+  padding-top: 80px;
 }
 
 .marqueeBox {
   background: #FFFFEF;
   border-radius: 32px;
-  padding: 28px 0;
+  padding: 16px;
   overflow: hidden;
 }
 
 .marqueeRow {
-  height: 58px;
+  height: 60px;
   overflow: clip;
   margin-bottom: 9px;
 }
@@ -282,7 +261,7 @@
   width: max-content;
   height: 100%;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
 .marqueeRow:nth-child(1) .marqueeTrack { animation: scrollLeft 26s linear infinite; }
@@ -291,7 +270,7 @@
 .pill {
   display: inline-flex;
   align-items: center;
-  padding: 8px 28px;
+  padding: 16px 48px;
   border-radius: 9999px;
   font-family: var(--font-body);
   font-size: 14px;
@@ -321,21 +300,9 @@
 
 /* ════════════════════════════════════════
    ABOUT (O Voľných krídlach)
-   From Figma:
-   - section title y=1474, rotated -1deg
-   - section tag y=1541, rotated +1deg
-   - card: y=1736, h=964, w=1000, rounded-40px (centred)
-   - tabs: y=1679, h=57 — bottom = 1736 = card top
-   - active tab: w=224, bg=#f56604, rounded tl-32 tr-32 bl-8 br-8
-   - inactive tab: w=185, bg=#f5e6b3
-   - left img: x=487-460=27 from card, w=448, h=834, y=1839-1736=103 from card top
-   - "Tréning nikdy nekončí": y=1790-1736=54 from card top, text-[#2755a9] 32px
-   - right cream col: x=960-460=500 from card, w=480, h=907, y=1766-1736=30 from card top, rounded-32
-   - heading: y=1803-1766=37 from right col, text-48px
-   - body: y=1932-1766=166 from right col, text-24px, w=406
-   - feature box: y=2260-1766=494 from right col, h=311, w=446, rounded-20, bg=#ffffef
-   - "Čo vas naučím?" tag: y=2220-1766=454 from right col → 40px above feature box (floats on top)
-   - CTA button: y=2591-1766=825 from right col (after feature box 494+311=805, +20gap)
+   WP: card border-radius=0px 32px 32px 32px (top-left flush with first tab)
+   Tab top corners=24px, active bg=#F56604
+   Feature title=20px/600, desc=12px/600
    ════════════════════════════════════════ */
 
 .about {
@@ -362,25 +329,23 @@
   display: inline-block;
 }
 
-/* Wrapper constrains to 1000px and stacks tabs on top of card */
 .aboutWrap {
   max-width: 1000px;
   margin: 0 auto;
 }
 
-/* Tabs: height=57px, sit just above the card */
 .tabs {
   display: flex;
   gap: 0;
-  padding-left: 22px; /* first tab at 482-460=22px from card left */
+  padding-left: 22px;
   margin-bottom: 0;
   align-items: flex-end;
 }
 
 .tab {
-  height: 57px;
+  height: 50px;
   padding: 0 28px;
-  border-radius: 32px 32px 8px 8px;
+  border-radius: 24px 24px 8px 8px;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
@@ -397,17 +362,15 @@
   color: #FFFFEF;
 }
 
-/* Card: h=964, rounded-40px, no overflow clip so image can sit at bottom */
 .aboutCard {
   background: #FFFFEF;
-  border-radius: 40px;
+  border-radius: 0px 32px 32px 32px;
   min-height: 964px;
   display: flex;
   position: relative;
   overflow: hidden;
 }
 
-/* Left: w=448, 27px from card left, "Tréning nikdy nekončí" label at top, image below */
 .aboutLeft {
   width: 448px;
   flex-shrink: 0;
@@ -422,11 +385,10 @@
   font-weight: 600;
   color: #2755AA;
   line-height: 0.82;
-  margin-bottom: 17px; /* image at 103px from card top; label at 54px; label h≈32px; gap≈17px */
+  margin-bottom: 17px;
   white-space: nowrap;
 }
 
-/* Image: h=834, w=448, rounded-32px */
 .aboutImg {
   width: 448px;
   height: 834px;
@@ -437,7 +399,6 @@
   flex-shrink: 0;
 }
 
-/* Video: same dimensions as aboutImg */
 .aboutVideo {
   width: 448px;
   height: 834px;
@@ -448,7 +409,6 @@
   flex-shrink: 0;
 }
 
-/* Right cream panel: w=480, from 500px, h=907, y=30px from card top, rounded-32px */
 .aboutRight {
   position: absolute;
   left: 500px;
@@ -480,18 +440,15 @@
   line-height: 0.99;
   width: 406px;
   white-space: pre-line;
-  /* body ends at 166+328=494px from right col top */
   margin-bottom: 0;
 }
 
-/* Feature area: starts at 494px from right col top */
 .featureArea {
   position: relative;
   margin-top: auto;
   flex-shrink: 0;
 }
 
-/* "Čo vás naučím?" tag: 40px above feature box */
 .featureTagWrap {
   margin-bottom: -12px;
   padding-left: 200px;
@@ -501,11 +458,11 @@
 
 .featureTag {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 24px;
   background: #FFFFEF;
-  border: 4px solid #333;
-  border-radius: 32px;
-  box-shadow: 0 9px 0 #333;
+  border: 5px solid #333;
+  border-radius: 24px;
+  box-shadow: 0 6px 0 #333;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
@@ -513,7 +470,6 @@
   transform: rotate(1deg);
 }
 
-/* Feature box: bg=#ffffef, h=311, w=446, rounded-20 */
 .featureBox {
   background: #FFFFEF;
   border-radius: 20px;
@@ -524,7 +480,6 @@
   width: 446px;
 }
 
-/* Each item: bg=#f5e6b3, h≈89px, rounded-20, with 60px icon + text */
 .featureItem {
   background: #F5E6B3;
   border-radius: 20px;
@@ -551,7 +506,7 @@
 
 .featureTitle {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   color: #333;
   line-height: 0.99;
@@ -560,12 +515,11 @@
 .featureDesc {
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 600;
   color: #333;
   line-height: 0.99;
 }
 
-/* CTA: 20px gap after feature box (825-805=20) */
 .aboutRight .btnCta {
   margin-top: 20px;
   width: 100%;
@@ -574,13 +528,8 @@
 
 /* ════════════════════════════════════════
    FRANKA (O mne)
-   From Figma:
-   - card: w=1000, h=732, rounded-40px, centred, y=3015
-   - image: left=22px from card, w=448, h=685, y=23px from card top, rounded-32
-   - right content: left=507px from card, w≈473px
-   - "Ahoj, volám sa Franka": SVG at y=59px from card top, w=351
-   - body: y=209px from card top, text-20px, w=429
-   - CTA "Zisti o mne viac": y=628px from card top
+   WP: name=53px/600, img border-radius=24px
+   Card border-radius=32px (not 40px from Figma)
    ════════════════════════════════════════ */
 
 .franka {
@@ -592,7 +541,7 @@
   max-width: 1000px;
   margin: 0 auto;
   background: #FFFFEF;
-  border-radius: 40px;
+  border-radius: 32px;
   min-height: 732px;
   display: flex;
   position: relative;
@@ -616,11 +565,10 @@
   white-space: nowrap;
 }
 
-/* Static photo in Franka card */
 .frankaImg {
   width: 448px;
   height: 685px;
-  border-radius: 32px;
+  border-radius: 24px;
   background-color: #c8dff0;
   background-size: cover;
   background-position: center;
@@ -630,7 +578,7 @@
 .frankaVideo {
   width: 448px;
   height: 685px;
-  border-radius: 32px;
+  border-radius: 24px;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -658,11 +606,11 @@
 
 .frankaName {
   font-family: var(--font-heading);
-  font-size: 80px;
-  font-weight: 900;
+  font-size: 53px;
+  font-weight: 600;
   color: #2755AA;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
+  line-height: 59px;
+  letter-spacing: -3px;
   margin-bottom: 28px;
 }
 
@@ -684,10 +632,7 @@
 
 /* ════════════════════════════════════════
    INSTAGRAM
-   From Figma: rotated blue rectangle, full-bleed, rotate(1deg)
-   Title text-64px #ffffef rotate(1deg)
-   Subtitle text-24px #ffffef
-   CTA btn cream border shadow rotate(1deg)
+   WP: full blue section bg, 120px margin-top from previous
    ════════════════════════════════════════ */
 
 .instagram {
@@ -696,7 +641,6 @@
   overflow: hidden;
 }
 
-/* Rotated blue background rectangle */
 .igBg {
   position: absolute;
   inset: -40px -80px;
@@ -738,15 +682,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
+  padding: 16px 40px;
   background: #FFFFEF;
   color: #333;
   font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 20px;
-  border: 4px solid #333;
-  box-shadow: 0 5px 0 #333;
+  font-size: 20px;
+  font-weight: 700;
+  border-radius: 32px;
+  border: 5px solid #333;
+  box-shadow: 0 4px 0 #333;
   text-decoration: none;
   transform: rotate(1deg);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
@@ -754,22 +698,19 @@
 
 .btnIg:hover {
   transform: rotate(1deg) translateY(-2px);
-  box-shadow: 0 7px 0 #333;
+  box-shadow: 0 6px 0 #333;
 }
 
 
 /* ════════════════════════════════════════
    TESTIMONIALS
-   From Figma: sky bg (no section background), cards w=834 h=567 rounded-40px
-   Image right: w=365 h=518 rounded-32px
-   Text left: name 24px bold, quote 16px bold
-   Adjacent cards: slight rotations (-1deg, +2deg)
+   WP: card border-radius=32px, img area bg=#F5E6B3
    ════════════════════════════════════════ */
 
 .testimonials {
   padding-top: 120px;
   padding-bottom: 120px;
-  overflow: hidden; /* clip peeking slides so they don't widen the page */
+  overflow: hidden;
 }
 
 .tHeader {
@@ -834,10 +775,9 @@
   opacity: 1;
 }
 
-/* Card: w=834, h=567, rounded-40px, horizontal layout */
 .tCard {
   background: #FFFFEF;
-  border-radius: 40px;
+  border-radius: 32px;
   width: 834px !important;
   height: 567px;
   display: flex !important;
@@ -846,7 +786,6 @@
   flex-shrink: 0;
 }
 
-/* Text left */
 .tBody {
   flex: 1;
   padding: 48px 40px 48px 48px;
@@ -872,14 +811,13 @@
   margin-top: 24px;
 }
 
-/* Image right: w=365, h=518 (sits centred vertically with 24px padding top/bottom) */
 .tImg {
   width: 365px;
   flex-shrink: 0;
   height: 518px;
   margin: 24px 24px 24px 0;
-  border-radius: 32px;
-  background-color: #c8dff0;
+  border-radius: 24px;
+  background-color: #F5E6B3;
   background-size: cover;
   background-position: center;
 }
@@ -887,16 +825,12 @@
 
 /* ════════════════════════════════════════
    BOOKING
-   From Figma:
-   - section: bg=#2755a9, h=1080, y=5881
-   - outer panel: bg=#ffffef, h=765, w=1299, rounded-40px, y=160px from section top
-   - left card: bg=#ffffef, border-4 black, w=400, h=716, rounded-32, 22px from panel edges
-   - right form: bg=#f5e6b3, w=832, h=716, rounded-32, 22px gap from left card
+   WP: blue section bg, left card has no border
    ════════════════════════════════════════ */
 
 .booking {
   background: #2755AA;
-  padding-top: 112px; /* float tag starts 112px from section top */
+  padding-top: 112px;
   padding-bottom: 0;
   min-height: 1080px;
 }
@@ -912,14 +846,13 @@
   margin-top: 0;
 }
 
-/* Left image card: w=400, h=716, border-4 black, rounded-32 */
 .bookingLeft {
   width: 400px;
   flex-shrink: 0;
-  border: 4px solid #333;
   border-radius: 32px;
   overflow: hidden;
   height: 716px;
+  background: #F5E6B3;
 }
 
 .bookingImg {
@@ -928,7 +861,6 @@
   background: #c8dff0;
 }
 
-/* Right form panel: flex-1 (≈832px), bg=#f5e6b3, rounded-32 */
 .bookingFormWrap {
   flex: 1;
   background: #F5E6B3;

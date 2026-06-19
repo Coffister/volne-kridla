@@ -55,6 +55,6 @@
   --transition-slow: 400ms ease;
 
   /* Layout */
-  --container-max: 1300px;
+  --container-max: 1140px;
   --nav-height: 72px;
 }
