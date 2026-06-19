@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import styles from './Navbar.module.css'
+import logoImg from '../../assets/images/logo-border-stroke.webp'
 
 const volneKridlaDropdown = [
   { label: 'O voľnom lietaní', href: '/volne-kridla#about' },
@@ -53,7 +54,7 @@ export default function Navbar() {
         >
           <Link to="/" aria-label="Voľné Krídla – domov">
             <img
-              src="https://volnekridla.sk/wp-content/uploads/2025/08/logo-border-stroke.webp"
+              src={logoImg}
               alt="Voľné Krídla"
               className={styles.logoImg}
             />

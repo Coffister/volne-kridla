@@ -8,6 +8,15 @@ import 'swiper/css/pagination'
 import BookingForm from '../../components/BookingForm/BookingForm'
 import styles from './Domov.module.css'
 import wordmarkSvg from '../../assets/images/volne-kridla.svg'
+import heroImgSrc from '../../assets/images/IMG_0199-3.webp'
+import aboutImgSrc from '../../assets/images/o-volnych-kridlach-trening.webp'
+import frankaVideoSrc from '../../assets/images/IMG_6530.mov'
+import tImgNatalia from '../../assets/images/Obrazok-WhatsApp-2025-10-11-o-14.51.29_1fbbf514.webp'
+import tImgAlenka from '../../assets/images/Obrazok-WhatsApp-2025-10-11-o-14.54.35_319c0d11.webp'
+import tImgMirka from '../../assets/images/unnamed.webp'
+import tImgHenrieta from '../../assets/images/IMG_0199-4-1.webp'
+import tImgExtra1 from '../../assets/images/Obrazok-WhatsApp-2025-10-12-o-18.36.58_0edb0624.webp'
+import tImgExtra2 from '../../assets/images/6796d7c0-ad9d-4134-b03c-0c46b93f56a4.webp'
 
 const MARQUEE_ROW1 = [
   'Konzultácia výživy', 'Voľné lietanie', 'Target tréning',
@@ -44,12 +53,12 @@ const TABS = {
 }
 
 const TESTIMONIALS = [
-  { name: 'Natália a Arny 🦜', quote: 'Osloviť Franku z @volne.kridla bolo jedným z najlepších rozhodnutí, aké som mohla urobiť. Odporúčam to každému, kto chce skutočne porozumieť svojmu operencovi.' },
-  { name: 'Alenka a Noro 🦜', quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom. Vďaka tebe je naša spolupráca na úplne inej úrovni.' },
-  { name: 'Mirka a Lariska 🦜', quote: 'Franka bola prvý človek, ktorý mi otvoril dvere do sveta papagájov a ich tréningu. Keď som začínala, trpezlivo mi venovala veľa svojho času, vysvetľovala mi základy a pomohla mi pochopiť, čo všetko obnáša free flight a vzťah s papagájom.' },
-  { name: 'Feri, Danka a Zeri 🦜', quote: 'Voľné lietanie s našou Zeri je super skúsenosť. Ukazuje, že papagáj vie dôverovať a cítiť sa slobodne ale nedá sa to urobiť zo dňa na deň.' },
-  { name: 'Henrieta a Patrik 🦜', quote: 'S výcvikovým procesom v tréningovej škole Voľné krídla som veľmi spokojná. Rovnako aj s prístupom aj dosiahnutými výsledkami.' },
-  { name: 'Laura a AZU 🦜', quote: 'S konzultáciámi som bola veľmi spokojná. Hneď po prvej konzultácii sme nastavili správny jedálniček aj tréningy a už po krátkom čase sme videli výsledky.' },
+  { name: 'Natália a Arny 🦜', img: tImgNatalia, quote: 'Osloviť Franku z @volne.kridla bolo jedným z najlepších rozhodnutí, aké som mohla urobiť. Odporúčam to každému, kto chce skutočne porozumieť svojmu operencovi.' },
+  { name: 'Alenka a Noro 🦜', img: tImgAlenka, quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom. Vďaka tebe je naša spolupráca na úplne inej úrovni.' },
+  { name: 'Mirka a Lariska 🦜', img: tImgMirka, quote: 'Franka bola prvý človek, ktorý mi otvoril dvere do sveta papagájov a ich tréningu. Keď som začínala, trpezlivo mi venovala veľa svojho času, vysvetľovala mi základy a pomohla mi pochopiť, čo všetko obnáša free flight a vzťah s papagájom.' },
+  { name: 'Feri, Danka a Zeri 🦜', img: tImgExtra1, quote: 'Voľné lietanie s našou Zeri je super skúsenosť. Ukazuje, že papagáj vie dôverovať a cítiť sa slobodne ale nedá sa to urobiť zo dňa na deň.' },
+  { name: 'Henrieta a Patrik 🦜', img: tImgHenrieta, quote: 'S výcvikovým procesom v tréningovej škole Voľné krídla som veľmi spokojná. Rovnako aj s prístupom aj dosiahnutými výsledkami.' },
+  { name: 'Laura a AZU 🦜', img: tImgExtra2, quote: 'S konzultáciámi som bola veľmi spokojná. Hneď po prvej konzultácii sme nastavili správny jedálniček aj tréningy a už po krátkom čase sme videli výsledky.' },
 ]
 
 export default function Domov() {
@@ -93,7 +102,12 @@ export default function Domov() {
               </div>
             </div>
             <div className={styles.heroImgWrap}>
-              <div className={styles.heroImg} role="img" aria-label="Papagáj vo voľnom lete" />
+              <div
+                className={styles.heroImg}
+                style={{ backgroundImage: `url(${heroImgSrc})` }}
+                role="img"
+                aria-label="Papagáj vo voľnom lete"
+              />
             </div>
           </div>
         </div>
@@ -142,7 +156,12 @@ export default function Domov() {
               {/* Left: image + label */}
               <div className={styles.aboutLeft}>
                 <p className={styles.aboutImgLabel}>Tréning nikdy nekončí</p>
-                <div className={styles.aboutImg} role="img" aria-label={tab.label} />
+                <div
+                className={styles.aboutImg}
+                style={{ backgroundImage: `url(${aboutImgSrc})` }}
+                role="img"
+                aria-label={tab.label}
+              />
               </div>
               {/* Right: cream content panel */}
               <div className={styles.aboutRight}>
@@ -185,7 +204,15 @@ export default function Domov() {
           </div>
           <div className={styles.frankaCard}>
             <div className={styles.frankaImgWrap}>
-              <div className={styles.frankaImg} role="img" aria-label="Franka" />
+              <video
+                className={styles.frankaVideo}
+                src={frankaVideoSrc}
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-label="Papagáj počas tréningu voľného letu"
+              />
             </div>
             <div className={styles.frankaContent}>
               <p className={styles.frankaSub}>Ahoj, volám sa</p>
@@ -253,7 +280,12 @@ export default function Domov() {
                   <p className={styles.tQuote}>„{t.quote}"</p>
                   <span className={styles.tName}>{t.name}</span>
                 </div>
-                <div className={styles.tImg} role="img" />
+                <div
+                  className={styles.tImg}
+                  style={t.img ? { backgroundImage: `url(${t.img})` } : undefined}
+                  role="img"
+                  aria-label={t.name}
+                />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -235,7 +235,9 @@
   width: 700px;
   height: 556px;
   border-radius: 32px;
-  background: #c8dff0;
+  background-color: #c8dff0;
+  background-size: cover;
+  background-position: center;
   flex-shrink: 0;
 }
 
@@ -421,7 +423,9 @@
   width: 448px;
   height: 834px;
   border-radius: 32px;
-  background: #c8dff0;
+  background-color: #c8dff0;
+  background-size: cover;
+  background-position: center;
   flex-shrink: 0;
 }
 
@@ -581,11 +585,13 @@
   padding: 23px 0 0 22px;
 }
 
-.frankaImg {
+.frankaVideo {
   width: 448px;
   height: 685px;
   border-radius: 32px;
-  background: #c8dff0;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .frankaContent {
@@ -831,7 +837,9 @@
   height: 518px;
   margin: 24px 24px 24px 0;
   border-radius: 32px;
-  background: #c8dff0;
+  background-color: #c8dff0;
+  background-size: cover;
+  background-position: center;
 }
 
 
