@@ -23,6 +23,7 @@
 .nav {
   width: 950px;
   max-width: calc(100% - 48px);
+  height: 80px;
   padding: 16px 10px 16px 24px;
   display: flex;
   justify-content: space-between;
