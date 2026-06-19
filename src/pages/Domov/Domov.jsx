@@ -1,22 +1,29 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination } from 'swiper'
+import { Navigation, Pagination, Autoplay } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import BookingForm from '../../components/BookingForm/BookingForm'
 import styles from './Domov.module.css'
 import wordmarkSvg from '../../assets/images/volne-kridla.svg'
-import heroImgSrc from '../../assets/images/IMG_0199-3.webp'
-import aboutImgSrc from '../../assets/images/o-volnych-kridlach-trening.webp'
-import frankaVideoSrc from '../../assets/images/IMG_6530.mov'
+import heroImg1 from '../../assets/images/IMG_0199-3.webp'
+import heroImg2 from '../../assets/images/IMG_0199-8.webp'
+import heroImg3 from '../../assets/images/IMG_65981-1.webp'
+import heroImg4 from '../../assets/images/IMG_0199-6.webp'
+import heroImg5 from '../../assets/images/IMG_0199-7.webp'
+import aboutVideoSrc from '../../assets/images/IMG_6530.mov'
+import frankaImgSrc from '../../assets/images/o-volnych-kridlach-trening.webp'
 import tImgNatalia from '../../assets/images/Obrazok-WhatsApp-2025-10-11-o-14.51.29_1fbbf514.webp'
 import tImgAlenka from '../../assets/images/Obrazok-WhatsApp-2025-10-11-o-14.54.35_319c0d11.webp'
 import tImgMirka from '../../assets/images/unnamed.webp'
 import tImgHenrieta from '../../assets/images/IMG_0199-4-1.webp'
 import tImgExtra1 from '../../assets/images/Obrazok-WhatsApp-2025-10-12-o-18.36.58_0edb0624.webp'
 import tImgExtra2 from '../../assets/images/6796d7c0-ad9d-4134-b03c-0c46b93f56a4.webp'
+import tImgRoman from '../../assets/images/Obrazok-WhatsApp-2025-10-17-o-11.14.36_15c8d8f1.webp'
+
+const HERO_IMAGES = [heroImg1, heroImg2, heroImg3, heroImg4, heroImg5]
 
 const MARQUEE_ROW1 = [
   'Konzultácia výživy', 'Voľné lietanie', 'Target tréning',
@@ -32,37 +39,42 @@ const MARQUEE_ROW2 = [
 const TABS = {
   letanie: {
     label: 'Voľné lietanie',
-    heading: 'Kurz voľného lietania',
-    body: 'Kurz je určený pre majiteľov papagájov, ktorí nechcú riskovať ani trénovať metódou pokus–omyl. Naučíte sa systematicky budovať spoľahlivé privolanie a pripravovať papagája na situácie, v ktorých si mu môžete dovoliť slobodu.\n\nLetanie vonku je oveľa odlišné od lietania v interiéri (vietor, rozptyľovanie, dravce, preťaženie podnetmi atď.). A preto je veľmi dôležitý správne vedený tréning.',
-    items: [
-      { title: 'Malé kroky dokážu viac', desc: 'Nemôžme papagája ihneď vypustiť lietať, potrebuje si zvyknúť na nové prostredie, povely a traky' },
-      { title: 'Trpezlivosť je kľúč k úspechu', desc: 'Prejdeme si postupne náročnosti tréningov, ako vyčítať kedy je papagáj pripravený na ďalší tréning' },
-      { title: 'Bezpečnosť nadovšetko', desc: 'Naučím ťa kedy a za akých podmienok trénovať ale aj na čo si dávať pri tréningu a lietaní pozor' },
-    ],
-  },
-  trening: {
-    label: 'Tréning',
     heading: 'Prečo učiť papagája lietať?',
     body: 'Hoci sú papagáje na let stvorené, nevedia ho prirodzene len tak robiť a robiť ho dobre v každom veku. Musia sa to naučiť a správne zvládnuť zručnosti.\n\nLetanie vonku je oveľa odlišné od lietania v interiéri (vietor, rozptyľovanie, dravce, preťaženie podnetmi atď.). A preto je veľmi dôležitý správne vedený tréning.',
     items: [
-      { title: 'Malé kroky dokážu viac', desc: 'Nemôžme papagája ihneď vypustiť lietať, potrebuje si zvyknúť na nové prostredie, povely a traky' },
-      { title: 'Trpezlivosť je kľúč k úspechu', desc: 'Prejdeme si postupne náročnosti tréningov, ako vyčítať kedy je papagáj pripravený na ďalší tréning' },
-      { title: 'Bezpečnosť nadovšetko', desc: 'Naučím ťa kedy a za akých podmienok trénovať ale aj na čo si dávať pri tréningu a lietaní pozor' },
+      { title: 'Začni malými krokmi', desc: 'Najskôr si potrebuje zvyknúť na nové prostredie, traky a základné povely' },
+      { title: 'Maj trpezlivosť', desc: 'Postupne zvyšujte náročnosť a vzdialenosť' },
+      { title: 'Bezpečie a pokoj', desc: 'Tréning by sa mal vykonávať v tichej a bezpečnej oblasti (ideálne pole, ihrisko) bez rušenia.' },
     ],
+    btnLabel: 'Viac o voľnom lete',
+    btnHref: '/volne-kridla',
+  },
+  trening: {
+    label: 'Tréning',
+    heading: 'Nejde len o to aby „poslúchal"',
+    body: 'Je to spôsob, ako spolu komunikovať, tráviť čas a posilniť puto medzi človekom a papagájom. Naučiť papagája priletieť na povel, otočiť sa, kývnuť alebo mávnuť krídlom je nielen zábavné, ale aj veľmi prospešné pre jeho psychickú pohodu.\n\nPapagáje sú inteligentné tvory, ktoré potrebujú mentálnu stimuláciu a práve tréning im dáva zmysel, aktivitu a pocit úspechu.',
+    items: [
+      { title: 'Pozorovanie a pochopenie', desc: 'Sledujeme tempo papagája, pozorujeme jeho reč tela a na základe nej papagája počúvame a nenutíme ho do tréningu' },
+      { title: 'Budovanie dôvery', desc: 'Pomocou jemných krokov a pozitívneho prístupu vytvárame bezpečný priestor, v ktorom sa papagáj učí spolupracovať.' },
+      { title: 'Tréning cez hru a motiváciu', desc: 'Každé učenie je založené na odmeňovaní, hre a radosti. Tak sa papagáj učí s chuťou a bez stresu.' },
+    ],
+    btnLabel: 'Viac o tréningu',
+    btnHref: '/volne-kridla#target',
   },
 }
 
 const TESTIMONIALS = [
   { name: 'Natália a Arny 🦜', img: tImgNatalia, quote: 'Osloviť Franku z @volne.kridla bolo jedným z najlepších rozhodnutí, aké som mohla urobiť. Odporúčam to každému, kto chce skutočne porozumieť svojmu operencovi.' },
-  { name: 'Alenka a Noro 🦜', img: tImgAlenka, quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom. Vďaka tebe je naša spolupráca na úplne inej úrovni.' },
-  { name: 'Mirka a Lariska 🦜', img: tImgMirka, quote: 'Franka bola prvý človek, ktorý mi otvoril dvere do sveta papagájov a ich tréningu. Keď som začínala, trpezlivo mi venovala veľa svojho času, vysvetľovala mi základy a pomohla mi pochopiť, čo všetko obnáša free flight a vzťah s papagájom.' },
-  { name: 'Feri, Danka a Zeri 🦜', img: tImgExtra1, quote: 'Voľné lietanie s našou Zeri je super skúsenosť. Ukazuje, že papagáj vie dôverovať a cítiť sa slobodne ale nedá sa to urobiť zo dňa na deň.' },
+  { name: 'Alenka a Noro 🦜', img: tImgAlenka, quote: 'Ahoj Franka chcem sa ti poďakovať za spoluprácu a za veľké množstvo rád ako pracovať s naším Norom 🦜 vďaka tebe je odstavovanie od kašičky jednoduche a tvoje rady zaručene fungujú. Krásne nám to funguje aj s lietaním 🙏. Samozrejme ešte máme dlhu cestu pred sebou ale viem, že s tvojou pomocou a radami bude náš Noro patriť medzi papagáje čo si užívajú voľné krídla ❤' },
+  { name: 'Mirka a Lariska 🦜', img: tImgMirka, quote: 'Franka bola prvý človek, ktorý mi otvoril dvere do sveta papagájov a ich tréningu. Keď som začínala, trpezlivo mi venovala veľa svojho času, vysvetľovala mi základy, ako s nimi fungovať, radila mi pri prvých krokoch a pomohla mi pochopiť, čo všetko obnáša free flight a vzťah s papagájom. Bola to pre mňa dôležitá štartovacia opora a som jej za to veľmi vďačná 🥹🙏🏼, pretože práve vďaka Franke som vôbec dostala odvahu a smer, odkiaľ začať. 🩷' },
+  { name: 'Feri, Danka a Zeri 🦜', img: tImgExtra1, quote: 'Voľné lietanie s našou Zeri je super skúsenosť. Ukazuje, že papagáj vie dôverovať a cítiť sa slobodne ale nedá sa to nútiť. Všetko je o trpezlivosti, rešpekte a porozumení. Veľká vďaka Franke za skvelý prístup a tréning. ♥️ Všetko prebiehalo pokojne a radostne, a zároveň to naozaj ukazuje, aké je krásne byť v spojení s papagájom.' },
   { name: 'Henrieta a Patrik 🦜', img: tImgHenrieta, quote: 'S výcvikovým procesom v tréningovej škole Voľné krídla som veľmi spokojná. Rovnako aj s prístupom aj dosiahnutými výsledkami.' },
   { name: 'Laura a AZU 🦜', img: tImgExtra2, quote: 'S konzultáciámi som bola veľmi spokojná. Hneď po prvej konzultácii sme nastavili správny jedálniček aj tréningy a už po krátkom čase sme videli výsledky.' },
+  { name: 'Roman a Richie 🦜', img: tImgRoman, quote: 'Veľmi som bol spokojný s tréningovým procesom. Franka má skvelý prístup a vie vysvetliť všetko zrozumiteľne. Náš Richie urobil obrovský pokrok.' },
 ]
 
 export default function Domov() {
-  const [activeTab, setActiveTab] = useState('trening')
+  const [activeTab, setActiveTab] = useState('letanie')
   const tab = TABS[activeTab]
 
   return (
@@ -76,11 +88,9 @@ export default function Domov() {
       <section className={styles.hero}>
         <div className="container">
           <img src={wordmarkSvg} alt="Voľné krídla" className={styles.wordmark} />
-          {/* Float tag sits flush against the panel top */}
           <div className={styles.heroTagWrap}>
             <span className={styles.heroTag}>Nielen škola pre papagáje</span>
           </div>
-          {/* Panel br: 40px | image br: 32px (panel_br − panel_pad = 40−8 = 32) */}
           <div className={styles.heroPanel}>
             <div className={styles.heroContent}>
               <p className={styles.heroLabel}>Tréning voľného letu</p>
@@ -102,12 +112,24 @@ export default function Domov() {
               </div>
             </div>
             <div className={styles.heroImgWrap}>
-              <div
-                className={styles.heroImg}
-                style={{ backgroundImage: `url(${heroImgSrc})` }}
-                role="img"
-                aria-label="Papagáj vo voľnom lete"
-              />
+              <Swiper
+                modules={[Autoplay]}
+                autoplay={{ delay: 4000, disableOnInteraction: false }}
+                loop
+                slidesPerView={1}
+                className={styles.heroSwiper}
+              >
+                {HERO_IMAGES.map((src, i) => (
+                  <SwiperSlide key={i}>
+                    <div
+                      className={styles.heroImg}
+                      style={{ backgroundImage: `url(${src})` }}
+                      role="img"
+                      aria-label="Voľné lietanie"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           </div>
         </div>
@@ -140,7 +162,6 @@ export default function Domov() {
             </div>
           </div>
           <div className={styles.aboutWrap}>
-            {/* Tabs sit above the card, touching its top edge */}
             <div className={styles.tabs}>
               {Object.entries(TABS).map(([key, t]) => (
                 <button
@@ -153,17 +174,18 @@ export default function Domov() {
               ))}
             </div>
             <div className={styles.aboutCard}>
-              {/* Left: image + label */}
               <div className={styles.aboutLeft}>
                 <p className={styles.aboutImgLabel}>Tréning nikdy nekončí</p>
-                <div
-                className={styles.aboutImg}
-                style={{ backgroundImage: `url(${aboutImgSrc})` }}
-                role="img"
-                aria-label={tab.label}
-              />
+                <video
+                  className={styles.aboutVideo}
+                  src={aboutVideoSrc}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  aria-label="Tréning voľného letu"
+                />
               </div>
-              {/* Right: cream content panel */}
               <div className={styles.aboutRight}>
                 <h3 className={styles.aboutHeading}>{tab.heading}</h3>
                 <p className={styles.aboutBody}>{tab.body}</p>
@@ -183,12 +205,8 @@ export default function Domov() {
                     ))}
                   </div>
                 </div>
-                <a
-                  href="#kontakt"
-                  className={styles.btnCta}
-                  onClick={e => { e.preventDefault(); document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' }) }}
-                >
-                  Potrebujem pomôcť
+                <a href={tab.btnHref} className={styles.btnCta}>
+                  {tab.btnLabel}
                 </a>
               </div>
             </div>
@@ -204,14 +222,12 @@ export default function Domov() {
           </div>
           <div className={styles.frankaCard}>
             <div className={styles.frankaImgWrap}>
-              <video
-                className={styles.frankaVideo}
-                src={frankaVideoSrc}
-                autoPlay
-                muted
-                loop
-                playsInline
-                aria-label="Papagáj počas tréningu voľného letu"
+              <p className={styles.frankaImgLabel}>Tréning papagája</p>
+              <div
+                className={styles.frankaImg}
+                style={{ backgroundImage: `url(${frankaImgSrc})` }}
+                role="img"
+                aria-label="Tréning papagája"
               />
             </div>
             <div className={styles.frankaContent}>
@@ -228,7 +244,7 @@ export default function Domov() {
                 <br /><br />
                 Ak chceš, aby aj tvoj papagáj zažil skutočnú slobodu, pridaj sa k nám.
               </p>
-              <a href="/o-mne" className={styles.btnCta}>Zistiť o mne viac</a>
+              <a href="/o-mne" className={styles.btnCta}>Zisti o mne viac</a>
             </div>
           </div>
         </div>
@@ -242,7 +258,7 @@ export default function Domov() {
             <h2 className={styles.igTitle}>Sleduj každý náš let zblízka!</h2>
             <p className={styles.igSub}>
               Na Instagrame ťa čakajú zákulisné momenty, tréningy aj tie najkrajšie zábery z
-              voľného letu!
+              voľného lietania.
             </p>
             <a
               href="https://www.instagram.com/volne.kridla"
@@ -250,7 +266,7 @@ export default function Domov() {
               rel="noopener noreferrer"
               className={styles.btnIg}
             >
-              Nahliadni do nášho sveta
+              Začni sledovať
             </a>
           </div>
         </div>
@@ -260,9 +276,9 @@ export default function Domov() {
       <section className={styles.testimonials}>
         <div className="container">
           <div className={styles.tHeader}>
-            <h2 className={styles.secTitle}>Vidíš ich? Tí už spravili prvý krok</h2>
+            <h2 className={styles.secTitle}>Vidíš ich? Tí už spravili prvý krok.</h2>
             <div className={styles.sectionTagWrap}>
-              <span className={styles.sectionTag}>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu</span>
+              <span className={styles.sectionTag}>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</span>
             </div>
           </div>
           <Swiper

@@ -230,15 +230,23 @@
   align-items: flex-end;
 }
 
+/* Swiper carousel fills the heroImgWrap area */
+.heroSwiper {
+  width: 700px;
+  height: 556px;
+  border-radius: 32px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
 /* Image: 700px w, 556px h, fully rounded 32px */
 .heroImg {
   width: 700px;
   height: 556px;
-  border-radius: 32px;
+  border-radius: 0;
   background-color: #c8dff0;
   background-size: cover;
   background-position: center;
-  flex-shrink: 0;
 }
 
 
@@ -429,6 +437,17 @@
   flex-shrink: 0;
 }
 
+/* Video: same dimensions as aboutImg */
+.aboutVideo {
+  width: 448px;
+  height: 834px;
+  border-radius: 32px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+}
+
 /* Right cream panel: w=480, from 500px, h=907, y=30px from card top, rounded-32px */
 .aboutRight {
   position: absolute;
@@ -583,6 +602,29 @@
 .frankaImgWrap {
   flex-shrink: 0;
   padding: 23px 0 0 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.frankaImgLabel {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 600;
+  color: #2755AA;
+  line-height: 0.82;
+  margin-bottom: 17px;
+  white-space: nowrap;
+}
+
+/* Static photo in Franka card */
+.frankaImg {
+  width: 448px;
+  height: 685px;
+  border-radius: 32px;
+  background-color: #c8dff0;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
 }
 
 .frankaVideo {
