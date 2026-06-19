@@ -769,7 +769,7 @@
 .testimonials {
   padding-top: 120px;
   padding-bottom: 120px;
-  /* Sky bg shows through (no background set) */
+  overflow: hidden; /* clip peeking slides so they don't widen the page */
 }
 
 .tHeader {

@@ -93,12 +93,12 @@ export default function Domov() {
           </div>
           <div className={styles.heroPanel}>
             <div className={styles.heroContent}>
-              <p className={styles.heroLabel}>Tréning voľného letu</p>
+              <p className={styles.heroLabel}>Tréning voľných krídel</p>
               <h1 className={styles.heroTitle}>
-                Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži
+                Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
               </h1>
               <p className={styles.heroQuote}>
-                „Sloboda nieje len možnosť lietať, ale aj vedieť kam sa vrátiť."
+                „Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť."
               </p>
               <div className={styles.heroBtns}>
                 <a
@@ -237,7 +237,7 @@ export default function Domov() {
                 a mojou vášňou sú tieto inteligentné operené tvory, venujem sa ich výchove no najmä
                 tréningu voľného letu.
                 <br /><br />
-                Môj príbeh začal s prvým papagájom žakom, ktorého som vychovávala od mláďaťa. Cez
+                Môj príbeh začal s prvým papagájom žakom, ktorého som vychovávala od mláďaťa, Cez
                 jeho výchovu som pochopila, aká dôležitá je správna komunikácia a pochopenie
                 prirodzených inštiktov papagájov. Postupne sa moja vášeň rozrástla na prácu s
                 ďalšími operenými letcami od koreliek až po veľké ary.
