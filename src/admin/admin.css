@@ -184,6 +184,103 @@
   color: var(--admin-text);
 }
 
+.admin-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-btn {
+  background: var(--admin-accent);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-btn:has(input:disabled) {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.admin-gallery {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+.admin-gallery li {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-gallery li.is-hidden {
+  opacity: 0.55;
+}
+
+.admin-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #000;
+  display: block;
+}
+
+.admin-gallery-body {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-gallery-body input {
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  color: var(--admin-text);
+  font-size: 0.8rem;
+}
+
+.admin-gallery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.admin-gallery-actions button {
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.admin-gallery-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.admin-gallery-actions .is-danger {
+  border-color: color-mix(in srgb, var(--admin-danger) 50%, transparent);
+  color: var(--admin-danger);
+}
+
 @media (max-width: 720px) {
   .admin-shell {
     grid-template-columns: 1fr;
