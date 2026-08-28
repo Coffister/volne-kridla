@@ -10,11 +10,25 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { mkdir, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, "../src/content/site.generated.json");
+
+// Local dev convenience: pick up .env.local / .env if present. On Vercel these
+// files don't exist and the real environment is used instead.
+for (const name of [".env.local", ".env"]) {
+  const p = resolve(__dirname, "..", name);
+  if (existsSync(p)) {
+    try {
+      process.loadEnvFile(p);
+    } catch {
+      /* ignore malformed env file */
+    }
+  }
+}
 
 const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
