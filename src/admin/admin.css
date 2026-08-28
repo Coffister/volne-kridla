@@ -403,7 +403,7 @@ textarea {
 /* ----------------------------------------------------------------- pages -- */
 
 .admin-page {
-  max-width: 62rem;
+  max-width: 68rem;
 }
 
 .admin-page h2 {
@@ -553,16 +553,17 @@ textarea {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 1.15rem;
 }
 
 .admin-review-list li {
   display: grid;
-  grid-template-columns: 8rem 1fr;
-  gap: 1.15rem;
-  padding: 1.15rem;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 1rem;
+  padding: 1.1rem;
   background: var(--paper-2);
   border: 2px solid var(--line);
   border-radius: var(--r-lg);
@@ -575,8 +576,8 @@ textarea {
 
 .admin-review-list img,
 .admin-review-noimg {
-  width: 8rem;
-  height: 8rem;
+  width: 6.5rem;
+  height: 6.5rem;
   object-fit: cover;
   background: var(--sky);
   border: 2px solid var(--line);
@@ -599,6 +600,12 @@ textarea {
 }
 
 /* --------------------------------------------------------------- responsive */
+
+@media (max-width: 1100px) {
+  .admin-review-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 
 @media (max-width: 780px) {
   .admin-shell {
