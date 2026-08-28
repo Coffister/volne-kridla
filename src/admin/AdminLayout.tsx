@@ -14,7 +14,8 @@ export default function AdminLayout() {
             Prehľad
           </NavLink>
           <NavLink to="/admin/fotogaleria">Fotogaléria</NavLink>
-          <NavLink to="/admin/texty">Texty sekcií</NavLink>
+          <NavLink to="/admin/recenzie">Recenzie</NavLink>
+          <NavLink to="/admin/verzie">Verzie</NavLink>
         </nav>
         <div className="admin-user">
           <span>{session?.user.email}</span>

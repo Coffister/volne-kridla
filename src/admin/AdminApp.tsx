@@ -7,7 +7,8 @@ import AdminLayout from "./AdminLayout";
 import LoginPage from "./routes/LoginPage";
 import OverviewPage from "./routes/OverviewPage";
 import GalleryPage from "./routes/GalleryPage";
-import TextsPage from "./routes/TextsPage";
+import ReviewsPage from "./routes/ReviewsPage";
+import VersionsPage from "./routes/VersionsPage";
 
 import "./admin.css";
 
@@ -41,7 +42,8 @@ export default function AdminApp() {
         >
           <Route index element={<OverviewPage />} />
           <Route path="fotogaleria" element={<GalleryPage />} />
-          <Route path="texty" element={<TextsPage />} />
+          <Route path="recenzie" element={<ReviewsPage />} />
+          <Route path="verzie" element={<VersionsPage />} />
         </Route>
       </Routes>
     </AuthProvider>
