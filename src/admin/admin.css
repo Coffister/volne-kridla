@@ -1,0 +1,199 @@
+/* Self-contained admin styling — deliberately independent of the marketing
+   site's tokens, effects and fonts. */
+
+.admin-shell,
+.admin-login,
+.admin-splash {
+  --admin-bg: #0f1115;
+  --admin-panel: #171a21;
+  --admin-border: #262b36;
+  --admin-text: #e7e9ee;
+  --admin-muted: #9aa3b2;
+  --admin-accent: #4f8cff;
+  --admin-danger: #ff6b6b;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  color: var(--admin-text);
+  background: var(--admin-bg);
+}
+
+.admin-splash,
+.admin-login {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.admin-card {
+  width: min(28rem, 100%);
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-card h1 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.admin-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--admin-muted);
+}
+
+.admin-card input {
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  color: var(--admin-text);
+  font-size: 0.95rem;
+}
+
+.admin-card input:focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 1px;
+}
+
+.admin-card button,
+.admin-user button {
+  background: var(--admin-accent);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-card button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.admin-error {
+  color: var(--admin-danger);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ---- authenticated shell ---- */
+.admin-shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+}
+
+.admin-sidebar {
+  border-right: 1px solid var(--admin-border);
+  background: var(--admin-panel);
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin-brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-sidebar nav a {
+  color: var(--admin-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.admin-sidebar nav a:hover {
+  color: var(--admin-text);
+  background: #1e222b;
+}
+
+.admin-sidebar nav a.active {
+  color: var(--admin-text);
+  background: #232838;
+}
+
+.admin-user {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--admin-muted);
+}
+
+.admin-user button {
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}
+
+.admin-main {
+  padding: 2rem;
+  overflow: auto;
+}
+
+.admin-page h2 {
+  margin: 0 0 0.5rem;
+}
+
+.admin-muted {
+  color: var(--admin-muted);
+  font-size: 0.9rem;
+}
+
+.admin-stats {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-stats li {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--admin-muted);
+}
+
+.admin-stats strong {
+  display: block;
+  font-size: 1.5rem;
+  color: var(--admin-text);
+}
+
+@media (max-width: 720px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+  .admin-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .admin-user {
+    margin: 0;
+  }
+}
