@@ -3,9 +3,21 @@ import { Container, Stack, Text, Section } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 
 import ReviewCard from "@/sections/testimonials/ReviewCard";
-import { testimonials } from "./testimonial-map";
+import { testimonials as fallbackTestimonials } from "./testimonial-map";
+import { site } from "@/content";
 
 import styles from "./testimonials.module.css";
+
+// Prefer reviews managed in the admin (baked in at build time); fall back to
+// the hardcoded list until the reviews table has content.
+const testimonials = site.reviews.length
+  ? site.reviews.map((r) => ({
+      id: r.id,
+      clientName: r.author,
+      text: r.body,
+      image: r.image,
+    }))
+  : fallbackTestimonials;
 
 // repeated 3x so the track can silently jump between identical sets and loop forever
 const loopedTestimonials = [...testimonials, ...testimonials, ...testimonials];

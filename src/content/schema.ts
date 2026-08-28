@@ -17,6 +17,14 @@ export interface CarouselSlide {
   alt: string;
 }
 
+export interface Review {
+  id: string;
+  author: string;
+  body: string;
+  /** resolved image URL (media bucket or external); "" if none */
+  image: string;
+}
+
 /**
  * Editable rich text / plain text blocks, addressed by a stable dotted key,
  * e.g. "home.hero.title". Kept as a flat map so new editable spots don't need
@@ -30,6 +38,7 @@ export interface SiteContent {
   blocks: ContentBlocks;
   gallery: GalleryImage[];
   heroCarousel: CarouselSlide[];
+  reviews: Review[];
 }
 
 export const EMPTY_SITE: SiteContent = {
@@ -37,4 +46,5 @@ export const EMPTY_SITE: SiteContent = {
   blocks: {},
   gallery: [],
   heroCarousel: [],
+  reviews: [],
 };

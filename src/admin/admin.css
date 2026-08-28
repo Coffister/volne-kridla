@@ -281,8 +281,111 @@
   color: var(--admin-danger);
 }
 
+.admin-btn-sm {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+.admin-review-form {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  max-width: 40rem;
+}
+
+.admin-review-form h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.admin-review-form input,
+.admin-review-form textarea,
+.admin-review-body input,
+.admin-review-body textarea {
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 0.85rem;
+  width: 100%;
+  resize: vertical;
+}
+
+.admin-review-image-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.admin-review-image-inputs input[type="url"] {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.admin-review-form .admin-btn {
+  align-self: flex-start;
+}
+
+.admin-review-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-review-list li {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+}
+
+.admin-review-list li.is-hidden {
+  opacity: 0.55;
+}
+
+.admin-review-list img,
+.admin-review-noimg {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #000;
+}
+
+.admin-review-noimg {
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  color: var(--admin-muted);
+  border: 1px dashed var(--admin-border);
+}
+
+.admin-review-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 @media (max-width: 720px) {
   .admin-shell {
+    grid-template-columns: 1fr;
+  }
+  .admin-review-list li {
     grid-template-columns: 1fr;
   }
   .admin-sidebar {

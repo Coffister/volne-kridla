@@ -50,7 +50,7 @@ function publicUrl(path) {
 }
 
 try {
-  const [contentRes, galleryRes] = await Promise.all([
+  const [contentRes, galleryRes, reviewsRes] = await Promise.all([
     supabase.from("site_content").select("data").eq("id", 1).single(),
     supabase
       .from("gallery_images")
@@ -58,10 +58,18 @@ try {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
+    supabase
+      .from("reviews")
+      .select("id, author, body, image_path, image_url, sort_order, published")
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
   ]);
 
   if (contentRes.error) throw contentRes.error;
   if (galleryRes.error) throw galleryRes.error;
+  // reviews table may not exist yet on a fresh project — treat as empty
+  const reviewRows = reviewsRes.error ? [] : (reviewsRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
   const gallery = (galleryRes.data ?? []).map((row) => ({
@@ -82,11 +90,21 @@ try {
         .map((g) => ({ id: g.id, src: g.src, alt: g.alt }))
     : [];
 
+  const reviews = reviewRows.map((row) => ({
+    id: row.id,
+    author: row.author ?? "",
+    body: row.body ?? "",
+    image: row.image_path
+      ? publicUrl(row.image_path)
+      : (row.image_url ?? ""),
+  }));
+
   const out = {
     publishedAt: new Date().toISOString(),
     blocks: data.blocks ?? {},
     gallery,
     heroCarousel,
+    reviews,
   };
 
   await mkdir(dirname(OUT), { recursive: true });
@@ -94,7 +112,7 @@ try {
 
   console.log(
     `[fetch-content] wrote ${OUT} — ${gallery.length} images, ` +
-      `${Object.keys(out.blocks).length} text blocks.`,
+      `${reviews.length} reviews, ${Object.keys(out.blocks).length} text blocks.`,
   );
 } catch (err) {
   console.error("[fetch-content] failed:", err.message || err);

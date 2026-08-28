@@ -15,6 +15,9 @@ export default function OverviewPage() {
           <strong>{site.gallery.length}</strong> fotiek v galérii
         </li>
         <li>
+          <strong>{site.reviews.length}</strong> recenzií
+        </li>
+        <li>
           <strong>{Object.keys(site.blocks).length}</strong> textových blokov
         </li>
       </ul>
