@@ -60,7 +60,7 @@ export default function LoginPage() {
 
         {error && <p className="admin-error">{error}</p>}
 
-        <button type="submit" disabled={busy}>
+        <button type="submit" className="admin-btn" disabled={busy}>
           {busy ? "Prihlasujem…" : "Prihlásiť sa"}
         </button>
       </form>

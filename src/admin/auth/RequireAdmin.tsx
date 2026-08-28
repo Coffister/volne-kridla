@@ -9,7 +9,13 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   if (loading) {
-    return <div className="admin-splash">Načítavam…</div>;
+    return (
+      <div className="admin-splash">
+        <div className="admin-card">
+          <p>Načítavam…</p>
+        </div>
+      </div>
+    );
   }
 
   if (!session) {
@@ -19,7 +25,10 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
   if (!isAdmin) {
     return (
       <div className="admin-splash">
-        <p>Tento účet nemá oprávnenie na správu obsahu.</p>
+        <div className="admin-card">
+          <h1>Nemáš oprávnenie</h1>
+          <p>Tento účet nie je vedený ako správca obsahu.</p>
+        </div>
       </div>
     );
   }
