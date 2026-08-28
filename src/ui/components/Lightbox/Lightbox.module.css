@@ -1,0 +1,202 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: clamp(16px, 4vw, 64px);
+
+    /* translucency derived from the theme's dark token — no free colors */
+    background: color-mix(in srgb, var(--color-border-primary) 88%, transparent);
+    backdrop-filter: blur(6px);
+
+    animation: overlay-in 200ms ease-out both;
+}
+
+.overlay.closing {
+    animation: overlay-out 200ms ease-in both;
+}
+
+@keyframes overlay-in {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+}
+
+@keyframes overlay-out {
+    to {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+}
+
+.figure {
+    margin: 0;
+    max-width: 100%;
+    max-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    animation: figure-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.closing .figure {
+    animation: figure-out 200ms ease-in both;
+}
+
+@keyframes figure-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(12px);
+    }
+}
+
+@keyframes figure-out {
+    to {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay,
+    .overlay.closing,
+    .figure,
+    .closing .figure {
+        animation-duration: 1ms;
+    }
+}
+
+.image {
+    max-width: 100%;
+    max-height: 82vh;
+
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+
+    box-shadow: 0 24px 80px color-mix(in srgb, var(--color-border-primary) 45%, transparent);
+}
+
+.control {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+    padding: 0;
+
+    color: var(--color-text-secondary);
+    background: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
+    border: none;
+    border-radius: 999px;
+
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+    transition: background 140ms ease;
+}
+
+.control:hover {
+    background: color-mix(in srgb, var(--color-text-inverse) 26%, transparent);
+}
+
+.control:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}
+
+.close {
+    top: clamp(12px, 3vw, 28px);
+    right: clamp(12px, 3vw, 28px);
+}
+
+.prev {
+    left: clamp(8px, 2vw, 24px);
+}
+
+.next {
+    right: clamp(8px, 2vw, 24px);
+}
+
+.counter {
+    position: absolute;
+    bottom: clamp(12px, 3vw, 28px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-label);
+    letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+    /* reserve a strip at the bottom so the centered image never sits under
+       the relocated arrows / counter */
+    .overlay {
+        padding-bottom: 104px;
+    }
+
+    .image {
+        max-height: 74vh;
+    }
+
+    .prev,
+    .next {
+        bottom: clamp(12px, 3vw, 28px);
+        top: auto;
+    }
+
+    .prev {
+        left: calc(50% - 60px);
+    }
+
+    .next {
+        right: calc(50% - 60px);
+    }
+
+    .counter {
+        bottom: 76px;
+    }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    /* very little vertical room in landscape — keep the arrows on the sides */
+    .overlay {
+        padding-bottom: clamp(16px, 4vw, 64px);
+    }
+
+    .image {
+        max-height: 88vh;
+    }
+
+    .prev,
+    .next {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+    }
+
+    .prev {
+        left: clamp(8px, 2vw, 24px);
+    }
+
+    .next {
+        right: clamp(8px, 2vw, 24px);
+    }
+
+    .counter {
+        bottom: clamp(8px, 2vw, 16px);
+    }
+}

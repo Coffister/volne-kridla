@@ -1,0 +1,14 @@
+.section {
+    padding-top: clamp(140px, 16vw, 240px);
+    padding-bottom: var(--spacing-3xl);
+    text-align: center;
+}
+
+.title {
+    color: var(--color-text-secondary);
+}
+
+.text {
+    max-width: 48ch;
+    color: var(--color-text-primary);
+}

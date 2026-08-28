@@ -1,0 +1,45 @@
+.section {
+    /* drop the primitive's min-height: 100dvh so the section hugs its
+       content and doesn't add empty space before the next section */
+    min-height: auto;
+    padding-top: clamp(120px, 14vw, 220px);
+    padding-bottom: 0;
+}
+
+.stack {
+    width: 100%;
+}
+
+.carouselWrapper {
+    background: var(--color-surface-primary);
+    padding: 8px;
+}
+
+/* lock the carousel to the aspect ratio of the "flattest" photo in the set
+   (1920×1098) so every slide is cover-cropped to the same box — the taller
+   4:3 photos no longer stretch the frame and leave white below the shorter ones */
+.carousel {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1920 / 1098;
+}
+
+/* on narrow screens the 16:9 box gets very short — give it a floor.
+   object-fit: cover only crops, so this never reintroduces white gaps */
+@media (max-width: 640px) {
+    .carousel {
+        min-height: 260px;
+    }
+}
+
+.textCard {
+    background: var(--color-surface-primary);
+    padding: var(--spacing-2xl);
+    text-align: center;
+}
+
+.text {
+    color: var(--color-text-primary);
+    white-space: pre-line;
+}

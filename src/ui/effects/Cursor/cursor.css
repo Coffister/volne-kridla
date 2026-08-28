@@ -1,0 +1,6 @@
+/* When the custom cursor is active (fine pointer only) hide every native
+   cursor so the drawn one is the single source of truth. */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}

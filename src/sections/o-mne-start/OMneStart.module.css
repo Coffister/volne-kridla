@@ -1,0 +1,86 @@
+.section {
+    /* the Section primitive forces min-height: 100dvh + center alignment,
+       which leaves large empty gaps around short content — collapse it so
+       the section is exactly as tall as the card + heading */
+    min-height: auto;
+    padding-block: var(--spacing-2xl);
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.card {
+    display: flex;
+    gap: 16px;
+
+    background: var(--color-surface-primary);
+    padding: 16px;
+}
+
+.mediaPanel {
+    flex: 1 1 50%;
+    min-height: 420px;
+
+    /* flex box so the image can stretch to the panel's full height on desktop,
+       where the panel is stretched to match the text column */
+    display: flex;
+}
+
+.mediaImage {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    object-position: center;
+}
+
+.infoPanel {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: var(--spacing-lg);
+}
+
+.infoTitle {
+    color: var(--color-text-secondary);
+    -webkit-text-fill-color: var(--color-text-secondary);
+    /* stroke tracks the fluid heading size so it doesn't swallow the text on phones */
+    -webkit-text-stroke: clamp(6px, 2vw, 12px) var(--color-border-primary);
+    paint-order: stroke fill;
+}
+
+.infoText {
+    color: var(--color-accent-secondary);
+    white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+
+    .mediaPanel,
+    .infoPanel {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .mediaPanel {
+        /* stacked layout: let the panel hug the photo at its natural aspect
+           ratio so nothing is cropped and no cream gap appears below it */
+        height: auto;
+        min-height: 0;
+        display: block;
+    }
+
+    .mediaImage {
+        height: auto;
+    }
+
+    .infoPanel {
+        padding: var(--spacing-md);
+    }
+}

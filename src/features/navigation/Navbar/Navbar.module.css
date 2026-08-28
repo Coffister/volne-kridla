@@ -1,0 +1,306 @@
+.navbar {
+  position: fixed;
+
+  top: 48px;
+  left: 50%;
+
+  transform: translate(-50%, 0);
+  transition: transform 320ms
+    linear(
+      0,
+      0.013 1%,
+      0.051 2.2%,
+      0.404 9.8%,
+      0.51 12.6%,
+      0.602 15.5%,
+      0.683 18.7%,
+      0.754 22.2%,
+      0.813 26%,
+      0.861 30.2%,
+      0.9 34.8%,
+      0.931 40%,
+      0.972 52.7%,
+      0.992 70.2%,
+      1
+    );
+  will-change: transform;
+
+  width: 50%;
+
+  z-index: var(--z-navbar);
+  overflow: visible;
+
+  
+}
+
+.surface {
+  background: var(--color-surface-primary);
+  border-radius: 40px;
+
+  /* Layered shadow, per Josh Comeau's "Designing Beautiful Shadows in CSS":
+     - one shared light source: above + slightly left, so every layer offsets
+       down-right with y = 2x
+     - each layer roughly doubles the previous offset/blur (spread stays 0)
+     - dark, near-neutral tint (--color-border-primary) at low alpha so it
+       reads as a shadow, not a glow
+     - one --shadow-tint so the colour stays a single source of truth */
+  --shadow-tint: color-mix(in srgb, var(--color-border-primary) 10%, transparent);
+  box-shadow:
+    0.5px 1px 1px var(--shadow-tint),
+    1px 2px 2px var(--shadow-tint),
+    2px 4px 4px var(--shadow-tint),
+    4px 8px 8px var(--shadow-tint),
+    8px 16px 16px var(--shadow-tint);
+
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.surfaceOpen {
+  border-radius: 32px;
+}
+
+.inner {
+  padding: 8px 8px 8px 32px;
+}
+
+.logoSlot {
+  /* reserves horizontal space in the flex row so siblings don't shift, without affecting row height */
+  position: relative;
+  width: 80px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.list a {
+  padding: 8px 12px;
+
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-semibold);
+
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: transform;
+  transition-property: transform;
+}
+
+.list a:hover {
+  -webkit-transform: scale(1.05);
+  transform: scale(1.05);
+  color: var(--color-accent-primary);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dropdownTrigger svg {
+  transition: transform 0.2s ease;
+}
+
+.dropdown:hover .dropdownTrigger svg,
+.dropdown:focus-within .dropdownTrigger svg {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+
+  min-width: 200px;
+  padding: 12px;
+
+  background: var(--color-surface-primary);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  z-index: 2;
+}
+
+.dropdownMenu a {
+    border-radius: 20px;
+    padding: 8px 16px;
+}
+
+.dropdownMenu a:hover {
+    background: var(--color-surface-secondary);
+    color: var(--color-accent-primary);
+}
+
+.dropdown:hover .dropdownMenu,
+.dropdown:focus-within .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.menuToggle {
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobileMenuWrap {
+  display: none;
+}
+
+/* tablet — still the full link row, just give it more breathing room than a
+   flat 50% affords once the viewport itself gets narrower. Raised well above
+   1280px because .navbar's 50% width already wraps link labels there. */
+@media (max-width: 1440px) {
+  .navbar {
+    width: min(92%, 860px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .list {
+    gap: 2px;
+  }
+
+  .list a {
+    padding: 8px 8px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 860px) {
+  .navbar {
+    top: 24px;
+    width: calc(100% - 32px);
+  }
+
+  .list {
+    display: none !important;
+  }
+
+  .cta {
+    display: none;
+  }
+
+  .menuToggle {
+    display: inline-flex;
+  }
+
+  .mobileMenuWrap {
+    display: block;
+    margin: 0 8px 8px;
+    transform-origin: top center;
+  }
+
+  .mobileMenu {
+    box-sizing: border-box;
+    padding: 16px;
+    background: var(--color-surface-primary);
+  }
+
+  .mobileMenuIn {
+    animation: mobileMenuIn 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .mobileMenuOut {
+    animation: mobileMenuOut 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  @keyframes mobileMenuIn {
+    from {
+      opacity: 0;
+      transform: scale(0.94) translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes mobileMenuOut {
+    from {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.94) translateY(-8px);
+    }
+  }
+
+  .mobileMenu a {
+    padding: 8px 4px;
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .mobileSubTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    padding: 8px 4px;
+
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-semibold);
+    font-size: inherit;
+    color: inherit;
+  }
+
+  .mobileSubTrigger svg {
+    transition: transform 0.2s ease;
+  }
+
+  .chevronOpen svg {
+    transform: rotate(180deg);
+  }
+
+  .mobileSubList {
+    margin-top: 4px;
+    margin-left: 16px;
+    padding-top: 4px;
+  }
+
+  .mobileSubList a {
+    font-weight: var(--font-weight-medium);
+    padding: 6px 4px;
+  }
+}
+

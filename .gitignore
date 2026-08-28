@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+dist-ssr/
+*.local
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# build-time generated content (pulled from Supabase)
+src/content/site.generated.json
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# claude local overrides
+.claude/settings.local.json
+
+# vercel
+.vercel

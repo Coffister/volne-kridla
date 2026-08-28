@@ -1,0 +1,32 @@
+.badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        var(--spacing-xs)
+        var(--spacing-md);
+
+    background: var(--color-surface-primary);
+
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.badgewrapper {
+    border-radius: 24px;
+    rotate: var(--badge-rotate, 2deg);
+    margin-top: -20px;
+    margin-bottom: -60px;
+    z-index: 2;
+    overflow: auto;
+    border: solid 6px var(--color-border-primary);
+    box-shadow: 0px 8px 0px 0px var(--color-border-primary);
+     transition:
+    rotate 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.badgewrapper:hover {
+    rotate: -1deg;
+}

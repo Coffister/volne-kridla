@@ -1,0 +1,159 @@
+.section {
+  padding: 32px 0 96px;
+  background: transparent;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sectionheader {
+  margin-bottom: 62px;
+  gap: 8px;
+  text-align: center;
+}
+
+.title {
+  color: var(--color-text-secondary) !important;
+  letter-spacing: 0;
+  line-height: var(--line-height-snug);
+}
+
+.track {
+    display: flex;
+    gap: 24px;
+
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    padding: 20px clamp(16px, 4vw, 32px);
+    cursor: grab;
+    user-select: none;
+}
+
+.track::-webkit-scrollbar {
+    display: none;
+}
+
+.track:active {
+    cursor: grabbing;
+}
+
+.cardWrap {
+    flex: 0 0 auto;
+    rotate: var(--card-rotate, 0deg);
+}
+
+.reviewCard {
+    padding: 24px;
+    background: var(--color-surface-primary);
+
+    gap: 8px;
+    white-space: pre-wrap;
+    width: 50vw;
+    height: 520px;
+    outline:#333;
+    outline-width: 4px;
+    outline-style: solid;
+    outline-offset: -4px;
+    border-radius: 48px;
+}
+
+.mediaPanel {
+    width: 50%;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.mediaImage {
+    object-position: top;
+}
+
+.contentPanel {
+    width: 50%;
+    background: var(--color-surface-primary);
+
+    padding: var(--spacing-xl);
+
+    display: flex;
+    align-items: space-between;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.inner {
+        display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 100%;
+    overflow: hidden;
+}
+
+.innerBody {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 12;
+    text-overflow: ellipsis;
+}
+
+.inner p, .inner h2 {
+    color: var(--color-accent-secondary) !important;
+}
+
+.inner h2 {
+    font-weight: bold !important;
+}
+
+.badge {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+    .reviewCard {
+        flex-direction: column !important;
+        width: min(82vw, 380px);
+        /* let the card hug its content — the track's align-items: stretch
+           still keeps every card the same (tallest) height, so no fixed
+           720px block of empty cream below the text */
+        height: auto;
+    }
+
+    .mediaPanel,
+    .contentPanel {
+        width: 100%;
+    }
+
+    .mediaPanel {
+        order: -1;
+        aspect-ratio: 4 / 3;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    .contentPanel {
+        flex: 1;
+        min-height: 0;
+        padding: var(--spacing-md);
+    }
+
+    .inner {
+        /* stack quote + name from the top instead of pushing them apart */
+        justify-content: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .innerBody {
+        -webkit-line-clamp: 10;
+    }
+}

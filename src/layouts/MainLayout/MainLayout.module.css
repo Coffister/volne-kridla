@@ -1,0 +1,27 @@
+.layout {
+    position: relative;
+    min-height: 100vh;
+
+    background: var(--color-background-primary);
+
+    color: var(--color-text-primary);
+
+    overflow: hidden;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: auto;
+
+    z-index: var(--z-base);
+    pointer-events: none;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+}

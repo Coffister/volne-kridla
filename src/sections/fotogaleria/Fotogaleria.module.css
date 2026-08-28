@@ -1,0 +1,76 @@
+.section {
+    min-height: auto;
+    padding-top: clamp(120px, 14vw, 220px);
+    padding-bottom: var(--spacing-3xl);
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Text primitive applies its variant font-size as an inline style, so the
+   override needs !important. clamp() scales the display heading fluidly from
+   phones (~40px) up to --font-size-big (80px) on desktop, with the outline
+   thickness tracking the size so it never swallows small text. */
+.title {
+    font-size: clamp(2.5rem, 10vw, var(--font-size-big)) !important;
+    color: var(--color-text-secondary);
+    -webkit-text-fill-color: var(--color-text-secondary);
+    -webkit-text-stroke: clamp(6px, 1.6vw, 12px) var(--color-border-primary);
+    paint-order: stroke fill;
+}
+
+/* CSS multi-column masonry — cheap, no layout JS, reflows on resize */
+.grid {
+    column-count: 3;
+    column-gap: 16px;
+}
+
+.item {
+    display: block;
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 0;
+
+    border: none;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+
+    background: var(--color-surface-primary);
+    cursor: zoom-in;
+
+    /* keep each photo whole within one column */
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px color-mix(in srgb, var(--color-border-primary) 22%, transparent);
+}
+
+.item:focus-visible {
+    outline: 3px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}
+
+.image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 560px) {
+    .grid {
+        column-count: 1;
+    }
+}

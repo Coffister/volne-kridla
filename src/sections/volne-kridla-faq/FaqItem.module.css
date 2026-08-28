@@ -1,0 +1,91 @@
+.item {
+    padding: 24px;
+
+    background: var(--color-surface-primary);
+
+    color: var(--color-text-primary);
+
+    cursor: pointer;
+}
+
+.header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: var(--spacing-md);
+}
+
+.header h3 {
+    color: var(--color-text-primary);
+    padding-left: 16px;
+}
+
+.icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: var(--color-text-primary);
+
+    transition: transform 0.2s ease;
+}
+
+.iconOpen {
+    transform: rotate(45deg);
+}
+
+.answerWrap {
+    height: 0;
+    overflow: hidden;
+
+    transition: height 340ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.answerInner {
+    /* contains the answer's margin-top so measured offsetHeight is accurate */
+    overflow: hidden;
+
+    transform: scaleY(0.82);
+    transform-origin: top;
+    opacity: 0;
+
+    transition:
+        transform 340ms cubic-bezier(0.34, 1.4, 0.64, 1),
+        opacity 200ms ease;
+}
+
+.answerWrapOpen .answerInner {
+    transform: scaleY(1);
+    opacity: 1;
+}
+
+.answer {
+    margin-top: 16px;
+
+    padding: var(--spacing-md);
+
+    background: var(--color-surface-secondary);
+
+    border-radius: var(--radius-xs);
+}
+
+.answerText {
+    white-space: pre-line;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .answerWrap,
+    .answerInner,
+    .icon {
+        transition: none;
+    }
+
+    .answerInner {
+        transform: none;
+    }
+}

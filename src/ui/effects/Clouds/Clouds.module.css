@@ -1,0 +1,83 @@
+.sky {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-base);
+
+    overflow: hidden;
+    background: var(--color-background-primary);
+}
+
+.layer {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+
+    animation: drift linear infinite;
+}
+
+.trackReverse {
+    animation-direction: reverse;
+}
+
+.cloud {
+    flex-shrink: 0;
+    display: block;
+}
+
+@keyframes drift {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.layerBack {
+    top: 6%;
+    opacity: 0.5;
+}
+
+.layerBack .track {
+    gap: 140px;
+    animation-duration: 80s;
+}
+
+.layerBack .cloud {
+    width: 130px;
+}
+
+.layerMid {
+    top: 28%;
+    opacity: 0.7;
+}
+
+.layerMid .track {
+    gap: 120px;
+    animation-duration: 55s;
+}
+
+.layerMid .cloud {
+    width: 180px;
+}
+
+.layerFront {
+    top: 55%;
+    opacity: 0.9;
+}
+
+.layerFront .track {
+    gap: 100px;
+    animation-duration: 35s;
+}
+
+.layerFront .cloud {
+    width: 250px;
+}

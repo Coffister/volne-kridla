@@ -1,0 +1,62 @@
+.follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-tooltip);
+  pointer-events: none;
+  will-change: transform;
+  /* hidden until the pointer first moves, and while it is off-window */
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.visible {
+  opacity: 1;
+}
+
+/* one stacked layer per state — carries the hotspot offset + scale */
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  opacity: 0;
+  will-change: opacity, transform;
+  transition:
+    opacity 150ms ease,
+    filter 150ms ease;
+}
+
+.layer[data-active="true"] {
+  opacity: 1;
+}
+
+.image {
+  display: block;
+  /* the layer is an absolutely-positioned shrink-wrap inside a 0x0 box, so
+     Tailwind preflight's `img { max-width: 100% }` would collapse it to 0 */
+  max-width: none;
+  width: auto;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* subtle pop as a layer takes over / steps back — origin is set inline to
+     each asset's hotspot so the scale doesn't shift the pointer tip */
+  transform: scale(0.55);
+  transition: transform 190ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.layer[data-active="true"] .image {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer,
+  .image {
+    transition-duration: 60ms;
+  }
+
+  .image {
+    transform: scale(1);
+  }
+}

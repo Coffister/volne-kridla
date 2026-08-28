@@ -1,0 +1,147 @@
+.hero {
+    padding-top: clamp(120px, 14vw, 220px);
+    padding-bottom: var(--spacing-3xl);
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.title {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Card */
+
+.card {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.25fr);
+    gap: var(--spacing-xs);
+
+    background: var(--color-surface-primary);
+    padding: var(--spacing-sm);
+}
+
+.content {
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.eyebrow {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.headline {
+    color: var(--color-accent-secondary);
+    letter-spacing: -4px;
+    line-height: 0.9 !important;
+}
+
+.quote {
+    color: var(--color-text-pimary);
+    max-width: 42ch;    
+}
+
+.actions {
+    margin-top: var(--spacing-sm);
+}
+
+.actions :global(.primary) {
+    color: var(--color-text-primary);
+}
+
+.link {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.imageSlot {
+    min-height: 260px;
+}
+
+/* Tags marquee */
+
+.tags {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: 32px;
+    margin-top: var(--spacing-sm);
+    background: var(--color-surface-primary);
+}
+
+.tagsRow {
+    overflow: hidden;
+    border-radius: var(--radius-xs);
+}
+
+.tagsTrack {
+    display: flex;
+    gap: var(--spacing-sm);
+    width: max-content;
+
+    animation: scroll 30s linear infinite;
+}
+
+.tagsRowReverse .tagsTrack {
+    animation-direction: reverse;
+}
+
+.tag {
+    flex-shrink: 0;
+
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+}
+
+.tagBlue {
+    background: var(--color-accent-secondary);
+    color: var(--color-text-inverse);
+}
+
+.tagTan {
+    background: var(--color-surface-secondary);
+    color: var(--color-text-primary);
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .imageSlot {
+        order: -1;
+    }
+
+    .actions {
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100%;
+    }
+
+    .primaryCta {
+        width: 100% !important;
+    }
+}

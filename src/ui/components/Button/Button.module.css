@@ -1,0 +1,173 @@
+.button {
+    all: unset;
+    box-sizing: border-box;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: auto;
+    background: var(--color-surface-primary);
+  transition:
+    transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms ease;
+
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button .primary:hover {
+    background: var(--color-accent-primary) !important;
+}
+
+.button:active {
+  transform: scale(0.96);
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.surface {
+  display: block;
+  width: auto;
+  transition:
+    transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 350ms ease;
+}
+
+.surfaceFullWidth {
+  width: 100%;
+}
+
+.primary:hover {
+  background: var(--color-accent-primary);
+  color: var(--color-text-secondary);
+  transform: scale(1.05);
+}
+
+.button:hover .surface {
+  transform: scale(1.03);
+}
+
+.bordered {
+  box-shadow: 0px 8px 0px 0px var(--color-border-primary);
+}
+
+.content {
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    font-family: var(--font-family-body);
+}
+
+.button:hover .content {
+  transform: translateY(-1px);
+}
+
+/* Variants */
+
+.primary {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-bold);
+    border: solid 4px var(--color-border-primary);
+    border-radius: 42px;
+    padding: 0px 16px;
+    box-shadow: 0px 8px 0px 0px var(--color-border-primary);
+}
+
+.secondary {
+    background: none !important;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body);
+}
+
+.ghost {
+    color: var(--color-text-primary);
+}
+
+.contact {
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-medium);
+    border-radius: 42px;
+}
+
+.navbar {
+    background: var(--color-accent-primary);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-bold);
+    border-radius: 42px;
+    padding: 0px 16px;
+}
+
+
+.primary .content {
+    font-family: var(--font-family-body);
+}
+
+.secondary .content {
+    background: none;
+    font-family: var(--font-family-body);
+}
+
+.ghost .content {
+    background: var(--color-surface-secondary);
+        font-family: var(--font-family-label);
+}
+
+.contact .content {
+    background: var(--color-accent-primary);
+    font-family: var(--font-family-body);
+}
+
+.ghost span {
+  font-size: 8px;
+}
+
+
+/* Sizes */
+
+.sm {
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.md {
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.lg {
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.label {
+    font-family: var(--font-family-label);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.iconRight .icon {
+  margin-right: 0;
+  margin-left: 8px;
+}

@@ -1,0 +1,133 @@
+.section {
+    padding-block: var(--spacing-xs);
+    padding-bottom: var(--spacing-section);
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.card {
+    display: flex;
+    gap: 16px;
+
+    background: var(--color-surface-primary);
+    padding: 16px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.mediaPanel {
+    flex: 1 1 50%;
+    min-height: 320px;
+}
+
+.mediaImage {
+    object-position: top;
+}
+
+.infoPanel {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    padding: var(--spacing-sm);
+}
+
+.infoTitle {
+    color: white;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke: 12px black;
+    paint-order: stroke fill;
+}
+
+.infoText {
+    color: var(--color-accent-secondary);
+    white-space: pre-line;
+}
+
+.rulesTitle {
+    color: white;
+    -webkit-text-fill-color: white;
+    -webkit-text-stroke: 12px black;
+    paint-order: stroke fill;
+    margin-bottom: var(--spacing-md);
+}
+
+.rulesList {
+    background: var(--color-surface-primary);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.ruleItem {
+    color: var(--color-accent-secondary);
+    white-space: pre-line;
+}
+
+.ruleLead {
+    font-weight: var(--font-weight-bold);
+}
+
+.benefitsHeading {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.benefitsRow {
+    display: flex;
+    gap: 16px;
+}
+
+.benefitCard {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: var(--color-surface-secondary);
+    padding: 24px;
+}
+
+.benefitIcon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.benefitTitle {
+    color: var(--color-text-primary);
+    margin: 0 0 4px;
+}
+
+.benefitText {
+    color: var(--color-text-primary);
+    opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+
+    .mediaPanel,
+    .infoPanel {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .mediaPanel {
+        /* stacked: hug the photo at its natural aspect so it isn't cropped
+           and no cream gap shows below it inside the squircle */
+        min-height: 0;
+    }
+
+    .mediaImage {
+        height: auto;
+    }
+
+    .benefitsRow {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,16 @@
+.footer {
+    background: var(--color-surface-primary);
+    border-top: 3px solid var(--color-border-primary);
+
+    min-height: auto;
+    min-width: 0;
+    padding-block: 0;
+}
+
+.inner {
+    padding: 16px 24px;
+}
+
+.text {
+    color: var(--color-text-primary);
+}

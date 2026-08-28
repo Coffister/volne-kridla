@@ -1,0 +1,46 @@
+.section {
+    padding-top: clamp(120px, 14vw, 220px);
+    padding-bottom: 0;
+}
+
+.stack {
+    width: 100%;
+}
+
+.title {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.carouselWrapper {
+    background: var(--color-surface-primary);
+    padding: 8px;
+}
+
+/* give the carousel a definite height via aspect-ratio so every slide's
+   object-fit: cover fills the frame — without it the frame falls back to the
+   tallest image's intrinsic height and short slides leave a cream gap below */
+.carousel {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 640px) {
+    .carousel {
+        min-height: 260px;
+    }
+}
+
+.textCard {
+    background: var(--color-surface-primary);
+    padding: var(--spacing-2xl);
+    text-align: center;
+}
+
+.text {
+    color: var(--color-text-primary);
+    white-space: pre-line;
+}
