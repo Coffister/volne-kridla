@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import {
   CONSENT_LABEL,
@@ -47,7 +47,14 @@ const EMPTY_FORM: FormState = {
 const STEP_LABELS = ["Spôsob", "Balík", "Údaje"];
 
 export default function Konzultacia() {
-  const [track, setTrack] = useState<TrackId>("konzultacia");
+  const [searchParams] = useSearchParams();
+  // deep-link the branch from the navbar, e.g. /konzultacia?vetva=kurz
+  const requestedTrack = searchParams.get("vetva");
+  const initialTrack: TrackId = TRACKS.some((t) => t.id === requestedTrack)
+    ? (requestedTrack as TrackId)
+    : "konzultacia";
+
+  const [track, setTrack] = useState<TrackId>(initialTrack);
   const [step, setStep] = useState<Step>(1);
   const [typeId, setTypeId] = useState<string | null>(null);
   const [packageId, setPackageId] = useState<string | null>(null);

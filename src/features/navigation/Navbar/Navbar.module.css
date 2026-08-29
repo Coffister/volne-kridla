@@ -25,12 +25,11 @@
     );
   will-change: transform;
 
-  width: 50%;
+  /* wide enough for the full link row (Domov … Fotogaléria) without wrapping */
+  width: min(85%, 1220px);
 
   z-index: var(--z-navbar);
   overflow: visible;
-
-  
 }
 
 .surface {
@@ -85,8 +84,13 @@
   z-index: 1;
 }
 
+.list {
+  gap: 2px;
+}
+
 .list a {
-  padding: 8px 12px;
+  padding: 8px 10px;
+  white-space: nowrap;
 
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-semibold);
@@ -179,27 +183,22 @@
   display: none;
 }
 
-/* tablet — still the full link row, just give it more breathing room than a
-   flat 50% affords once the viewport itself gets narrower. Raised well above
-   1280px because .navbar's 50% width already wraps link labels there. */
-@media (max-width: 1440px) {
+/* mid widths — tighten the labels a touch so all 7 top-level items keep
+   fitting on one line down to the hamburger breakpoint */
+@media (max-width: 1340px) {
   .navbar {
-    width: min(92%, 860px);
-  }
-}
-
-@media (max-width: 1100px) {
-  .list {
-    gap: 2px;
+    width: calc(100% - 48px);
   }
 
   .list a {
-    padding: 8px 8px;
-    white-space: nowrap;
+    padding: 6px 6px;
+    font-size: 15px;
   }
 }
 
-@media (max-width: 860px) {
+/* below this the full row can't fit 7 items + CTA, so switch to the
+   hamburger + flat mobile menu (which the client prefers anyway) */
+@media (max-width: 1080px) {
   .navbar {
     top: 24px;
     width: calc(100% - 32px);
@@ -227,6 +226,12 @@
     box-sizing: border-box;
     padding: 16px;
     background: var(--color-surface-primary);
+
+    /* the flat list is long now — keep it inside the viewport and let it
+       scroll on short screens rather than running off the bottom */
+    max-height: calc(100dvh - 96px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .mobileMenuIn {
@@ -260,47 +265,11 @@
   }
 
   .mobileMenu a {
-    padding: 8px 4px;
+    padding: 10px 4px;
     font-family: var(--font-family-body);
-    font-weight: var(--font-weight-semibold);
-  }
-
-  .mobileSubTrigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-
-    padding: 8px 4px;
-
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-
-    font-family: var(--font-family-body);
-    font-weight: var(--font-weight-semibold);
-    font-size: inherit;
-    color: inherit;
-  }
-
-  .mobileSubTrigger svg {
-    transition: transform 0.2s ease;
-  }
-
-  .chevronOpen svg {
-    transform: rotate(180deg);
-  }
-
-  .mobileSubList {
-    margin-top: 4px;
-    margin-left: 16px;
-    padding-top: 4px;
-  }
-
-  .mobileSubList a {
-    font-weight: var(--font-weight-medium);
-    padding: 6px 4px;
+    /* client wants a chunkier mobile menu */
+    font-weight: var(--font-weight-extrabold);
+    font-size: 18px;
   }
 }
 

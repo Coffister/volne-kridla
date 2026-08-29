@@ -14,18 +14,34 @@ import styles from "./Navbar.module.css";
 
 const VK_PATH = "/volne-kridla";
 
-// the dropdown opener itself jumps to the top hero section of the page
+// the "Voľné krídla" dropdown opener jumps to the top hero section of the page
 const VK_HERO_ID = "hero";
 
-// dropdown label -> id of the section it scrolls to on the Voľné krídla page.
-// "O voľnom lietaní" points at the hero so the user always lands on it first
-// (offset 0 — it sits at the very top of the page).
-const VK_SECTIONS = [
+type NavItem =
+  | { label: string; to: string }
+  | { label: string; id: string; offset?: number };
+
+// single source of truth for nav order. The mobile menu renders this list
+// verbatim as a flat set of links (no dropdown — nobody was opening it).
+const NAV_ITEMS: NavItem[] = [
+  { label: "Domov", to: "/" },
+  { label: "O mne", to: "/o-mne" },
+  { label: "Produkty", to: "/eshop" },
+  { label: "Kurz voľného lietania", to: "/konzultacia?vetva=kurz" },
+  { label: "Konzultácie", to: "/konzultacia" },
   { label: "O voľnom lietaní", id: VK_HERO_ID, offset: 0 },
-  { label: "Tipy, triky a zaujímavosti", id: "tipy" },
+  { label: "Tipy a triky", id: "tipy" },
+  { label: "Target Tréning", id: "target" },
   { label: "Najčastejšie otázky", id: "otazky" },
-  { label: "Target tréning", id: "target" },
-] as const;
+  { label: "Fotogaléria", to: "/fotogaleria" },
+];
+
+const isSectionItem = (
+  item: NavItem,
+): item is Extract<NavItem, { id: string }> => "id" in item;
+
+// on desktop the four Voľné krídla sections stay tucked into the dropdown
+const VK_SECTIONS = NAV_ITEMS.filter(isSectionItem);
 
 // clearance below the floating navbar
 const SCROLL_OFFSET = -120;
@@ -33,7 +49,6 @@ const SCROLL_OFFSET = -120;
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuMounted, setIsMenuMounted] = useState(false);
-  const [isMobileSubOpen, setIsMobileSubOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,7 +57,6 @@ export default function Navbar() {
   const openMenu = () => {
     setIsMenuMounted(true);
     setIsMenuOpen(true);
-    setIsMobileSubOpen(false);
   };
 
   const closeMenu = () => {
@@ -95,20 +109,30 @@ export default function Navbar() {
     if (location.pathname !== VK_PATH || !pendingSectionId.current) return;
 
     const id = pendingSectionId.current;
-    let attempts = 0;
-    let timer: number;
+    pendingSectionId.current = null;
 
+    let waited = 0;
+    let corrections = 0;
+    const timers: number[] = [];
+
+    // keep nudging: first wait for the section to mount, then re-scroll a few
+    // more times to correct for layout shift as lazy images/sections below load
     const attempt = () => {
-      if (scrollToSection(id) || attempts > 40) {
-        pendingSectionId.current = null;
+      const found = scrollToSection(id);
+
+      if (!found && waited < 2000) {
+        waited += 50;
+        timers.push(window.setTimeout(attempt, 50));
         return;
       }
-      attempts += 1;
-      timer = window.setTimeout(attempt, 50);
+      if (found && corrections < 4) {
+        corrections += 1;
+        timers.push(window.setTimeout(attempt, 250));
+      }
     };
 
-    timer = window.setTimeout(attempt, 80);
-    return () => window.clearTimeout(timer);
+    timers.push(window.setTimeout(attempt, 80));
+    return () => timers.forEach((t) => window.clearTimeout(t));
   }, [location.pathname, scrollToSection]);
 
   useEffect(() => {
@@ -146,6 +170,10 @@ export default function Navbar() {
 
           <Stack direction="row" align="center" gap="xs" className={styles.list}>
             <Link to="/">Domov</Link>
+            <Link to="/o-mne">O mne</Link>
+            <Link to="/eshop">Produkty</Link>
+            <Link to="/konzultacia?vetva=kurz">Kurz voľného lietania</Link>
+            <Link to="/konzultacia">Konzultácie</Link>
 
             <Box className={styles.dropdown}>
               <Link
@@ -176,9 +204,7 @@ export default function Navbar() {
               </Squircle>
             </Box>
 
-            <Link to="/o-mne">O mne</Link>
             <Link to="/fotogaleria">Fotogaléria</Link>
-            <Link to="/eshop">Produkty</Link>
           </Stack>
 
           <Button variant="navbar" weight="medium" className={styles.cta}>
@@ -205,39 +231,21 @@ export default function Navbar() {
           >
             <Squircle radius="md" className={styles.mobileMenu}>
               <Stack direction="column" gap="sm">
-                <Link to="/" onClick={closeMenu}>Domov</Link>
-
-                <Box>
-                  <button
-                    type="button"
-                    className={styles.mobileSubTrigger}
-                    aria-expanded={isMobileSubOpen}
-                    onClick={() => setIsMobileSubOpen((open) => !open)}
-                  >
-                    Voľné krídla
-                    <span className={isMobileSubOpen ? styles.chevronOpen : ""}>
-                      <ChevronDownIcon />
-                    </span>
-                  </button>
-
-                  {isMobileSubOpen ? (
-                    <Stack direction="column" gap="sm" className={styles.mobileSubList}>
-                      {VK_SECTIONS.map((section) => (
-                        <a
-                          key={section.id}
-                          href={`${VK_PATH}#${section.id}`}
-                          onClick={(event) => handleSectionClick(event, section)}
-                        >
-                          {section.label}
-                        </a>
-                      ))}
-                    </Stack>
-                  ) : null}
-                </Box>
-
-                <Link to="/o-mne" onClick={closeMenu}>O mne</Link>
-                <Link to="/fotogaleria" onClick={closeMenu}>Fotogaléria</Link>
-                <Link to="/eshop" onClick={closeMenu}>Produkty</Link>
+                {NAV_ITEMS.map((item) =>
+                  isSectionItem(item) ? (
+                    <a
+                      key={item.label}
+                      href={`${VK_PATH}#${item.id}`}
+                      onClick={(event) => handleSectionClick(event, item)}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link key={item.label} to={item.to} onClick={closeMenu}>
+                      {item.label}
+                    </Link>
+                  ),
+                )}
 
                 <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
                   Začať lietať
