@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
-import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Stack, Image } from "@/ui/primitives";
 import Squircle from "@/ui/primitives/Squircle";
@@ -168,9 +167,24 @@ export default function Navbar() {
   }, []);
 
   return (
-    <>
     <Box as="header" className={styles.navbar}>
-      <Box className={`${styles.surface} ${isMenuOpen ? styles.surfaceOpen : ""}`}>
+      {/* On mobile this same surface grows from the pill into the full menu
+          sheet — the logo + toggle (now an X) stay as its header. Plain <div>
+          (not <Box>) so onAnimationEnd is actually forwarded. */}
+      <div
+        className={`${styles.surface} ${
+          isMenuMounted
+            ? `${styles.surfaceSheet} ${
+                isMenuOpen ? styles.surfaceSheetIn : styles.surfaceSheetOut
+              }`
+            : ""
+        }`}
+        onAnimationEnd={(event) => {
+          if (!isMenuOpen && event.target === event.currentTarget) {
+            setIsMenuMounted(false);
+          }
+        }}
+      >
         <Stack
           direction="row"
           align="center"
@@ -238,65 +252,38 @@ export default function Navbar() {
             {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </Stack>
-      </Box>
-    </Box>
 
-    {/* Portalled to <body> so they escape the navbar's transformed containing
-        block and can be positioned against the real viewport. */}
-    {createPortal(
-      <>
-        {/* full-viewport mobile menu — links only; the CTA lives in the
-            persistent bottom bar so it stays visible after the menu closes */}
+        {/* mobile link list — lives inside the surface so the surface itself
+            becomes the sheet; the CTA is separate (persistent bottom bar) */}
         {isMenuMounted ? (
-          <div
-            className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuIn : styles.mobileMenuOut}`}
-            onAnimationEnd={() => {
-              if (!isMenuOpen) setIsMenuMounted(false);
-            }}
-          >
-            <div className={styles.mobileMenuHeader}>
-              <Image src={logo} alt="Volnekridla" className={styles.logo} />
-              <button
-                type="button"
-                className={styles.menuToggle}
-                aria-label="Zavrieť menu"
-                onClick={closeMenu}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-
-            <nav className={styles.mobileMenuList}>
-              {NAV_ITEMS.map((item) =>
-                isSectionItem(item) ? (
-                  <a
-                    key={item.label}
-                    href={`${VK_PATH}#${item.id}`}
-                    onClick={(event) => handleSectionClick(event, item)}
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link key={item.label} to={item.to} onClick={closeMenu}>
-                    {item.label}
-                  </Link>
-                ),
-              )}
-            </nav>
-          </div>
+          <nav className={styles.mobileMenuList}>
+            {NAV_ITEMS.map((item) =>
+              isSectionItem(item) ? (
+                <a
+                  key={item.label}
+                  href={`${VK_PATH}#${item.id}`}
+                  onClick={(event) => handleSectionClick(event, item)}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.label} to={item.to} onClick={closeMenu}>
+                  {item.label}
+                </Link>
+              ),
+            )}
+          </nav>
         ) : null}
+      </div>
 
-        {/* always-on mobile CTA, pinned to the bottom of the screen. While the
-            menu is open it reads as the menu's bottom action; when closed it
-            floats over the page. */}
-        <div className={styles.mobileCtaBar}>
-          <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
-            Začať lietať
-          </Button>
-        </div>
-      </>,
-      document.body,
-    )}
-    </>
+      {/* always-on mobile CTA, pinned to the bottom of the screen. While the
+          menu is open it reads as the sheet's bottom action; when closed it
+          floats over the page. */}
+      <div className={styles.mobileCtaBar}>
+        <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
+          Začať lietať
+        </Button>
+      </div>
+    </Box>
   );
 }
