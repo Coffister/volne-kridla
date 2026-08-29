@@ -1,0 +1,730 @@
+/* =============================================================================
+   Volné krídla — admin panel skin
+   "Studio paper": a light workspace that borrows the marketing site's language
+   — warm paper surfaces, a pale sky canvas, thick ink outlines, blunt drop
+   shadows, League Spartan headings over Poppins UI text. Self-contained; the
+   public site is untouched.
+   Fonts (League Spartan, Poppins) are already loaded globally in index.html.
+   ========================================================================== */
+
+.admin-shell,
+.admin-login,
+.admin-splash {
+  --paper: #fffdf3; /* main working surface */
+  --paper-2: #ffffff; /* raised cards, media wells */
+  --sky: #e7f1fb; /* app canvas */
+  --sky-deep: #73a5df; /* site sky — the signed-out canvas */
+  --ink: #201f1c;
+  --line: #1b1b1a; /* 2px structural outline */
+  --hair: #e6dfca; /* 1px divider on paper */
+  --muted: #6c6455; /* warm secondary text, ≥4.5:1 on paper */
+  --accent: #f56604; /* site orange — focus, selection, current */
+  --accent-ink: #7a2e00; /* orange that reads as text on light */
+  --danger: #c4341a;
+
+  --r-sm: 9px;
+  --r: 12px;
+  --r-lg: 16px;
+
+  --pop-sm: 0 2px 0 var(--line);
+  --pop: 0 3px 0 var(--line);
+  --pop-lg: 0 4px 0 var(--line);
+
+  --font-ui: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-display: "League Spartan", var(--font-ui);
+
+  font-family: var(--font-ui);
+  color: var(--ink);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.admin-shell ::selection,
+.admin-login ::selection,
+.admin-splash ::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* -------------------------------------------------------------- primitives -- */
+
+.admin-btn {
+  --lift: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.15rem;
+  min-height: 2.6rem;
+  font: 600 0.9rem / 1 var(--font-ui);
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  border: 2px solid #000;
+  border-radius: var(--r);
+  /* pinned brief: multi-radial gradient over white */
+  background:
+    radial-gradient(
+      40.4% 93.93% at 40.57% -5.78%,
+      #579df8 0%,
+      rgba(87, 156, 248, 0) 100%
+    ),
+    radial-gradient(
+      72.2% 61.13% at 67.07% -15.17%,
+      #352fd5 0%,
+      rgba(178, 173, 255, 0) 100%
+    ),
+    radial-gradient(
+      108.82% 108.82% at 81.7% 116.33%,
+      #e6a679 0%,
+      rgba(238, 209, 189, 0) 100%
+    ),
+    radial-gradient(
+      50.87% 259.76% at 0% 91.33%,
+      #f3e5b6 0%,
+      rgba(242, 235, 219, 0) 100%
+    ),
+    #ffffff;
+  box-shadow: 0 calc(4px - var(--lift)) 0 #000;
+  transform: translateY(var(--lift));
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+.admin-btn:hover {
+  --lift: -1px;
+}
+
+.admin-btn:active {
+  --lift: 4px;
+}
+
+.admin-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.admin-btn:disabled,
+.admin-btn:has(input:disabled) {
+  --lift: 0;
+  filter: grayscale(0.5) opacity(0.55);
+  cursor: not-allowed;
+}
+
+.admin-btn-sm {
+  padding: 0.4rem 0.75rem;
+  min-height: 2.1rem;
+  font-size: 0.82rem;
+}
+
+/* ghost / secondary — cream sticker */
+.admin-ghost,
+.admin-user button,
+.admin-gallery-actions button {
+  --lift: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  font: 500 0.8rem / 1 var(--font-ui);
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r-sm);
+  box-shadow: 0 calc(2px - var(--lift)) 0 var(--line);
+  transform: translateY(var(--lift));
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.admin-user button:hover,
+.admin-gallery-actions button:hover {
+  --lift: -1px;
+  background: #fff;
+}
+
+.admin-user button:active,
+.admin-gallery-actions button:active {
+  --lift: 2px;
+}
+
+.admin-user button:focus-visible,
+.admin-gallery-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.admin-gallery-actions button:disabled {
+  filter: opacity(0.4);
+  --lift: 0;
+  cursor: not-allowed;
+}
+
+.admin-gallery-actions .is-danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+input,
+textarea {
+  font-family: var(--font-ui);
+}
+
+.admin-card input,
+.admin-gallery-body input,
+.admin-review-form input,
+.admin-review-form textarea,
+.admin-review-body input,
+.admin-review-body textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 2px solid var(--line);
+  border-radius: var(--r-sm);
+  caret-color: var(--accent);
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.admin-card input::placeholder,
+.admin-review-form input::placeholder,
+.admin-review-form textarea::placeholder,
+.admin-review-body input::placeholder {
+  color: var(--muted);
+}
+
+.admin-card input:focus-visible,
+.admin-gallery-body input:focus-visible,
+.admin-review-form input:focus-visible,
+.admin-review-form textarea:focus-visible,
+.admin-review-body input:focus-visible,
+.admin-review-body textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.admin-muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.admin-error {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--danger);
+  background: #fdeae6;
+  border: 2px solid var(--danger);
+  border-radius: var(--r-sm);
+}
+
+/* --------------------------------------------------- signed-out surfaces --- */
+
+.admin-splash,
+.admin-login {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  color: var(--ink);
+  background:
+    radial-gradient(
+      42% 32% at 18% 22%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    radial-gradient(
+      48% 36% at 82% 30%,
+      rgba(255, 255, 255, 0.75) 0%,
+      rgba(255, 255, 255, 0) 62%
+    ),
+    radial-gradient(
+      60% 44% at 65% 96%,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    var(--sky-deep);
+}
+
+.admin-splash {
+  font-size: 0.95rem;
+}
+
+.admin-card {
+  width: min(27rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 6px 0 var(--line);
+}
+
+.admin-card h1 {
+  margin: 0;
+  font:
+    800 1.35rem / 1.1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.admin-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-card code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  padding: 0.05em 0.35em;
+  background: var(--sky);
+  border: 1px solid var(--hair);
+  border-radius: 5px;
+}
+
+.admin-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.admin-card .admin-btn {
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+/* ------------------------------------------------------ authenticated shell */
+
+.admin-shell {
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  overflow: hidden;
+  background: var(--sky);
+}
+
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 1.15rem;
+  overflow-y: auto;
+  background: var(--paper);
+  border-right: 2px solid var(--line);
+}
+
+.admin-brand {
+  font:
+    800 1.2rem / 1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.admin-sidebar nav a {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--r-sm);
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.admin-sidebar nav a:hover {
+  color: var(--ink);
+  background: #fff;
+}
+
+.admin-sidebar nav a.active {
+  color: var(--ink);
+  font-weight: 600;
+  background: #f5e6b3; /* site cream-gold */
+  border-color: var(--line);
+  box-shadow: var(--pop-sm);
+}
+
+.admin-sidebar nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.admin-user {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.admin-main {
+  padding: 2.5rem;
+  overflow: auto;
+  background: var(--sky);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.admin-main::-webkit-scrollbar {
+  width: 12px;
+}
+.admin-main::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border: 3px solid var(--sky);
+  border-radius: 999px;
+}
+
+/* ----------------------------------------------------------------- pages -- */
+
+.admin-page {
+  max-width: 68rem;
+}
+
+.admin-page h2 {
+  margin: 0 0 0.35rem;
+  font:
+    800 1.7rem / 1.05 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.admin-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-head h2 {
+  margin: 0;
+}
+
+.admin-subhead {
+  margin: 1.75rem 0 0.75rem;
+  font:
+    700 0.8rem / 1 var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
+
+/* overview quick actions */
+.admin-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+
+.admin-action {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 2.4rem 1rem 1rem;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: 0 3px 0 var(--line);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.admin-action:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--line);
+}
+
+.admin-action:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--line);
+}
+
+.admin-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.admin-action-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.admin-action-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.admin-action-go {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  font-size: 1.05rem;
+  color: var(--accent-ink);
+}
+
+/* overview stats */
+.admin-stats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.admin-stats li {
+  padding: 0.9rem 1.15rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--pop-sm);
+}
+
+.admin-stats strong {
+  display: block;
+  margin-bottom: 0.1rem;
+  font:
+    800 1.6rem / 1 var(--font-display);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------- gallery -- */
+
+.admin-gallery {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.15rem;
+}
+
+.admin-gallery li {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-2);
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--pop);
+  overflow: hidden;
+}
+
+.admin-gallery li.is-hidden {
+  opacity: 0.55;
+}
+
+.admin-gallery img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--sky);
+  border-bottom: 2px solid var(--line);
+}
+
+.admin-gallery-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem;
+}
+
+.admin-gallery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* --------------------------------------------------------------- reviews -- */
+
+.admin-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-width: 40rem;
+  margin-bottom: 1.75rem;
+  padding: 1.15rem;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--pop);
+}
+
+.admin-review-form h3 {
+  margin: 0;
+  font:
+    700 1rem / 1.1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.admin-review-form textarea,
+.admin-review-body textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: 1.5;
+}
+
+.admin-review-image-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.admin-review-image-inputs .admin-muted {
+  font-size: 0.8rem;
+}
+
+.admin-review-image-inputs input[type="url"] {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.admin-review-form .admin-btn {
+  align-self: flex-start;
+}
+
+.admin-review-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.15rem;
+}
+
+.admin-review-list li {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 1rem;
+  padding: 1.1rem;
+  background: var(--paper-2);
+  border: 2px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--pop);
+}
+
+.admin-review-list li.is-hidden {
+  opacity: 0.55;
+}
+
+.admin-review-list img,
+.admin-review-noimg {
+  width: 6.5rem;
+  height: 6.5rem;
+  object-fit: cover;
+  background: var(--sky);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+}
+
+.admin-review-noimg {
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  border-style: dashed;
+}
+
+.admin-review-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------- responsive */
+
+@media (max-width: 1100px) {
+  .admin-review-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 780px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .admin-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    overflow-y: visible;
+    border-right: 0;
+    border-bottom: 2px solid var(--line);
+  }
+  .admin-sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .admin-user {
+    margin: 0;
+    flex-basis: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-main {
+    padding: 1.5rem;
+  }
+  .admin-review-list li {
+    grid-template-columns: 1fr;
+  }
+  .admin-review-list img,
+  .admin-review-noimg {
+    width: 100%;
+    height: 9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-btn,
+  .admin-user button,
+  .admin-gallery-actions button {
+    transition: none;
+  }
+  .admin-btn:hover,
+  .admin-btn:active,
+  .admin-user button:hover,
+  .admin-user button:active,
+  .admin-gallery-actions button:hover,
+  .admin-gallery-actions button:active {
+    --lift: 0;
+  }
+}

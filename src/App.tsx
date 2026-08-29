@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SiteLayout from "./layouts/SiteLayout";
@@ -9,9 +10,13 @@ import Placeholder from "./pages/Placeholder";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 
-function App() {
+// Admin is code-split: none of it (nor @supabase/supabase-js) ships in the
+// public bundle. Loaded only when someone hits /admin/*.
+const AdminApp = lazy(() => import("./admin/AdminApp"));
+
+function SiteApp() {
   return (
-    <BrowserRouter>
+    <>
       <Cursor />
       <Routes>
         {/* standalone — not wrapped in the site chrome (navbar/footer) */}
@@ -24,6 +29,24 @@ function App() {
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/eshop" element={<Placeholder title="E-shop" />} />
         </Route>
+      </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={null}>
+              <AdminApp />
+            </Suspense>
+          }
+        />
+        <Route path="/*" element={<SiteApp />} />
       </Routes>
     </BrowserRouter>
   );

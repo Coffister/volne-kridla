@@ -9,7 +9,6 @@ import {
 } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Badge from "@/ui/components/Badge";
-import Card from "@/ui/components/Badge";
 
 import aboutfranka from "@/assets/core/franka.jpg";
 

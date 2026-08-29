@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import Squircle from "@/ui/primitives/Squircle";
 import Text from "@/ui/primitives/Text";
 import type { FontWeight } from "@/ui/foundation/fontWeight";
 
@@ -39,7 +38,6 @@ export default function Button({
   size = "sm",
   weight = "extrabold",
 
-  bordered = false,
   fullWidth,
   fullwidth,
 
