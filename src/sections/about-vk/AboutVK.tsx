@@ -108,10 +108,7 @@ export default function AboutVK() {
     <Section className={styles.section}>
       <Container className={styles.container}>
         <Stack direction="column" align="center" className={styles.sectionheader}>
-          <Text as="h2" variant="sectionTitle" className={styles.title}>
-            O Voľných Krídlach
-          </Text>
-          <Badge>Aký druh tréningu je pre vás vhodný?</Badge>
+          <Badge>O Voľných krídlach</Badge>
         </Stack>
 
         <Box className={styles.tabsWrapper}>

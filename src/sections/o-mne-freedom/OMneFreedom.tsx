@@ -19,7 +19,7 @@ export default function OMneFreedom() {
 
           <Box className={styles.infoPanel}>
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
-              Moje prvé kroky
+              Volám sa Franka
             </Text>
             <Text as="p" variant="body" className={styles.infoText}>
               {
