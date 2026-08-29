@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
-import Text from "@/ui/primitives/Text";
-
 import {
   CONSENT_LABEL,
   CONSULT_TYPES,
@@ -143,11 +141,11 @@ export default function Konzultacia() {
 
         {step === 1 && (
           <section>
-            <Text as="h1" variant="cardTitle" className={styles.heading}>
+            <h1 className={styles.heading}>
               <span ref={headingRef} tabIndex={-1}>
                 {INTRO_HEADING}
               </span>
-            </Text>
+            </h1>
             <p className={styles.lead}>{INTRO_PARAGRAPHS[0]}</p>
 
             <div className={styles.track} role="tablist" aria-label="Typ služby">
@@ -166,7 +164,6 @@ export default function Konzultacia() {
               ))}
             </div>
 
-            <h2 className={styles.subhead}>Vyberte spôsob</h2>
             <div
               className={styles.options}
               role="radiogroup"
@@ -208,11 +205,11 @@ export default function Konzultacia() {
 
         {step === 2 && (
           <section>
-            <Text as="h1" variant="cardTitle" className={styles.heading}>
+            <h1 className={styles.heading}>
               <span ref={headingRef} tabIndex={-1}>
                 Vyberte balík
               </span>
-            </Text>
+            </h1>
             <div
               className={styles.options}
               role="radiogroup"
@@ -268,11 +265,11 @@ export default function Konzultacia() {
 
         {step === 3 && (
           <form onSubmit={onSubmit} noValidate>
-            <Text as="h1" variant="cardTitle" className={styles.heading}>
+            <h1 className={styles.heading}>
               <span ref={headingRef} tabIndex={-1}>
                 Vaše údaje
               </span>
-            </Text>
+            </h1>
 
             <div className={styles.recap}>
               <span>
@@ -295,6 +292,7 @@ export default function Konzultacia() {
               </button>
             </div>
 
+            <div className={styles.groups}>
             <fieldset className={styles.group}>
               <legend className={styles.groupLegend}>O papagájovi</legend>
 
@@ -360,7 +358,7 @@ export default function Konzultacia() {
                 </label>
                 <textarea
                   id="k-details"
-                  rows={4}
+                  rows={3}
                   placeholder="Meno papagája, ako dlho ho máte, čo ste už skúšali…"
                   value={form.details}
                   onChange={(e) => set("details", e.target.value)}
@@ -413,6 +411,7 @@ export default function Konzultacia() {
                 </div>
               </div>
             </fieldset>
+            </div>
 
             <label className={styles.consent}>
               <input
@@ -470,11 +469,11 @@ export default function Konzultacia() {
 
         {step === 4 && (
           <section className={styles.success}>
-            <Text as="h1" variant="cardTitle" className={styles.heading}>
+            <h1 className={styles.heading}>
               <span ref={headingRef} tabIndex={-1}>
                 Mám to{form.name ? `, ${form.name.split(" ")[0]}` : ""}.
               </span>
-            </Text>
+            </h1>
             <p>
               Ozvem sa do 24 hodín na <strong>{form.email}</strong>. Zatiaľ sa
               môžete pozrieť na <Link to="/fotogaleria">fotogalériu</Link>.
