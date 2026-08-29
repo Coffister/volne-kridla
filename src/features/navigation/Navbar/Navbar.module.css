@@ -220,18 +220,21 @@
     display: block;
     margin: 0 8px 8px;
     transform-origin: top center;
+
+    /* the flat list is long now — cap it to the space under the navbar and
+       let it scroll there, so the "Začať lietať" button never gets clipped
+       off the bottom. Scroll lives on the wrap (a plain box); the inner
+       Squircle keeps its clip-path, which can't host a scroll area. */
+    max-height: calc(100dvh - 96px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .mobileMenu {
     box-sizing: border-box;
     padding: 16px;
     background: var(--color-surface-primary);
-
-    /* the flat list is long now — keep it inside the viewport and let it
-       scroll on short screens rather than running off the bottom */
-    max-height: calc(100dvh - 96px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
   }
 
   .mobileMenuIn {
@@ -265,7 +268,7 @@
   }
 
   .mobileMenu a {
-    padding: 10px 4px;
+    padding: 7px 4px;
     font-family: var(--font-family-body);
     /* client wants a chunkier mobile menu */
     font-weight: var(--font-weight-extrabold);

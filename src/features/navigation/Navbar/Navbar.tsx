@@ -230,7 +230,7 @@ export default function Navbar() {
             }}
           >
             <Squircle radius="md" className={styles.mobileMenu}>
-              <Stack direction="column" gap="sm">
+              <Stack direction="column" gap="xs">
                 {NAV_ITEMS.map((item) =>
                   isSectionItem(item) ? (
                     <a
