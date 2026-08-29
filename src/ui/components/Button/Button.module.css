@@ -8,6 +8,7 @@
     cursor: pointer;
     width: auto;
     background: var(--color-surface-primary);
+    -webkit-tap-highlight-color: transparent;
   transition:
     transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
     background 800ms cubic-bezier(0.22, 1, 0.36, 1),

@@ -229,12 +229,26 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+  }
+
+  .mobileMenuWrap::-webkit-scrollbar {
+    display: none;
   }
 
   .mobileMenu {
     box-sizing: border-box;
     padding: 16px;
     background: var(--color-surface-primary);
+  }
+
+  /* kill the mobile tap-highlight rectangle — on some Android browsers it is
+     a pale amber and lingers over the CTA / links after a tap */
+  .mobileMenu a,
+  .mobileMenu button,
+  .menuToggle {
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobileMenuIn {
