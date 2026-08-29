@@ -1,8 +1,9 @@
 .wrap {
   min-height: 100dvh;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
   padding: clamp(6rem, 14vh, 10rem) var(--spacing-md) var(--spacing-3xl);
   background: var(--color-background-primary);
 }
@@ -18,6 +19,172 @@
   border: 3px solid var(--color-border-primary);
   border-radius: 28px;
   box-shadow: 0 8px 0 0 var(--color-border-primary);
+}
+
+.lead {
+  margin: -0.5rem 0 0;
+  font-family: var(--font-family-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-accent-secondary);
+}
+
+/* ---- track toggle (Konzultácia / Kurz) ---- */
+.track {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.3rem;
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 999px;
+}
+
+.trackBtn {
+  flex: 1;
+  padding: 0.5rem 0.9rem;
+  font-family: var(--font-family-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.trackBtn[data-active="true"] {
+  color: #fff;
+  background: var(--color-accent-primary);
+}
+
+.trackBtn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.subhead {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-family-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ---- fieldset groups ---- */
+.group {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+}
+
+.groupLegend {
+  padding: 0;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-family-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 1.05rem,
+    calc(100% - 14px) 1.05rem;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+.optionNote {
+  font-family: var(--font-family-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+/* ---- gdpr expand ---- */
+.gdprToggle {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  padding: 0;
+  font-family: var(--font-family-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-accent-primary);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.gdprText {
+  margin: 0.5rem 0 0;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--font-family-body);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--color-text-primary);
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 12px;
+}
+
+/* ---- FAQ ---- */
+.faq {
+  width: 100%;
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.faq .subhead {
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.faqItem {
+  background: var(--color-surface-primary);
+  border: 2px solid var(--color-border-primary);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+}
+
+.faqItem summary {
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faqItem summary::-webkit-details-marker {
+  display: none;
+}
+
+.faqItem summary::after {
+  content: " +";
+  color: var(--color-accent-primary);
+  font-weight: 700;
+}
+
+.faqItem[open] summary::after {
+  content: " –";
+}
+
+.faqItem p {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-family-body);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--color-accent-secondary);
 }
 
 .banner {
@@ -202,7 +369,8 @@
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.field select {
   width: 100%;
   padding: 0.7rem 0.85rem;
   font-family: var(--font-family-body);
@@ -228,7 +396,8 @@
 }
 
 .field input:focus-visible,
-.field textarea:focus-visible {
+.field textarea:focus-visible,
+.field select:focus-visible {
   outline: none;
   border-color: var(--color-accent-primary);
   box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);

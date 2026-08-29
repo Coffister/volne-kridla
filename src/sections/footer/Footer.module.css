@@ -14,3 +14,18 @@
 .text {
     color: var(--color-text-primary);
 }
+
+/* stack the two lines on narrow screens — side by side they overflow / crush */
+@media (max-width: 640px) {
+    .inner {
+        /* Stack sets flex-direction inline, so this needs to win */
+        flex-direction: column !important;
+        gap: 4px;
+        padding: 14px 20px;
+        text-align: center;
+    }
+
+    .text {
+        font-size: 13px;
+    }
+}
