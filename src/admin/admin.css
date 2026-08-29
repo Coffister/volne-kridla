@@ -384,7 +384,8 @@ textarea {
 }
 
 .admin-main {
-  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
   overflow: auto;
   background: var(--sky);
   scrollbar-width: thin;
@@ -398,6 +399,41 @@ textarea {
   background: var(--line);
   border: 3px solid var(--sky);
   border-radius: 999px;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.9rem 2.5rem;
+  background: var(--paper);
+  border-bottom: 2px solid var(--line);
+}
+
+.admin-view {
+  flex: 1;
+  padding: 2.5rem;
+}
+
+.admin-publish {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-publish-note {
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.admin-publish-note.is-muted {
+  color: var(--muted);
+}
+
+.admin-publish-note.is-error {
+  color: var(--danger);
 }
 
 /* ----------------------------------------------------------------- pages -- */
@@ -700,8 +736,15 @@ textarea {
     align-items: center;
     justify-content: space-between;
   }
-  .admin-main {
+  .admin-topbar {
+    padding: 0.75rem 1.5rem;
+  }
+  .admin-view {
     padding: 1.5rem;
+  }
+  .admin-publish {
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
   .admin-review-list li {
     grid-template-columns: 1fr;

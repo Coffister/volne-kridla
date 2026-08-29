@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 
 import { useAuth } from "./auth/AuthProvider";
+import PublishButton from "./components/PublishButton";
 
 export default function AdminLayout() {
   const { session, signOut } = useAuth();
@@ -25,7 +26,12 @@ export default function AdminLayout() {
         </div>
       </aside>
       <main className="admin-main">
-        <Outlet />
+        <header className="admin-topbar">
+          <PublishButton />
+        </header>
+        <div className="admin-view">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
