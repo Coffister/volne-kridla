@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Stack, Image } from "@/ui/primitives";
 import Squircle from "@/ui/primitives/Squircle";
@@ -135,6 +136,21 @@ export default function Navbar() {
     return () => timers.forEach((t) => window.clearTimeout(t));
   }, [location.pathname, scrollToSection]);
 
+  // lock page scroll while the full-screen mobile menu is open
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const lenis = getLenis();
+    lenis?.stop();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isMenuOpen]);
+
   useEffect(() => {
     const lenis = getLenis();
     if (!lenis) return;
@@ -152,6 +168,7 @@ export default function Navbar() {
   }, []);
 
   return (
+    <>
     <Box as="header" className={styles.navbar}>
       <Box className={`${styles.surface} ${isMenuOpen ? styles.surfaceOpen : ""}`}>
         <Stack
@@ -221,40 +238,65 @@ export default function Navbar() {
             {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </Stack>
+      </Box>
+    </Box>
 
+    {/* Portalled to <body> so they escape the navbar's transformed containing
+        block and can be positioned against the real viewport. */}
+    {createPortal(
+      <>
+        {/* full-viewport mobile menu — links only; the CTA lives in the
+            persistent bottom bar so it stays visible after the menu closes */}
         {isMenuMounted ? (
           <div
-            className={`${styles.mobileMenuWrap} ${isMenuOpen ? styles.mobileMenuIn : styles.mobileMenuOut}`}
+            className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuIn : styles.mobileMenuOut}`}
             onAnimationEnd={() => {
               if (!isMenuOpen) setIsMenuMounted(false);
             }}
           >
-            <Squircle radius="md" className={styles.mobileMenu}>
-              <Stack direction="column" gap="xs">
-                {NAV_ITEMS.map((item) =>
-                  isSectionItem(item) ? (
-                    <a
-                      key={item.label}
-                      href={`${VK_PATH}#${item.id}`}
-                      onClick={(event) => handleSectionClick(event, item)}
-                    >
-                      {item.label}
-                    </a>
-                  ) : (
-                    <Link key={item.label} to={item.to} onClick={closeMenu}>
-                      {item.label}
-                    </Link>
-                  ),
-                )}
+            <div className={styles.mobileMenuHeader}>
+              <Image src={logo} alt="Volnekridla" className={styles.logo} />
+              <button
+                type="button"
+                className={styles.menuToggle}
+                aria-label="Zavrieť menu"
+                onClick={closeMenu}
+              >
+                <CloseIcon />
+              </button>
+            </div>
 
-                <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
-                  Začať lietať
-                </Button>
-              </Stack>
-            </Squircle>
+            <nav className={styles.mobileMenuList}>
+              {NAV_ITEMS.map((item) =>
+                isSectionItem(item) ? (
+                  <a
+                    key={item.label}
+                    href={`${VK_PATH}#${item.id}`}
+                    onClick={(event) => handleSectionClick(event, item)}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link key={item.label} to={item.to} onClick={closeMenu}>
+                    {item.label}
+                  </Link>
+                ),
+              )}
+            </nav>
           </div>
         ) : null}
-      </Box>
-    </Box>
+
+        {/* always-on mobile CTA, pinned to the bottom of the screen. While the
+            menu is open it reads as the menu's bottom action; when closed it
+            floats over the page. */}
+        <div className={styles.mobileCtaBar}>
+          <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
+            Začať lietať
+          </Button>
+        </div>
+      </>,
+      document.body,
+    )}
+    </>
   );
 }

@@ -25,3 +25,11 @@
     position: relative;
     z-index: 1;
 }
+
+/* reserve room at the very bottom for the persistent mobile CTA bar so it
+   doesn't permanently sit on top of the footer */
+@media (max-width: 1080px) {
+    .content {
+        padding-bottom: 88px;
+    }
+}
