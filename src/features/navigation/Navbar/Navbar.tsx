@@ -48,20 +48,13 @@ const SCROLL_OFFSET = -120;
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMenuMounted, setIsMenuMounted] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const pendingSectionId = useRef<string | null>(null);
 
-  const openMenu = () => {
-    setIsMenuMounted(true);
-    setIsMenuOpen(true);
-  };
-
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
+  const openMenu = () => setIsMenuOpen(true);
+  const closeMenu = () => setIsMenuOpen(false);
 
   const scrollToSection = useCallback(
     (id: string, offset: number = SCROLL_OFFSET) => {
@@ -168,23 +161,9 @@ export default function Navbar() {
 
   return (
     <Box as="header" className={styles.navbar}>
-      {/* On mobile this same surface grows from the pill into the full menu
-          sheet — the logo + toggle (now an X) stay as its header. Plain <div>
-          (not <Box>) so onAnimationEnd is actually forwarded. */}
-      <div
-        className={`${styles.surface} ${
-          isMenuMounted
-            ? `${styles.surfaceSheet} ${
-                isMenuOpen ? styles.surfaceSheetIn : styles.surfaceSheetOut
-              }`
-            : ""
-        }`}
-        onAnimationEnd={(event) => {
-          if (!isMenuOpen && event.target === event.currentTarget) {
-            setIsMenuMounted(false);
-          }
-        }}
-      >
+      {/* On mobile this one surface is the whole menu: it grows in height and
+          the link row (always in the DOM, collapsed when closed) unfolds. */}
+      <div className={`${styles.surface} ${isMenuOpen ? styles.surfaceOpen : ""}`}>
         <Stack
           direction="row"
           align="center"
@@ -253,27 +232,31 @@ export default function Navbar() {
           </button>
         </Stack>
 
-        {/* mobile link list — lives inside the surface so the surface itself
-            becomes the sheet; the CTA is separate (persistent bottom bar) */}
-        {isMenuMounted ? (
-          <nav className={styles.mobileMenuList}>
-            {NAV_ITEMS.map((item) =>
-              isSectionItem(item) ? (
-                <a
-                  key={item.label}
-                  href={`${VK_PATH}#${item.id}`}
-                  onClick={(event) => handleSectionClick(event, item)}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <Link key={item.label} to={item.to} onClick={closeMenu}>
-                  {item.label}
-                </Link>
-              ),
-            )}
-          </nav>
-        ) : null}
+        {/* mobile link row — always rendered; collapsed to zero height when
+            closed, unfolds with the surface on open (see .mobileMenuList) */}
+        <nav className={styles.mobileMenuList} aria-hidden={!isMenuOpen}>
+          {NAV_ITEMS.map((item) =>
+            isSectionItem(item) ? (
+              <a
+                key={item.label}
+                href={`${VK_PATH}#${item.id}`}
+                tabIndex={isMenuOpen ? undefined : -1}
+                onClick={(event) => handleSectionClick(event, item)}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.label}
+                to={item.to}
+                tabIndex={isMenuOpen ? undefined : -1}
+                onClick={closeMenu}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
+        </nav>
       </div>
 
       {/* always-on mobile CTA, pinned to the bottom of the screen. While the

@@ -155,8 +155,8 @@
   flex-shrink: 0;
 }
 
-/* full-screen mobile menu + persistent bottom CTA — both hidden on desktop */
-.mobileMenu,
+/* the mobile link row + persistent bottom CTA — both hidden on desktop */
+.mobileMenuList,
 .mobileCtaBar {
   display: none;
 }
@@ -203,87 +203,67 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ---- the surface grows from the pill into the full menu sheet ----- */
-  .surfaceSheet {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-
-    display: flex;
-    flex-direction: column;
-
-    /* keep the pill's radius so the growing box looks like the same object */
-    overflow: hidden;
-
-    /* neutralise the scroll-squish transform while it's a sheet */
-    transform: none !important;
-  }
-
-  .surfaceSheet .inner {
-    flex-shrink: 0;
-    /* a little more room so the oversized logo doesn't clip the rounded top */
-    padding: 16px 12px 8px 24px;
-  }
-
-  /* Open: the box is already at full size but clipped down to just the
-     header row, then the clip opens downward — it reads as the navbar
-     stretching open. Closing runs it in reverse. */
-  .surfaceSheetIn {
-    animation: sheetGrow 300ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .surfaceSheetOut {
-    animation: sheetShrink 230ms cubic-bezier(0.4, 0, 1, 1) forwards;
-  }
-
-  @keyframes sheetGrow {
-    from {
-      clip-path: inset(0 0 calc(100% - 66px) 0 round var(--radius-xl));
-    }
-    to {
-      clip-path: inset(0 0 0 0 round var(--radius-xl));
-    }
-  }
-
-  @keyframes sheetShrink {
-    from {
-      clip-path: inset(0 0 0 0 round var(--radius-xl));
-    }
-    to {
-      clip-path: inset(0 0 calc(100% - 66px) 0 round var(--radius-xl));
-      opacity: 0;
-    }
-  }
-
-  /* links slide up + fade in just behind the opening clip */
-  .surfaceSheetIn .mobileMenuList {
-    animation: listReveal 300ms ease-out 60ms both;
-  }
-
-  @keyframes listReveal {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-  }
-
-  /* ---- link list (plain links, spaced apart — no card fill) -------- */
+  /* ---- one surface, resized -------------------------------------------
+     The surface stays exactly where the pill is — nothing is re-positioned,
+     so the logo + X never jump. Only the link row's height animates, and
+     the surface grows with it. */
+  /* the surface stretches open by growing this row from 0 to its content
+     height; the links also slide + fade so the growth reads as motion,
+     not a pop. Only cheap props (height/opacity/transform) — no clip-path. */
   .mobileMenuList {
-    flex: 1 1 auto;
-    min-height: 0;
-
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 
-    padding: 4px 12px 12px;
+    /* closed */
+    max-height: 0;
+    padding: 0 12px;
+    opacity: 0;
+    pointer-events: none;
 
-    overflow-y: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+
+    transition:
+      max-height 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      padding 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 140ms ease;
+  }
+
+  .surfaceOpen .mobileMenuList {
+    max-height: min(62vh, 560px);
+    padding: 6px 12px 14px;
+    opacity: 1;
+    pointer-events: auto;
+    overflow-y: auto;
+    transition:
+      max-height 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      padding 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 240ms ease 40ms;
+  }
+
+  .surfaceOpen .mobileMenuList a {
+    animation: linkIn 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .surfaceOpen .mobileMenuList a:nth-child(1) { animation-delay: 20ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(2) { animation-delay: 40ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(3) { animation-delay: 60ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(4) { animation-delay: 80ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(5) { animation-delay: 100ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(6) { animation-delay: 115ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(7) { animation-delay: 130ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(8) { animation-delay: 145ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(9) { animation-delay: 158ms; }
+  .surfaceOpen .mobileMenuList a:nth-child(10) { animation-delay: 170ms; }
+
+  @keyframes linkIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
   }
 
   .mobileMenuList::-webkit-scrollbar {
@@ -292,7 +272,7 @@
 
   .mobileMenuList a {
     display: block;
-    padding: 16px 8px;
+    padding: 14px 8px;
 
     font-family: var(--font-family-body);
     font-weight: var(--font-weight-extrabold);
