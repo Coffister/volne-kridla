@@ -232,8 +232,8 @@ export default function Navbar() {
           </button>
         </Stack>
 
-        {/* mobile link row — always rendered; collapsed to zero height when
-            closed, unfolds with the surface on open (see .mobileMenuList) */}
+        {/* the navbar's own body — clipped away when collapsed, revealed as
+            the surface grows taller. One element, no second navbar. */}
         <nav className={styles.mobileMenuList} aria-hidden={!isMenuOpen}>
           {NAV_ITEMS.map((item) =>
             isSectionItem(item) ? (
@@ -257,15 +257,17 @@ export default function Navbar() {
             ),
           )}
         </nav>
-      </div>
 
-      {/* always-on mobile CTA, pinned to the bottom of the screen. While the
-          menu is open it reads as the sheet's bottom action; when closed it
-          floats over the page. */}
-      <div className={styles.mobileCtaBar}>
-        <Button variant="navbar" weight="medium" fullWidth onClick={closeMenu}>
-          Začať lietať
-        </Button>
+        <div className={styles.mobileMenuCta}>
+          <Button
+            variant="navbar"
+            weight="medium"
+            fullWidth
+            onClick={closeMenu}
+          >
+            Začať lietať
+          </Button>
+        </div>
       </div>
     </Box>
   );

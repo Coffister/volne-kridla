@@ -155,9 +155,9 @@
   flex-shrink: 0;
 }
 
-/* the mobile link row + persistent bottom CTA — both hidden on desktop */
+/* the mobile navbar body — hidden on desktop */
 .mobileMenuList,
-.mobileCtaBar {
+.mobileMenuCta {
   display: none;
 }
 
@@ -174,19 +174,17 @@
   }
 }
 
-/* below this the full row can't fit 7 items + CTA, so switch to the
-   hamburger + full-screen flat menu (which the client prefers anyway) */
+/* ===================================================================
+   Mobile: a classic expandable navbar. ONE surface — the same bar you
+   see collapsed just grows taller (max-height) and reveals its body.
+   No second element, no overlay, no portal.
+   =================================================================== */
 @media (max-width: 1080px) {
   .navbar {
-    /* same top as the open sheet so the pill grows straight into it */
     top: 12px;
-    width: calc(100% - 24px);
-
-    /* drop the centering transform so the sheet + CTA (position: fixed
-       children) pin to the viewport instead of to this element */
-    left: 0;
-    right: 0;
-    margin-inline: auto;
+    left: 12px;
+    right: 12px;
+    width: auto;
     transform: none;
   }
 
@@ -203,67 +201,42 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ---- one surface, resized -------------------------------------------
-     The surface stays exactly where the pill is — nothing is re-positioned,
-     so the logo + X never jump. Only the link row's height animates, and
-     the surface grows with it. */
-  /* the surface stretches open by growing this row from 0 to its content
-     height; the links also slide + fade so the growth reads as motion,
-     not a pop. Only cheap props (height/opacity/transform) — no clip-path. */
+  .surface {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    border-radius: 24px;
+    /* one gentle shadow — it should read as a bar, not a floating card */
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-border-primary) 14%, transparent);
+
+    /* collapsed = just the logo / hamburger row */
+    max-height: 60px;
+    transition: max-height 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .surfaceOpen {
+    max-height: min(86vh, 640px);
+  }
+
+  .inner {
+    flex-shrink: 0;
+    padding: 8px 12px 8px 24px;
+  }
+
+  /* the body: normal flow inside the surface, clipped away until it grows */
   .mobileMenuList {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    flex: 1 1 auto;
+    min-height: 0;
 
-    /* closed */
-    max-height: 0;
-    padding: 0 12px;
-    opacity: 0;
-    pointer-events: none;
+    padding: 4px 8px;
 
-    overflow: hidden;
+    overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-
-    transition:
-      max-height 260ms cubic-bezier(0.22, 1, 0.36, 1),
-      padding 260ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 140ms ease;
-  }
-
-  .surfaceOpen .mobileMenuList {
-    max-height: min(62vh, 560px);
-    padding: 6px 12px 14px;
-    opacity: 1;
-    pointer-events: auto;
-    overflow-y: auto;
-    transition:
-      max-height 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      padding 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 240ms ease 40ms;
-  }
-
-  .surfaceOpen .mobileMenuList a {
-    animation: linkIn 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .surfaceOpen .mobileMenuList a:nth-child(1) { animation-delay: 20ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(2) { animation-delay: 40ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(3) { animation-delay: 60ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(4) { animation-delay: 80ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(5) { animation-delay: 100ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(6) { animation-delay: 115ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(7) { animation-delay: 130ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(8) { animation-delay: 145ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(9) { animation-delay: 158ms; }
-  .surfaceOpen .mobileMenuList a:nth-child(10) { animation-delay: 170ms; }
-
-  @keyframes linkIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
   }
 
   .mobileMenuList::-webkit-scrollbar {
@@ -272,37 +245,31 @@
 
   .mobileMenuList a {
     display: block;
-    padding: 14px 8px;
+    padding: 13px 12px;
 
     font-family: var(--font-family-body);
     font-weight: var(--font-weight-extrabold);
-    font-size: 20px;
+    font-size: 18px;
     color: var(--color-text-primary);
 
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ---- always-visible bottom CTA --------------------------------- */
-  .mobileCtaBar {
+  .mobileMenuCta {
     display: block;
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    z-index: calc(var(--z-navbar) + 1);
+    flex-shrink: 0;
+    padding: 8px 12px 14px;
+  }
 
+  .mobileMenuCta button {
+    border: 4px solid var(--color-border-primary);
+    box-shadow: 0 5px 0 0 var(--color-border-primary);
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* give the CTA the site's chunky bordered look from the mockup */
-  .mobileCtaBar button {
-    border: 4px solid var(--color-border-primary);
-    box-shadow: 0 6px 0 0 var(--color-border-primary);
-  }
-
-  .mobileCtaBar button:active {
+  .mobileMenuCta button:active {
     transform: translateY(4px);
-    box-shadow: 0 2px 0 0 var(--color-border-primary);
+    box-shadow: 0 1px 0 0 var(--color-border-primary);
   }
 }
 
