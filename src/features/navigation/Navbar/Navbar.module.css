@@ -37,10 +37,6 @@
   will-change: transform;
 }
 
-.surfaceOpen {
-  border-radius: 32px;
-}
-
 .inner {
   padding: 8px 8px 8px 32px;
 }
@@ -182,7 +178,8 @@
    hamburger + full-screen flat menu (which the client prefers anyway) */
 @media (max-width: 1080px) {
   .navbar {
-    top: 24px;
+    /* same top as the open sheet so the pill grows straight into it */
+    top: 12px;
     width: calc(100% - 24px);
 
     /* drop the centering transform so the sheet + CTA (position: fixed
@@ -217,7 +214,7 @@
     display: flex;
     flex-direction: column;
 
-    border-radius: var(--radius-lg);
+    /* keep the pill's radius so the growing box looks like the same object */
     overflow: hidden;
 
     /* neutralise the scroll-squish transform while it's a sheet */
@@ -230,25 +227,45 @@
     padding: 16px 12px 8px 24px;
   }
 
+  /* Open: the box is already at full size but clipped down to just the
+     header row, then the clip opens downward — it reads as the navbar
+     stretching open. Closing runs it in reverse. */
   .surfaceSheetIn {
-    animation: sheetIn 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation: sheetGrow 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .surfaceSheetOut {
-    animation: sheetOut 180ms cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: sheetShrink 230ms cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 
-  @keyframes sheetIn {
+  @keyframes sheetGrow {
     from {
-      opacity: 0;
-      transform: scale(0.97) translateY(-10px);
+      clip-path: inset(0 0 calc(100% - 66px) 0 round var(--radius-xl));
+    }
+    to {
+      clip-path: inset(0 0 0 0 round var(--radius-xl));
     }
   }
 
-  @keyframes sheetOut {
+  @keyframes sheetShrink {
+    from {
+      clip-path: inset(0 0 0 0 round var(--radius-xl));
+    }
     to {
+      clip-path: inset(0 0 calc(100% - 66px) 0 round var(--radius-xl));
       opacity: 0;
-      transform: scale(0.97) translateY(-10px);
+    }
+  }
+
+  /* links slide up + fade in just behind the opening clip */
+  .surfaceSheetIn .mobileMenuList {
+    animation: listReveal 300ms ease-out 60ms both;
+  }
+
+  @keyframes listReveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
     }
   }
 
