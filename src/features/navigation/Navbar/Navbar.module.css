@@ -176,8 +176,8 @@
 
 /* ===================================================================
    Mobile: a classic expandable navbar. ONE surface — the same bar you
-   see collapsed just grows taller (max-height) and reveals its body.
-   No second element, no overlay, no portal.
+   see collapsed. Its body is a CSS grid row that animates 0fr -> 1fr,
+   so the bar grows without animating height/padding (no layout thrash).
    =================================================================== */
 @media (max-width: 1080px) {
   .navbar {
@@ -209,14 +209,6 @@
     border-radius: 24px;
     /* one gentle shadow — it should read as a bar, not a floating card */
     box-shadow: 0 6px 18px color-mix(in srgb, var(--color-border-primary) 14%, transparent);
-
-    /* collapsed = just the logo / hamburger row */
-    max-height: 60px;
-    transition: max-height 340ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .surfaceOpen {
-    max-height: min(86vh, 640px);
   }
 
   .inner {
@@ -224,19 +216,42 @@
     padding: 8px 12px 8px 24px;
   }
 
-  /* the body: normal flow inside the surface, clipped away until it grows */
+  /* the expandable body */
+  .mobileMenuGrid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .surfaceOpen .mobileMenuGrid {
+    grid-template-rows: 1fr;
+  }
+
+  .mobileMenuInner {
+    min-height: 0;
+    overflow: hidden;
+
+    opacity: 0;
+    transition: opacity 140ms ease;
+  }
+
+  .surfaceOpen .mobileMenuInner {
+    opacity: 1;
+    transition: opacity 220ms ease 120ms;
+  }
+
   .mobileMenuList {
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
 
-    padding: 4px 8px;
-
+    /* long list scrolls rather than pushing the bar past the screen */
+    max-height: min(68vh, 540px);
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+
+    padding: 6px 8px 4px;
   }
 
   .mobileMenuList::-webkit-scrollbar {
@@ -245,7 +260,8 @@
 
   .mobileMenuList a {
     display: block;
-    padding: 13px 12px;
+    /* let the labels breathe — generous all round, most of all on the left */
+    padding: 15px 16px 15px 28px;
 
     font-family: var(--font-family-body);
     font-weight: var(--font-weight-extrabold);
@@ -258,7 +274,7 @@
   .mobileMenuCta {
     display: block;
     flex-shrink: 0;
-    padding: 8px 12px 14px;
+    padding: 10px 16px 16px;
   }
 
   .mobileMenuCta button {

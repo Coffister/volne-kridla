@@ -232,41 +232,45 @@ export default function Navbar() {
           </button>
         </Stack>
 
-        {/* the navbar's own body — clipped away when collapsed, revealed as
-            the surface grows taller. One element, no second navbar. */}
-        <nav className={styles.mobileMenuList} aria-hidden={!isMenuOpen}>
-          {NAV_ITEMS.map((item) =>
-            isSectionItem(item) ? (
-              <a
-                key={item.label}
-                href={`${VK_PATH}#${item.id}`}
-                tabIndex={isMenuOpen ? undefined : -1}
-                onClick={(event) => handleSectionClick(event, item)}
-              >
-                {item.label}
-              </a>
-            ) : (
-              <Link
-                key={item.label}
-                to={item.to}
-                tabIndex={isMenuOpen ? undefined : -1}
+        {/* the navbar's own body — a grid row that animates 0fr -> 1fr, so
+            the bar grows without animating any layout-thrashing property */}
+        <div className={styles.mobileMenuGrid}>
+          <div className={styles.mobileMenuInner}>
+            <nav className={styles.mobileMenuList} aria-hidden={!isMenuOpen}>
+              {NAV_ITEMS.map((item) =>
+                isSectionItem(item) ? (
+                  <a
+                    key={item.label}
+                    href={`${VK_PATH}#${item.id}`}
+                    tabIndex={isMenuOpen ? undefined : -1}
+                    onClick={(event) => handleSectionClick(event, item)}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    tabIndex={isMenuOpen ? undefined : -1}
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
+            </nav>
+
+            <div className={styles.mobileMenuCta}>
+              <Button
+                variant="navbar"
+                weight="medium"
+                fullWidth
                 onClick={closeMenu}
               >
-                {item.label}
-              </Link>
-            ),
-          )}
-        </nav>
-
-        <div className={styles.mobileMenuCta}>
-          <Button
-            variant="navbar"
-            weight="medium"
-            fullWidth
-            onClick={closeMenu}
-          >
-            Začať lietať
-          </Button>
+                Začať lietať
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </Box>
