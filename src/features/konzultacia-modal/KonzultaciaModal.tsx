@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { createPortal } from "react-dom";
-
-import Squircle from "@/ui/primitives/Squircle";
 
 import {
   CONSENT_LABEL,
@@ -102,6 +106,18 @@ export default function KonzultaciaModal() {
   useEffect(() => {
     headingRef.current?.focus({ preventScroll: true });
   }, [step]);
+
+  // animate the card's height between steps instead of snapping to the new
+  // content's size — measure the natural height of the (unconstrained)
+  // inner wrapper and let CSS transition .card's height to it
+  const cardInnerRef = useRef<HTMLDivElement>(null);
+  const [cardHeight, setCardHeight] = useState<number | undefined>(undefined);
+  useLayoutEffect(() => {
+    if (!isOpen && !isClosing) return;
+    const el = cardInnerRef.current;
+    if (!el) return;
+    setCardHeight(el.getBoundingClientRect().height);
+  }, [step, isOpen, isClosing]);
 
   // fresh form every time the modal opens; the track comes from whatever the
   // trigger (or shared link) requested at that moment
@@ -206,13 +222,13 @@ export default function KonzultaciaModal() {
         if (e.target === e.currentTarget) requestClose();
       }}
     >
-      <Squircle
-        radius="2xl"
-        borderWidth={4}
-        borderColor="var(--color-border-primary)"
-        className={styles.cardShell}
+      <div
+        className={styles.card}
+        style={cardHeight !== undefined ? { height: cardHeight } : undefined}
+        role="dialog"
+        aria-modal="true"
       >
-      <div className={styles.card} role="dialog" aria-modal="true">
+      <div ref={cardInnerRef} className={styles.cardInner}>
         {step < 4 && <Stepper step={step} />}
 
         {step === 1 && (
@@ -563,7 +579,7 @@ export default function KonzultaciaModal() {
           )}
         </div>
       </div>
-      </Squircle>
+      </div>
     </div>,
     document.body,
   );

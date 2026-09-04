@@ -9,7 +9,7 @@ import CloseIcon from "@/ui/icons/CloseIcon";
 
 import logo from "@/assets/logos/volnekridla-logo.svg";
 import { getLenis } from "@/lib/scroll";
-import { useKonzultaciaModal, type TrackId } from "@/features/konzultacia-modal";
+import { useKonzultaciaModal } from "@/features/konzultacia-modal";
 
 import styles from "./Navbar.module.css";
 
@@ -20,17 +20,16 @@ const VK_HERO_ID = "hero";
 
 type NavItem =
   | { label: string; to: string }
-  | { label: string; id: string; offset?: number }
-  | { label: string; openKonzultacia: TrackId };
+  | { label: string; id: string; offset?: number };
 
 // single source of truth for nav order. The mobile menu renders this list
 // verbatim as a flat set of links (no dropdown — nobody was opening it).
+// The consultation modal isn't linked from here at all — reach it via the
+// "Začať lietať" CTA (or a shared "?konzultacia=1" link).
 const NAV_ITEMS: NavItem[] = [
   { label: "Domov", to: "/" },
   { label: "O mne", to: "/o-mne" },
   { label: "Produkty", to: "/eshop" },
-  { label: "Kurz voľného lietania", openKonzultacia: "kurz" },
-  { label: "Konzultácie", openKonzultacia: "konzultacia" },
   { label: "O voľnom lietaní", id: VK_HERO_ID, offset: 0 },
   { label: "Tipy a triky", id: "tipy" },
   { label: "Target Tréning", id: "target" },
@@ -41,11 +40,6 @@ const NAV_ITEMS: NavItem[] = [
 const isSectionItem = (
   item: NavItem,
 ): item is Extract<NavItem, { id: string }> => "id" in item;
-
-const isKonzultaciaItem = (
-  item: NavItem,
-): item is Extract<NavItem, { openKonzultacia: TrackId }> =>
-  "openKonzultacia" in item;
 
 // on desktop the four Voľné krídla sections stay tucked into the dropdown
 const VK_SECTIONS = NAV_ITEMS.filter(isSectionItem);
@@ -190,12 +184,6 @@ export default function Navbar() {
             <Link to="/">Domov</Link>
             <Link to="/o-mne">O mne</Link>
             <Link to="/eshop">Produkty</Link>
-            <button type="button" onClick={() => openKonzultacia("kurz")}>
-              Kurz voľného lietania
-            </button>
-            <button type="button" onClick={() => openKonzultacia("konzultacia")}>
-              Konzultácie
-            </button>
 
             <Box className={styles.dropdown}>
               <Link
@@ -264,18 +252,6 @@ export default function Navbar() {
                   >
                     {item.label}
                   </a>
-                ) : isKonzultaciaItem(item) ? (
-                  <button
-                    key={item.label}
-                    type="button"
-                    tabIndex={isMenuOpen ? undefined : -1}
-                    onClick={() => {
-                      closeMenu();
-                      openKonzultacia(item.openKonzultacia);
-                    }}
-                  >
-                    {item.label}
-                  </button>
                 ) : (
                   <Link
                     key={item.label}
