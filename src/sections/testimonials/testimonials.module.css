@@ -19,6 +19,14 @@
   color: var(--color-text-secondary) !important;
   letter-spacing: 0;
   line-height: var(--line-height-snug);
+
+  /* the near-white heading loses contrast against the cloud background
+     behind it — a thin dark stroke keeps it readable. paint-order puts the
+     stroke UNDER the fill (default browser order is fill-then-stroke,
+     which draws the stroke's outer half on top of the fill and makes the
+     glyphs look thicker/blobbier than intended). */
+  -webkit-text-stroke: 1.5px var(--color-border-primary);
+  paint-order: stroke fill;
 }
 
 .track {
