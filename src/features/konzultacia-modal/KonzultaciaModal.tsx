@@ -234,7 +234,12 @@ export default function KonzultaciaModal() {
   // type for "konzultacia"
   const showPackages =
     track === "kurz" || (track === "konzultacia" && typeId !== null);
-  const selectedType = CONSULT_TYPES.find((t) => t.id === typeId);
+  // only meaningful for "konzultacia" — guards against a stale typeId ever
+  // leaking into the recap for a track that has no type selection at all
+  const selectedType =
+    track === "konzultacia"
+      ? CONSULT_TYPES.find((t) => t.id === typeId)
+      : undefined;
   const selectedPackage = packages.find((p) => p.id === packageId);
   const trackLabel = TRACKS.find((t) => t.id === track)?.label;
   // the "kurz" track has a single package whose title repeats the track
@@ -254,6 +259,11 @@ export default function KonzultaciaModal() {
 
   function changeTrack(next: TrackId) {
     setTrack(next);
+    // the type pill (Online/Osobná) only exists for "konzultacia" — clear it
+    // so switching to "kurz" and back doesn't leave a stale selection that
+    // then leaks into the recap ("Kurz voľného lietania · Osobná
+    // konzultácia · Kurz voľného lietania")
+    setTypeId(null);
     const nextPackages = PACKAGES[next];
     setPackageId(nextPackages.length === 1 ? nextPackages[0].id : null);
   }

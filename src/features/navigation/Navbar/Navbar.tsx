@@ -221,7 +221,7 @@ export default function Navbar() {
             variant="navbar"
             weight="medium"
             className={styles.cta}
-            onClick={() => openKonzultacia("kurz")}
+            onClick={() => openKonzultacia()}
           >
             Začať lietať
           </Button>
@@ -272,7 +272,7 @@ export default function Navbar() {
                 fullWidth
                 onClick={() => {
                   closeMenu();
-                  openKonzultacia("kurz");
+                  openKonzultacia();
                 }}
               >
                 Začať lietať
