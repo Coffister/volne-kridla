@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import Navbar from "@/features/navigation/Navbar";
 import PageTransition from "@/features/navigation/PageTransition";
+import CTA from "@/sections/cta";
 import Footer from "@/sections/footer";
 
 import { initializeScrollSystem } from "@/lib/scroll";
@@ -19,6 +20,7 @@ export default function SiteLayout() {
     <MainLayout>
       <Navbar />
       <PageTransition />
+      <CTA />
       <Footer />
     </MainLayout>
   );

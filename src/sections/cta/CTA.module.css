@@ -1,0 +1,38 @@
+.section {
+  padding: 0 0 var(--spacing-2xl);
+}
+
+.cardWrapper {
+  background: var(--color-surface-primary);
+}
+
+.card {
+  padding: clamp(2rem, 6vw, var(--spacing-3xl)) clamp(1.25rem, 5vw, var(--spacing-2xl));
+  text-align: center;
+}
+
+.heading {
+  max-width: 34rem;
+  color: var(--color-text-primary);
+}
+
+.subheading {
+  max-width: 30rem;
+  color: var(--color-accent-secondary);
+}
+
+.reassure {
+  max-width: 32rem;
+  margin-top: -0.25rem;
+  color: var(--color-text-primary);
+}
+
+.cta {
+  margin-top: var(--spacing-xs);
+}
+
+@media (max-width: 640px) {
+  .cta {
+    width: 100%;
+  }
+}
