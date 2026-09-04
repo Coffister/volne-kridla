@@ -8,7 +8,9 @@ import {
 import { createPortal } from "react-dom";
 
 import {
-  CONSENT_LABEL,
+  CONSENT_PREFIX,
+  CONSENT_LINK_TEXT,
+  CONSENT_SUFFIX,
   CONSULT_TYPES,
   GDPR_TEXT,
   PACKAGES,
@@ -18,6 +20,7 @@ import {
   type TrackId,
 } from "./data";
 import { useKonzultaciaModal } from "./useKonzultaciaModal";
+import Confetti from "./Confetti";
 import {
   FeatherIcon,
   ChatIcon,
@@ -185,6 +188,15 @@ export default function KonzultaciaModal() {
   const selectedType = CONSULT_TYPES.find((t) => t.id === typeId);
   const selectedPackage = packages.find((p) => p.id === packageId);
   const trackLabel = TRACKS.find((t) => t.id === track)?.label;
+  // the "kurz" track has a single package whose title repeats the track
+  // label — drop it from the recap instead of showing it twice
+  const recapLabel = [
+    trackLabel,
+    selectedType?.title,
+    selectedPackage?.title !== trackLabel ? selectedPackage?.title : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -200,7 +212,12 @@ export default function KonzultaciaModal() {
   function validateStep2(): boolean {
     const next: typeof errors = {};
     if (!form.species) next.species = "Vyberte druh papagája.";
+    if (!form.parrotName.trim()) next.parrotName = "Uveďte meno papagája.";
+    if (!form.age.trim() || Number(form.age) < 0)
+      next.age = "Uveďte vek papagája.";
     if (!form.topic) next.topic = "Vyberte, čo chcete riešiť.";
+    if (!form.details.trim())
+      next.details = "Doplňte prosím pár slov o situácii.";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -210,6 +227,7 @@ export default function KonzultaciaModal() {
     if (!form.name.trim()) next.name = "Uveďte prosím svoje meno.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       next.email = "Uveďte platný e-mail.";
+    if (!form.phone.trim()) next.phone = "Uveďte telefónne číslo.";
     if (!form.consent) next.consent = "Bez súhlasu vás nemôžem kontaktovať.";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -375,29 +393,29 @@ export default function KonzultaciaModal() {
 
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label htmlFor="k-parrot-name">
-                  Meno papagája{" "}
-                  <span className={styles.optional}>(nepovinné)</span>
-                </label>
+                <label htmlFor="k-parrot-name">Meno papagája</label>
                 <input
                   id="k-parrot-name"
                   type="text"
                   value={form.parrotName}
                   onChange={(e) => set("parrotName", e.target.value)}
+                  aria-invalid={!!errors.parrotName}
                 />
+                {errors.parrotName && (
+                  <p className={styles.error}>{errors.parrotName}</p>
+                )}
               </div>
               <div className={styles.field}>
-                <label htmlFor="k-age">
-                  Vek v rokoch{" "}
-                  <span className={styles.optional}>(nepovinné)</span>
-                </label>
+                <label htmlFor="k-age">Vek v rokoch</label>
                 <input
                   id="k-age"
                   type="number"
                   min={0}
                   value={form.age}
                   onChange={(e) => set("age", e.target.value)}
+                  aria-invalid={!!errors.age}
                 />
+                {errors.age && <p className={styles.error}>{errors.age}</p>}
               </div>
             </div>
 
@@ -421,17 +439,16 @@ export default function KonzultaciaModal() {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="k-details">
-                Doplňujúce informácie{" "}
-                <span className={styles.optional}>(nepovinné)</span>
-              </label>
+              <label htmlFor="k-details">Doplňujúce informácie</label>
               <textarea
                 id="k-details"
                 rows={3}
                 placeholder="Ako dlho papagája máte, čo ste už skúšali…"
                 value={form.details}
                 onChange={(e) => set("details", e.target.value)}
+                aria-invalid={!!errors.details}
               />
+              {errors.details && <p className={styles.error}>{errors.details}</p>}
             </div>
           </section>
         )}
@@ -452,11 +469,7 @@ export default function KonzultaciaModal() {
             </h1>
 
             <div className={styles.recap}>
-              <span>
-                {[trackLabel, selectedType?.title, selectedPackage?.title]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </span>
+              <span>{recapLabel}</span>
               <button
                 type="button"
                 className={styles.recapEdit}
@@ -493,16 +506,16 @@ export default function KonzultaciaModal() {
                 {errors.email && <p className={styles.error}>{errors.email}</p>}
               </div>
               <div className={styles.field}>
-                <label htmlFor="k-phone">
-                  Telefón <span className={styles.optional}>(nepovinné)</span>
-                </label>
+                <label htmlFor="k-phone">Telefón</label>
                 <input
                   id="k-phone"
                   type="tel"
                   autoComplete="tel"
                   value={form.phone}
                   onChange={(e) => set("phone", e.target.value)}
+                  aria-invalid={!!errors.phone}
                 />
+                {errors.phone && <p className={styles.error}>{errors.phone}</p>}
               </div>
             </div>
 
@@ -513,35 +526,49 @@ export default function KonzultaciaModal() {
                 onChange={(e) => set("consent", e.target.checked)}
                 aria-invalid={!!errors.consent}
               />
-              <span>{CONSENT_LABEL}</span>
+              <span>
+                {CONSENT_PREFIX}
+                <button
+                  type="button"
+                  className={styles.consentLink}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setGdprOpen((o) => !o);
+                  }}
+                >
+                  {CONSENT_LINK_TEXT}
+                </button>
+                {CONSENT_SUFFIX}
+              </span>
             </label>
             {errors.consent && <p className={styles.error}>{errors.consent}</p>}
-            <button
-              type="button"
-              className={styles.gdprToggle}
-              onClick={() => setGdprOpen((o) => !o)}
-            >
-              {gdprOpen ? "Skryť" : "Zobraziť"} celý text o spracovaní údajov
-            </button>
             {gdprOpen && <p className={styles.gdprText}>{GDPR_TEXT}</p>}
           </form>
         )}
 
         {step === 4 && (
           <section key="step-4" className={`${styles.success} ${styles.stepPane}`}>
-            <h1 className={styles.heading}>
-              <CheckCircleIcon />
+            <Confetti />
+            <span className={styles.successBadge} aria-hidden>
+              <CheckIcon size={30} />
+            </span>
+            <h1 className={styles.successHeading}>
               <span ref={headingRef} tabIndex={-1}>
-                Mám to{form.name ? `, ${form.name.split(" ")[0]}` : ""}.
+                Mám to{form.name ? `, ${form.name.split(" ")[0]}` : ""}!
               </span>
             </h1>
-            <p>
+            <p className={styles.successMeta}>{recapLabel}</p>
+            <p className={styles.successText}>
               Ozvem sa do 24 hodín na <strong>{form.email}</strong>.
             </p>
           </section>
         )}
 
-        <div className={styles.actions}>
+        <div
+          className={styles.actions}
+          data-centered={step === 4 ? "true" : undefined}
+        >
           {step === 1 && (
             <button type="button" className={styles.ghostBtn} onClick={requestClose}>
               Zavrieť
@@ -556,8 +583,6 @@ export default function KonzultaciaModal() {
               Späť
             </button>
           )}
-          {step === 4 && <span />}
-
           {step === 1 && (
             <button
               type="button"

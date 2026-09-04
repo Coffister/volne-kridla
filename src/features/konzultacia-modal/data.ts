@@ -115,8 +115,12 @@ export const PARROT_TOPICS = [
 
 /* ---- GDPR ------------------------------------------------------------ [WEB] */
 
-export const CONSENT_LABEL =
-  "Súhlasím so spracovaním osobných údajov za účelom kontaktovania a realizácie konzultácie.";
+// split so the middle phrase can be rendered as an accent-colored link that
+// reveals GDPR_TEXT, instead of a separate "show/hide" toggle button
+export const CONSENT_PREFIX = "Súhlasím so ";
+export const CONSENT_LINK_TEXT = "spracovaním osobných údajov";
+export const CONSENT_SUFFIX =
+  " za účelom kontaktovania a realizácie konzultácie.";
 
 export const GDPR_TEXT =
   "Odoslaním formulára beriete na vedomie, že poskytnuté osobné údaje (meno, kontaktné údaje a informácie uvedené v dotazníku) budú spracované výlučne za účelom kontaktovania, prípravy a realizácie individuálnej konzultácie. Údaje nie sú poskytované tretím stranám a sú uchovávané len po dobu nevyhnutnú na realizáciu konzultácie a následnej komunikácie. Máte právo na prístup k svojim údajom, ich úpravu alebo vymazanie.";
