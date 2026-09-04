@@ -60,6 +60,11 @@ const EMPTY_FORM: FormState = {
 // keep in sync with the exit animation duration in KonzultaciaModal.module.css
 const CLOSE_ANIMATION_MS = 200;
 
+// keep in sync with .card's border width in KonzultaciaModal.module.css —
+// .card is border-box, so its own border isn't part of the .cardInner
+// measurement below and has to be added back on top of it
+const CARD_BORDER_WIDTH = 4;
+
 // same icon as that step's own section heading, so the stepper previews
 // what's coming next
 const STEP_ICONS = [FeatherIcon, ClipboardIcon, IdCardIcon, CheckCircleIcon];
@@ -107,17 +112,27 @@ export default function KonzultaciaModal() {
     headingRef.current?.focus({ preventScroll: true });
   }, [step]);
 
-  // animate the card's height between steps instead of snapping to the new
-  // content's size — measure the natural height of the (unconstrained)
-  // inner wrapper and let CSS transition .card's height to it
+  // animate the card's height to match its content instead of snapping —
+  // measure the natural height of the (unconstrained) inner wrapper and let
+  // CSS transition .card's height to it. A ResizeObserver (rather than
+  // reacting to just `step`) catches every reason the content can change
+  // height — track/type/package selection, validation errors appearing,
+  // the GDPR text toggle — not only a step change.
   const cardInnerRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState<number | undefined>(undefined);
   useLayoutEffect(() => {
     if (!isOpen && !isClosing) return;
     const el = cardInnerRef.current;
     if (!el) return;
-    setCardHeight(el.getBoundingClientRect().height);
-  }, [step, isOpen, isClosing]);
+
+    const update = () =>
+      setCardHeight(el.getBoundingClientRect().height + CARD_BORDER_WIDTH * 2);
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isOpen, isClosing]);
 
   // fresh form every time the modal opens; the track comes from whatever the
   // trigger (or shared link) requested at that moment
