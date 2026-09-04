@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 
+import Squircle from "@/ui/primitives/Squircle";
+
 import {
   CONSENT_LABEL,
   CONSULT_TYPES,
@@ -12,6 +14,14 @@ import {
   type TrackId,
 } from "./data";
 import { useKonzultaciaModal } from "./useKonzultaciaModal";
+import {
+  FeatherIcon,
+  ChatIcon,
+  PackageIcon,
+  ClipboardIcon,
+  IdCardIcon,
+  CheckCircleIcon,
+} from "./icons";
 import styles from "./KonzultaciaModal.module.css";
 
 type Step = 1 | 2 | 3 | 4;
@@ -190,12 +200,19 @@ export default function KonzultaciaModal() {
         if (e.target === e.currentTarget) requestClose();
       }}
     >
+      <Squircle
+        radius="2xl"
+        borderWidth={4}
+        borderColor="var(--color-border-primary)"
+        className={styles.cardShell}
+      >
       <div className={styles.card} role="dialog" aria-modal="true">
         {step < 4 && <Stepper step={step} />}
 
         {step === 1 && (
           <section>
             <h1 className={styles.heading}>
+              <FeatherIcon />
               <span ref={headingRef} tabIndex={-1}>
                 Pre svojho papagája hľadám
               </span>
@@ -219,7 +236,10 @@ export default function KonzultaciaModal() {
 
             {track === "konzultacia" && (
               <>
-                <h2 className={styles.subheading}>Mám záujem o</h2>
+                <h2 className={styles.subheading}>
+                  <ChatIcon />
+                  Mám záujem o
+                </h2>
                 <div
                   className={styles.pillRow}
                   role="radiogroup"
@@ -246,7 +266,10 @@ export default function KonzultaciaModal() {
               </>
             )}
 
-            <h2 className={styles.subheading}>Vyberám si balíček</h2>
+            <h2 className={styles.subheading}>
+              <PackageIcon />
+              Vyberám si balíček
+            </h2>
             <div
               className={styles.packages}
               role="radiogroup"
@@ -288,6 +311,7 @@ export default function KonzultaciaModal() {
         {step === 2 && (
           <section>
             <h1 className={styles.heading}>
+              <ClipboardIcon />
               <span ref={headingRef} tabIndex={-1}>
                 Údaje o papagájovi
               </span>
@@ -378,6 +402,7 @@ export default function KonzultaciaModal() {
         {step === 3 && (
           <form id="konzultacia-step3" onSubmit={onSubmit} noValidate>
             <h1 className={styles.heading}>
+              <IdCardIcon />
               <span ref={headingRef} tabIndex={-1}>
                 Vaše údaje
               </span>
@@ -462,6 +487,7 @@ export default function KonzultaciaModal() {
         {step === 4 && (
           <section className={styles.success}>
             <h1 className={styles.heading}>
+              <CheckCircleIcon />
               <span ref={headingRef} tabIndex={-1}>
                 Mám to{form.name ? `, ${form.name.split(" ")[0]}` : ""}.
               </span>
@@ -525,6 +551,7 @@ export default function KonzultaciaModal() {
           )}
         </div>
       </div>
+      </Squircle>
     </div>,
     document.body,
   );
