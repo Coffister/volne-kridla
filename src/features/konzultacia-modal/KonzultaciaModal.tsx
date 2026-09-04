@@ -390,37 +390,45 @@ export default function KonzultaciaModal() {
                   role="radiogroup"
                   aria-label="Balík"
                 >
-                  {packages.map((p) => (
-                    <label
-                      key={p.id}
-                      className={styles.packageCard}
-                      data-selected={packageId === p.id}
-                    >
-                      <input
-                        className={styles.srOnly}
-                        type="radio"
-                        name="package"
-                        value={p.id}
-                        checked={packageId === p.id}
-                        onChange={() => setPackageId(p.id)}
-                      />
-                      {p.badge && (
-                        <span className={styles.packageBadge}>{p.badge}</span>
-                      )}
-                      <span className={styles.packageTitle}>{p.title}</span>
-                      {p.subtitle && (
-                        <span className={styles.packageSubtitle}>
-                          {p.subtitle}
-                        </span>
-                      )}
-                      <span className={styles.packagePrice}>{p.price}</span>
-                      <ul className={styles.packagePoints}>
-                        {p.points.map((pt) => (
-                          <li key={pt}>{pt}</li>
-                        ))}
-                      </ul>
-                    </label>
-                  ))}
+                  {packages.map((p) => {
+                    // online vs osobná has genuinely different benefits for
+                    // some packages (e.g. "video hovor" instead of "osobné
+                    // stretnutie") — fall back to the default points when
+                    // there's no override for the current type
+                    const points =
+                      (typeId && p.pointsByType?.[typeId]) || p.points;
+                    return (
+                      <label
+                        key={p.id}
+                        className={styles.packageCard}
+                        data-selected={packageId === p.id}
+                      >
+                        <input
+                          className={styles.srOnly}
+                          type="radio"
+                          name="package"
+                          value={p.id}
+                          checked={packageId === p.id}
+                          onChange={() => setPackageId(p.id)}
+                        />
+                        {p.badge && (
+                          <span className={styles.packageBadge}>{p.badge}</span>
+                        )}
+                        <span className={styles.packageTitle}>{p.title}</span>
+                        {p.subtitle && (
+                          <span className={styles.packageSubtitle}>
+                            {p.subtitle}
+                          </span>
+                        )}
+                        <span className={styles.packagePrice}>{p.price}</span>
+                        <ul className={styles.packagePoints}>
+                          {points.map((pt) => (
+                            <li key={pt}>{pt}</li>
+                          ))}
+                        </ul>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             )}

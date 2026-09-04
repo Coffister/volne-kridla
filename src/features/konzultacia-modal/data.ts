@@ -18,7 +18,14 @@ export interface ConsultPackage {
   subtitle?: string;
   price: string;
   badge?: string;
+  // default/fallback points — used as-is for packages that don't vary by
+  // consult type (e.g. the flight course)
   points: string[];
+  // overrides `points` when a specific CONSULT_TYPES id is selected — only
+  // set where the benefit wording actually differs between online and
+  // in-person (e.g. "1x osobné stretnutie" doesn't make sense for a video
+  // call)
+  pointsByType?: Partial<Record<string, string[]>>;
 }
 
 /* ---- vetvy (Pre svojho papagája hľadám) ------------------------------ [WEB] */
@@ -53,6 +60,7 @@ export const PACKAGES: Record<TrackId, ConsultPackage[]> = {
       title: "Základná konzultácia",
       subtitle: "Základný balík",
       price: "60 €",
+      // in-person is the original/default wording
       points: [
         "1x osobné stretnutie",
         "WhatsApp podpora na 1 mesiac",
@@ -61,6 +69,16 @@ export const PACKAGES: Record<TrackId, ConsultPackage[]> = {
         "Vysvetlenie správania naživo",
         "Odporúčania pre domáci tréning",
       ],
+      pointsByType: {
+        online: [
+          "1x video hovor",
+          "WhatsApp podpora na 1 mesiac",
+          "Pozorovanie papagája cez video",
+          "Praktické odporúčania na mieru",
+          "Vysvetlenie správania na konkrétnych príkladoch",
+          "Odporúčania pre domáci tréning",
+        ],
+      },
     },
     {
       id: "premium",
@@ -76,6 +94,16 @@ export const PACKAGES: Record<TrackId, ConsultPackage[]> = {
         "Úprava tréningu podľa reakcií",
         "Detailnejšie vedenie človeka",
       ],
+      pointsByType: {
+        online: [
+          "2x video hovor",
+          "WhatsApp podpora na 2 mesiace",
+          "Individuálna práca s papagájom na diaľku",
+          "Sledovanie pokroku podľa zaslaných videí",
+          "Úprava tréningu podľa reakcií",
+          "Detailnejšie vedenie človeka",
+        ],
+      },
     },
   ],
   kurz: [
