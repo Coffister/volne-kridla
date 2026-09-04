@@ -5,8 +5,14 @@
   left: 50%;
   transform: translateX(-50%);
 
-  /* wide enough for the full link row (Domov … Fotogaléria) without wrapping */
-  width: min(85%, 1220px);
+  /* hug the actual content (logo + links + CTA) instead of stretching to a
+     fixed width — a fixed width here leaves a dead gap between the link
+     list and the CTA button whenever the link row is shorter than the cap.
+     Cap by viewport minus a fixed margin (not a percentage) so the cap
+     doesn't squeeze tighter than the content needs at medium viewports —
+     the CTA button has no nowrap guard, so a too-tight cap wraps its text. */
+  width: fit-content;
+  max-width: min(calc(100% - 48px), 1220px);
 
   z-index: var(--z-navbar);
   overflow: visible;
@@ -39,6 +45,14 @@
 
 .inner {
   padding: 8px 8px 8px 32px;
+}
+
+.cta {
+  /* like the nav links, never wrap or get squeezed by the flex row — a
+     flex item can otherwise shrink below its label's natural width even
+     when the row has room, forcing "Začať lietať" onto two lines */
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logoSlot {

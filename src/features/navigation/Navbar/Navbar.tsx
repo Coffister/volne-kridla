@@ -170,6 +170,7 @@ export default function Navbar() {
           direction="row"
           align="center"
           justify="space-between"
+          gap="lg"
           className={styles.inner}
         >
           <Box className={styles.logoSlot}>
