@@ -64,12 +64,17 @@
   gap: 2px;
 }
 
-.list a {
+.list a,
+.list button {
   padding: 8px 10px;
   white-space: nowrap;
 
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
 
   -webkit-transform: perspective(1px) translateZ(0);
   transform: perspective(1px) translateZ(0);
@@ -80,7 +85,8 @@
   transition-property: transform;
 }
 
-.list a:hover {
+.list a:hover,
+.list button:hover {
   -webkit-transform: scale(1.05);
   transform: scale(1.05);
   color: var(--color-accent-primary);
@@ -271,8 +277,11 @@
     display: none;
   }
 
-  .mobileMenuList a {
+  .mobileMenuList a,
+  .mobileMenuList button {
     display: block;
+    width: 100%;
+    text-align: left;
     /* let the labels breathe — generous all round, most of all on the left */
     padding: 14px 16px 14px 28px;
     line-height: 1.2;
@@ -281,6 +290,9 @@
     font-weight: var(--font-weight-extrabold);
     font-size: 18px;
     color: var(--color-text-primary);
+    background: none;
+    border: 0;
+    cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
   }
