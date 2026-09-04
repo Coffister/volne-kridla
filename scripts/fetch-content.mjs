@@ -116,8 +116,14 @@ try {
   );
 } catch (err) {
   console.error("[fetch-content] failed:", err.message || err);
-  // Fail the build: a broken snapshot is worse than a known-good fallback,
-  // but a silent stale deploy is worst. Flip to `process.exit(0)` if you'd
-  // rather always fall back.
-  process.exit(1);
+  // Don't fail the whole build over a content-fetch problem (bad/rotated
+  // Supabase key, RLS change, outage, ...) — that would block every deploy,
+  // including unrelated code fixes, until someone notices and fixes Supabase.
+  // Fall back to the last committed snapshot and ship a slightly stale site
+  // instead of no site.
+  console.warn(
+    "[fetch-content] falling back to committed src/content/site.json — " +
+      "the live site will show stale content until this is fixed.",
+  );
+  process.exit(0);
 }
