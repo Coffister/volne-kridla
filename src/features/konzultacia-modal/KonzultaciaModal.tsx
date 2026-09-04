@@ -106,7 +106,10 @@ export default function KonzultaciaModal() {
   const closeTimer = useRef<number | undefined>(undefined);
 
   const [step, setStep] = useState<Step>(1);
-  const [track, setTrack] = useState<TrackId>(requestedTrack);
+  // null = nothing picked yet; step 1 starts with just the track pills and
+  // reveals the next choice (type, then package) only once the one before
+  // it is made
+  const [track, setTrack] = useState<TrackId | null>(requestedTrack);
   const [typeId, setTypeId] = useState<string | null>(null);
   const [packageId, setPackageId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -162,11 +165,13 @@ export default function KonzultaciaModal() {
     if (!shouldReset) return;
 
     resetOnNextOpen.current = false;
-    const initialPackages = PACKAGES[requestedTrack];
+    const initialPackages = requestedTrack ? PACKAGES[requestedTrack] : null;
     setStep(1);
     setTrack(requestedTrack);
     setTypeId(null);
-    setPackageId(initialPackages.length === 1 ? initialPackages[0].id : null);
+    setPackageId(
+      initialPackages?.length === 1 ? initialPackages[0].id : null,
+    );
     setForm(EMPTY_FORM);
     setErrors({});
     setGdprOpen(false);
@@ -223,7 +228,12 @@ export default function KonzultaciaModal() {
 
   if (!isOpen && !isClosing) return null;
 
-  const packages = PACKAGES[track];
+  const packages = track ? PACKAGES[track] : [];
+  // the package section only reveals once whatever comes before it in the
+  // step-1 flow is decided: track alone for "kurz" (no type step), track +
+  // type for "konzultacia"
+  const showPackages =
+    track === "kurz" || (track === "konzultacia" && typeId !== null);
   const selectedType = CONSULT_TYPES.find((t) => t.id === typeId);
   const selectedPackage = packages.find((p) => p.id === packageId);
   const trackLabel = TRACKS.find((t) => t.id === track)?.label;
@@ -328,7 +338,7 @@ export default function KonzultaciaModal() {
             </div>
 
             {track === "konzultacia" && (
-              <>
+              <div key="type-reveal" className={styles.reveal}>
                 <h2 className={styles.subheading}>
                   <ChatIcon />
                   Mám záujem o
@@ -356,48 +366,54 @@ export default function KonzultaciaModal() {
                     </label>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
-            <h2 className={styles.subheading}>
-              <PackageIcon />
-              Vyberám si balíček
-            </h2>
-            <div
-              className={styles.packages}
-              role="radiogroup"
-              aria-label="Balík"
-            >
-              {packages.map((p) => (
-                <label
-                  key={p.id}
-                  className={styles.packageCard}
-                  data-selected={packageId === p.id}
+            {showPackages && (
+              <div key="package-reveal" className={styles.reveal}>
+                <h2 className={styles.subheading}>
+                  <PackageIcon />
+                  Vyberám si balíček
+                </h2>
+                <div
+                  className={styles.packages}
+                  role="radiogroup"
+                  aria-label="Balík"
                 >
-                  <input
-                    className={styles.srOnly}
-                    type="radio"
-                    name="package"
-                    value={p.id}
-                    checked={packageId === p.id}
-                    onChange={() => setPackageId(p.id)}
-                  />
-                  {p.badge && (
-                    <span className={styles.packageBadge}>{p.badge}</span>
-                  )}
-                  <span className={styles.packageTitle}>{p.title}</span>
-                  {p.subtitle && (
-                    <span className={styles.packageSubtitle}>{p.subtitle}</span>
-                  )}
-                  <span className={styles.packagePrice}>{p.price}</span>
-                  <ul className={styles.packagePoints}>
-                    {p.points.map((pt) => (
-                      <li key={pt}>{pt}</li>
-                    ))}
-                  </ul>
-                </label>
-              ))}
-            </div>
+                  {packages.map((p) => (
+                    <label
+                      key={p.id}
+                      className={styles.packageCard}
+                      data-selected={packageId === p.id}
+                    >
+                      <input
+                        className={styles.srOnly}
+                        type="radio"
+                        name="package"
+                        value={p.id}
+                        checked={packageId === p.id}
+                        onChange={() => setPackageId(p.id)}
+                      />
+                      {p.badge && (
+                        <span className={styles.packageBadge}>{p.badge}</span>
+                      )}
+                      <span className={styles.packageTitle}>{p.title}</span>
+                      {p.subtitle && (
+                        <span className={styles.packageSubtitle}>
+                          {p.subtitle}
+                        </span>
+                      )}
+                      <span className={styles.packagePrice}>{p.price}</span>
+                      <ul className={styles.packagePoints}>
+                        {p.points.map((pt) => (
+                          <li key={pt}>{pt}</li>
+                        ))}
+                      </ul>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
         )}
 
@@ -625,7 +641,7 @@ export default function KonzultaciaModal() {
             <button
               type="button"
               className={styles.primaryBtn}
-              disabled={track === "konzultacia" ? !typeId || !packageId : !packageId}
+              disabled={!showPackages || !packageId}
               onClick={() => setStep(2)}
             >
               Pokračovať

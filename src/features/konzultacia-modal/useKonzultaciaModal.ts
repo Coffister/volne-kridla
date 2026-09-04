@@ -14,9 +14,11 @@ export function useKonzultaciaModal() {
 
   const isOpen = searchParams.get(PARAM_OPEN) === "1";
   const requestedTrack = searchParams.get(PARAM_TRACK);
-  const track: TrackId = TRACKS.some((t) => t.id === requestedTrack)
+  // null when the link/CTA didn't ask for a specific track — the modal then
+  // opens with neither pill pre-selected, rather than defaulting to one
+  const track: TrackId | null = TRACKS.some((t) => t.id === requestedTrack)
     ? (requestedTrack as TrackId)
-    : "konzultacia";
+    : null;
 
   function open(nextTrack?: TrackId) {
     setSearchParams((prev) => {
