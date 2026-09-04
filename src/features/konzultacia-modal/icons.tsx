@@ -1,9 +1,13 @@
 // Malé lineárne ikony pre jednotlivé sekcie konzultačného modalu — rovnaký
 // štýl ako src/ui/icons (currentColor, zaoblené konce/rohy).
 
-export function FeatherIcon() {
+interface IconProps {
+  size?: number;
+}
+
+export function FeatherIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <path
         d="M20.5 3.5c-4.4 0-8.6 1.8-11.6 4.9C5.8 11.5 4 15.8 4 20.2l.3.3c4.4 0 8.6-1.8 11.6-4.8s4.8-7.3 4.8-11.7l-.2-.5z"
         stroke="currentColor"
@@ -27,9 +31,9 @@ export function FeatherIcon() {
   );
 }
 
-export function ChatIcon() {
+export function ChatIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <rect
         x="3"
         y="5"
@@ -56,9 +60,9 @@ export function ChatIcon() {
   );
 }
 
-export function PackageIcon() {
+export function PackageIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <path
         d="M3 8l9-4 9 4-9 4-9-4z"
         stroke="currentColor"
@@ -77,9 +81,9 @@ export function PackageIcon() {
   );
 }
 
-export function ClipboardIcon() {
+export function ClipboardIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <rect
         x="5.5"
         y="4"
@@ -108,9 +112,9 @@ export function ClipboardIcon() {
   );
 }
 
-export function IdCardIcon() {
+export function IdCardIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <rect
         x="3"
         y="5.5"
@@ -131,14 +135,30 @@ export function IdCardIcon() {
   );
 }
 
-export function CheckCircleIcon() {
+export function CheckCircleIcon({ size = 22 }: IconProps) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
       <path
         d="M8 12.3l2.6 2.6L16 9.5"
         stroke="currentColor"
         strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// bare checkmark (no circle) — used inside the stepper's own dot, which
+// already draws the circle
+export function CheckIcon({ size = 14 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path
+        d="M4 12.5l6 6L20 6"
+        stroke="currentColor"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

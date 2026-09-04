@@ -42,9 +42,31 @@
   }
 }
 
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stepPane {
+  animation: stepIn 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .cardShell {
   width: 100%;
   max-width: 34rem;
+  /* Squircle clips the card background and draws its border as a separate
+     stroked SVG on top; the two get antialiased independently, leaving a
+     hairline sliver of the (light) card background peeking past the (dark)
+     border along the whole perimeter. Giving the shell itself the border
+     color means that sliver blends into the border instead of showing up
+     as a stray light line against the page behind it. */
+  background: var(--color-border-primary);
 }
 
 .card {
@@ -61,6 +83,7 @@
 .stepper {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   margin: 0 0 0.2rem;
   padding: 0;
   list-style: none;
@@ -69,6 +92,7 @@
 .stepItem {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   flex: 1;
 }
 
@@ -82,18 +106,22 @@
   width: 2rem;
   height: 2rem;
   flex-shrink: 0;
-  font-family: var(--font-family-display);
-  font-size: 0.85rem;
-  font-weight: 700;
   color: var(--color-text-primary);
   background: var(--color-surface-secondary);
   border: 3px solid transparent;
   border-radius: 999px;
+  transition:
+    background-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .stepDot[data-state="current"] {
   background: var(--color-surface-primary);
   border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+  transform: scale(1.08);
 }
 
 .stepDot[data-state="done"] {
@@ -107,6 +135,7 @@
   height: 3px;
   min-width: 0.75rem;
   background: var(--color-border-primary);
+  transition: background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .stepLine[data-active="true"] {
@@ -557,21 +586,25 @@
 @media (prefers-reduced-motion: reduce) {
   .overlay,
   .overlay.closing,
-  .overlay.closing .card {
+  .overlay.closing .cardShell,
+  .stepPane {
     animation: none;
   }
   .pill,
   .pillLabel,
   .packageCard,
   .primaryBtn,
-  .ghostBtn {
+  .ghostBtn,
+  .stepDot,
+  .stepLine {
     transition: none;
   }
   .pill:hover,
   .pillLabel:hover,
   .packageCard:hover,
   .primaryBtn:hover,
-  .ghostBtn:hover {
+  .ghostBtn:hover,
+  .stepDot[data-state="current"] {
     transform: none;
   }
 }

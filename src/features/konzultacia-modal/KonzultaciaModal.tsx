@@ -21,6 +21,7 @@ import {
   ClipboardIcon,
   IdCardIcon,
   CheckCircleIcon,
+  CheckIcon,
 } from "./icons";
 import styles from "./KonzultaciaModal.module.css";
 
@@ -55,15 +56,20 @@ const EMPTY_FORM: FormState = {
 // keep in sync with the exit animation duration in KonzultaciaModal.module.css
 const CLOSE_ANIMATION_MS = 200;
 
+// same icon as that step's own section heading, so the stepper previews
+// what's coming next
+const STEP_ICONS = [FeatherIcon, ClipboardIcon, IdCardIcon, CheckCircleIcon];
+
 function Stepper({ step }: { step: Step }) {
   return (
     <ol className={styles.stepper} aria-hidden>
       {[1, 2, 3, 4].map((n) => {
         const state = n < step ? "done" : n === step ? "current" : "upcoming";
+        const StepIcon = STEP_ICONS[n - 1];
         return (
           <li key={n} className={styles.stepItem}>
             <span className={styles.stepDot} data-state={state}>
-              {state === "done" ? "✓" : state === "current" ? "" : n}
+              {state === "done" ? <CheckIcon size={14} /> : <StepIcon size={16} />}
             </span>
             {n < 4 && (
               <span className={styles.stepLine} data-active={n <= step} />
@@ -210,7 +216,7 @@ export default function KonzultaciaModal() {
         {step < 4 && <Stepper step={step} />}
 
         {step === 1 && (
-          <section>
+          <section key="step-1" className={styles.stepPane}>
             <h1 className={styles.heading}>
               <FeatherIcon />
               <span ref={headingRef} tabIndex={-1}>
@@ -309,7 +315,7 @@ export default function KonzultaciaModal() {
         )}
 
         {step === 2 && (
-          <section>
+          <section key="step-2" className={styles.stepPane}>
             <h1 className={styles.heading}>
               <ClipboardIcon />
               <span ref={headingRef} tabIndex={-1}>
@@ -400,7 +406,13 @@ export default function KonzultaciaModal() {
         )}
 
         {step === 3 && (
-          <form id="konzultacia-step3" onSubmit={onSubmit} noValidate>
+          <form
+            key="step-3"
+            id="konzultacia-step3"
+            className={styles.stepPane}
+            onSubmit={onSubmit}
+            noValidate
+          >
             <h1 className={styles.heading}>
               <IdCardIcon />
               <span ref={headingRef} tabIndex={-1}>
@@ -485,7 +497,7 @@ export default function KonzultaciaModal() {
         )}
 
         {step === 4 && (
-          <section className={styles.success}>
+          <section key="step-4" className={`${styles.success} ${styles.stepPane}`}>
             <h1 className={styles.heading}>
               <CheckCircleIcon />
               <span ref={headingRef} tabIndex={-1}>
