@@ -68,6 +68,12 @@ const CLOSE_ANIMATION_MS = 200;
 // measurement below and has to be added back on top of it
 const CARD_BORDER_WIDTH = 4;
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// how long to wait after the visitor stops typing an email before flagging
+// an invalid format, instead of waiting all the way until submit
+const EMAIL_CHECK_DELAY_MS = 3000;
+
 // same icon as that step's own section heading, so the stepper previews
 // what's coming next
 const STEP_ICONS = [FeatherIcon, ClipboardIcon, IdCardIcon, CheckCircleIcon];
@@ -137,10 +143,25 @@ export default function KonzultaciaModal() {
     return () => observer.disconnect();
   }, [isOpen, isClosing]);
 
-  // fresh form every time the modal opens; the track comes from whatever the
-  // trigger (or shared link) requested at that moment
+  // Closing by accident (stray backdrop click, Escape) shouldn't cost the
+  // visitor their progress — the draft (step + all fields) survives being
+  // closed and reopened. It only resets when: this is the very first time
+  // the modal is opened, the visitor finished a submission last time
+  // (resetOnNextOpen), or they're opening a specifically different track
+  // than the one they had a draft going for (e.g. clicking "Kurz voľného
+  // lietania" while an old "Konzultácie" draft is sitting untouched).
+  const hasInitialized = useRef(false);
+  const resetOnNextOpen = useRef(false);
   useEffect(() => {
     if (!isOpen) return;
+    const isFirstOpen = !hasInitialized.current;
+    hasInitialized.current = true;
+
+    const shouldReset =
+      isFirstOpen || resetOnNextOpen.current || requestedTrack !== track;
+    if (!shouldReset) return;
+
+    resetOnNextOpen.current = false;
     const initialPackages = PACKAGES[requestedTrack];
     setStep(1);
     setTrack(requestedTrack);
@@ -154,6 +175,9 @@ export default function KonzultaciaModal() {
 
   const requestClose = () => {
     if (closeTimer.current) return;
+    // the flow is done once they've seen the success step — closing from
+    // there means the next open should start a fresh inquiry, not resume
+    if (step === 4) resetOnNextOpen.current = true;
     setIsClosing(true);
     closeTimer.current = window.setTimeout(() => {
       closeTimer.current = undefined;
@@ -181,6 +205,21 @@ export default function KonzultaciaModal() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  // check the email format shortly after they stop typing, instead of only
+  // at submit — skipped while empty so it doesn't nag before they've typed
+  // anything, and cleared immediately (via `set`) on every keystroke so a
+  // stale error never lingers while they're actively fixing it
+  useEffect(() => {
+    if (!isOpen || !form.email) return;
+    const timer = window.setTimeout(() => {
+      setErrors((e) => ({
+        ...e,
+        email: EMAIL_PATTERN.test(form.email) ? undefined : "Uveďte platný e-mail.",
+      }));
+    }, EMAIL_CHECK_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [isOpen, form.email]);
 
   if (!isOpen && !isClosing) return null;
 
@@ -225,8 +264,7 @@ export default function KonzultaciaModal() {
   function validateStep3(): boolean {
     const next: typeof errors = {};
     if (!form.name.trim()) next.name = "Uveďte prosím svoje meno.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      next.email = "Uveďte platný e-mail.";
+    if (!EMAIL_PATTERN.test(form.email)) next.email = "Uveďte platný e-mail.";
     if (!form.phone.trim()) next.phone = "Uveďte telefónne číslo.";
     if (!form.consent) next.consent = "Bez súhlasu vás nemôžem kontaktovať.";
     setErrors(next);
