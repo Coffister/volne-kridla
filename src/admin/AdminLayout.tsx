@@ -9,7 +9,6 @@ export default function AdminLayout() {
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
-        <div className="admin-brand">Voľné krídla</div>
         <nav>
           <NavLink to="/admin" end>
             Prehľad
