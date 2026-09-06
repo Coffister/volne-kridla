@@ -50,7 +50,7 @@ function publicUrl(path) {
 }
 
 try {
-  const [contentRes, galleryRes, reviewsRes] = await Promise.all([
+  const [contentRes, galleryRes, reviewsRes, faqRes] = await Promise.all([
     supabase.from("site_content").select("data").eq("id", 1).single(),
     supabase
       .from("gallery_images")
@@ -64,12 +64,19 @@ try {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
+    supabase
+      .from("faq_items")
+      .select("id, group_key, question, answer, sort_order, published")
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
   ]);
 
   if (contentRes.error) throw contentRes.error;
   if (galleryRes.error) throw galleryRes.error;
-  // reviews table may not exist yet on a fresh project — treat as empty
+  // reviews / faq_items tables may not exist yet on a fresh project — treat as empty
   const reviewRows = reviewsRes.error ? [] : (reviewsRes.data ?? []);
+  const faqRows = faqRes.error ? [] : (faqRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
   const gallery = (galleryRes.data ?? []).map((row) => ({
@@ -99,12 +106,22 @@ try {
       : (row.image_url ?? ""),
   }));
 
+  const faq = {
+    tipy: faqRows
+      .filter((row) => row.group_key === "tipy")
+      .map((row) => ({ question: row.question, answer: row.answer })),
+    otazky: faqRows
+      .filter((row) => row.group_key === "otazky")
+      .map((row) => ({ question: row.question, answer: row.answer })),
+  };
+
   const out = {
     publishedAt: new Date().toISOString(),
     blocks: data.blocks ?? {},
     gallery,
     heroCarousel,
     reviews,
+    faq,
   };
 
   await mkdir(dirname(OUT), { recursive: true });
@@ -112,7 +129,8 @@ try {
 
   console.log(
     `[fetch-content] wrote ${OUT} — ${gallery.length} images, ` +
-      `${reviews.length} reviews, ${Object.keys(out.blocks).length} text blocks.`,
+      `${reviews.length} reviews, ${faqRows.length} faq items, ` +
+      `${Object.keys(out.blocks).length} text blocks.`,
   );
 } catch (err) {
   console.error("[fetch-content] failed:", err.message || err);

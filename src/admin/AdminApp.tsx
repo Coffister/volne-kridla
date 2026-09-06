@@ -8,6 +8,7 @@ import LoginPage from "./routes/LoginPage";
 import OverviewPage from "./routes/OverviewPage";
 import GalleryPage from "./routes/GalleryPage";
 import ReviewsPage from "./routes/ReviewsPage";
+import FaqPage from "./routes/FaqPage";
 import VersionsPage from "./routes/VersionsPage";
 
 import "./admin.css";
@@ -43,6 +44,7 @@ export default function AdminApp() {
           <Route index element={<OverviewPage />} />
           <Route path="fotogaleria" element={<GalleryPage />} />
           <Route path="recenzie" element={<ReviewsPage />} />
+          <Route path="otazky" element={<FaqPage />} />
           <Route path="verzie" element={<VersionsPage />} />
         </Route>
       </Routes>

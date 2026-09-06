@@ -3,5 +3,6 @@
   "blocks": {},
   "gallery": [],
   "heroCarousel": [],
-  "reviews": []
+  "reviews": [],
+  "faq": { "tipy": [], "otazky": [] }
 }

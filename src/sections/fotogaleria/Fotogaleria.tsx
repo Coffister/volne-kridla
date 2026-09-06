@@ -4,9 +4,16 @@ import { Container, Section, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import Lightbox from "@/ui/components/Lightbox";
 
-import { galleryImages } from "@/pages/Fotogaleria/images";
+import { galleryImages as fallbackGalleryImages } from "@/pages/Fotogaleria/images";
+import { site } from "@/content";
 
 import styles from "./Fotogaleria.module.css";
+
+// Prefer images managed in the admin (baked in at build time); fall back to
+// the hardcoded set until the gallery table has published images.
+const galleryImages = site.gallery.length
+  ? site.gallery.map((g) => ({ id: g.id, src: g.src, alt: g.alt }))
+  : fallbackGalleryImages;
 
 export default function Fotogaleria() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);

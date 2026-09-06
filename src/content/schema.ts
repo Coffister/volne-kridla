@@ -25,6 +25,16 @@ export interface Review {
   image: string;
 }
 
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+export interface FaqContent {
+  tipy: FaqEntry[];
+  otazky: FaqEntry[];
+}
+
 /**
  * Editable rich text / plain text blocks, addressed by a stable dotted key,
  * e.g. "home.hero.title". Kept as a flat map so new editable spots don't need
@@ -39,6 +49,7 @@ export interface SiteContent {
   gallery: GalleryImage[];
   heroCarousel: CarouselSlide[];
   reviews: Review[];
+  faq: FaqContent;
 }
 
 export const EMPTY_SITE: SiteContent = {
@@ -47,4 +58,5 @@ export const EMPTY_SITE: SiteContent = {
   gallery: [],
   heroCarousel: [],
   reviews: [],
+  faq: { tipy: [], otazky: [] },
 };

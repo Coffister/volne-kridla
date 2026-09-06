@@ -1,12 +1,18 @@
 import { useState } from "react";
 
-import { qna, tips, type QnaItem } from "./faq";
+import { qna as fallbackQna, tips as fallbackTips, type QnaItem } from "./faq";
 import FaqItem from "./FaqItem";
 
 import { Box, Container, Section, Stack } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
+import { site } from "@/content";
 
 import styles from "./VolneKridlaFaq.module.css";
+
+// Prefer questions managed in the admin (baked in at build time); fall back
+// to the hardcoded copy per group until that group has published items.
+const tips = site.faq.tipy.length ? site.faq.tipy : fallbackTips;
+const qna = site.faq.otazky.length ? site.faq.otazky : fallbackQna;
 
 interface FaqGroupProps {
   id: string;
