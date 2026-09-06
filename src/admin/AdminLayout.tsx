@@ -16,6 +16,8 @@ export default function AdminLayout() {
           <NavLink to="/admin/fotogaleria">Fotogaléria</NavLink>
           <NavLink to="/admin/recenzie">Recenzie</NavLink>
           <NavLink to="/admin/otazky">Otázky</NavLink>
+          <NavLink to="/admin/produkty">Produkty</NavLink>
+          <NavLink to="/admin/objednavky">Objednávky</NavLink>
           <NavLink to="/admin/verzie">Verzie</NavLink>
         </nav>
         <div className="admin-user">

@@ -16,4 +16,8 @@
     <loc>https://volnekridla.sk/fotogaleria</loc>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://volnekridla.sk/eshop</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>

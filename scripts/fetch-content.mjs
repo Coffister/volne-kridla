@@ -50,7 +50,7 @@ function publicUrl(path) {
 }
 
 try {
-  const [contentRes, galleryRes, reviewsRes, faqRes] = await Promise.all([
+  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes] = await Promise.all([
     supabase.from("site_content").select("data").eq("id", 1).single(),
     supabase
       .from("gallery_images")
@@ -70,13 +70,20 @@ try {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
+    supabase
+      .from("products")
+      .select("id, name, description, price_label, image_path, image_url, sort_order, published")
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
   ]);
 
   if (contentRes.error) throw contentRes.error;
   if (galleryRes.error) throw galleryRes.error;
-  // reviews / faq_items tables may not exist yet on a fresh project — treat as empty
+  // reviews / faq_items / products tables may not exist yet on a fresh project — treat as empty
   const reviewRows = reviewsRes.error ? [] : (reviewsRes.data ?? []);
   const faqRows = faqRes.error ? [] : (faqRes.data ?? []);
+  const productRows = productsRes.error ? [] : (productsRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
   const gallery = (galleryRes.data ?? []).map((row) => ({
@@ -115,6 +122,14 @@ try {
       .map((row) => ({ question: row.question, answer: row.answer })),
   };
 
+  const products = productRows.map((row) => ({
+    id: row.id,
+    name: row.name ?? "",
+    description: row.description ?? "",
+    priceLabel: row.price_label ?? "",
+    image: row.image_path ? publicUrl(row.image_path) : (row.image_url ?? ""),
+  }));
+
   const out = {
     publishedAt: new Date().toISOString(),
     blocks: data.blocks ?? {},
@@ -122,6 +137,7 @@ try {
     heroCarousel,
     reviews,
     faq,
+    products,
   };
 
   await mkdir(dirname(OUT), { recursive: true });
@@ -130,7 +146,7 @@ try {
   console.log(
     `[fetch-content] wrote ${OUT} — ${gallery.length} images, ` +
       `${reviews.length} reviews, ${faqRows.length} faq items, ` +
-      `${Object.keys(out.blocks).length} text blocks.`,
+      `${products.length} products, ${Object.keys(out.blocks).length} text blocks.`,
   );
 } catch (err) {
   console.error("[fetch-content] failed:", err.message || err);

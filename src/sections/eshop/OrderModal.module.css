@@ -1,0 +1,107 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.card {
+  position: relative;
+  width: min(28rem, 100%);
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+
+  background: #fff;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-text-primary);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 32px 28px 28px;
+}
+
+.hint {
+  margin: 0 0 12px;
+  color: var(--color-text-primary);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.7rem;
+}
+
+.field label {
+  font-family: var(--font-family-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 10px;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 4.25rem;
+  line-height: 1.45;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.error {
+  margin: 0 0 0.5rem;
+  color: #c4341a;
+}
+
+.doneState {
+  padding: 40px 28px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 28px 20px 20px;
+  }
+}

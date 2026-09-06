@@ -14,6 +14,16 @@ const actions = [
     hint: "Zapísať novú recenziu klienta",
   },
   {
+    to: "/admin/produkty",
+    title: "Pridať produkt",
+    hint: "Nahrať nový produkt do e-shopu",
+  },
+  {
+    to: "/admin/objednavky",
+    title: "Objednávky",
+    hint: "Pozrieť dopyty z e-shopu",
+  },
+  {
     to: "/admin/verzie",
     title: "História verzií",
     hint: "Pozrieť a obnoviť staršie verzie",
@@ -63,6 +73,9 @@ export default function OverviewPage() {
         </li>
         <li>
           <strong>{site.reviews.length}</strong> recenzií
+        </li>
+        <li>
+          <strong>{site.products.length}</strong> produktov
         </li>
         <li>
           <strong>{Object.keys(site.blocks).length}</strong> textových blokov

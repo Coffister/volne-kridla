@@ -4,5 +4,6 @@
   "gallery": [],
   "heroCarousel": [],
   "reviews": [],
-  "faq": { "tipy": [], "otazky": [] }
+  "faq": { "tipy": [], "otazky": [] },
+  "products": []
 }

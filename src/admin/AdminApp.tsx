@@ -9,6 +9,8 @@ import OverviewPage from "./routes/OverviewPage";
 import GalleryPage from "./routes/GalleryPage";
 import ReviewsPage from "./routes/ReviewsPage";
 import FaqPage from "./routes/FaqPage";
+import ProductsPage from "./routes/ProductsPage";
+import OrdersPage from "./routes/OrdersPage";
 import VersionsPage from "./routes/VersionsPage";
 
 import "./admin.css";
@@ -45,6 +47,8 @@ export default function AdminApp() {
           <Route path="fotogaleria" element={<GalleryPage />} />
           <Route path="recenzie" element={<ReviewsPage />} />
           <Route path="otazky" element={<FaqPage />} />
+          <Route path="produkty" element={<ProductsPage />} />
+          <Route path="objednavky" element={<OrdersPage />} />
           <Route path="verzie" element={<VersionsPage />} />
         </Route>
       </Routes>

@@ -25,6 +25,15 @@ export interface Review {
   image: string;
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  priceLabel: string;
+  /** resolved image URL (media bucket or external); "" if none */
+  image: string;
+}
+
 export interface FaqEntry {
   question: string;
   answer: string;
@@ -50,6 +59,7 @@ export interface SiteContent {
   heroCarousel: CarouselSlide[];
   reviews: Review[];
   faq: FaqContent;
+  products: Product[];
 }
 
 export const EMPTY_SITE: SiteContent = {
@@ -59,4 +69,5 @@ export const EMPTY_SITE: SiteContent = {
   heroCarousel: [],
   reviews: [],
   faq: { tipy: [], otazky: [] },
+  products: [],
 };
