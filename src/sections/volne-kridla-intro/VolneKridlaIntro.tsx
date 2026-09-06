@@ -18,6 +18,11 @@ export default function VolneKridlaIntro() {
     <Section id="hero" className={styles.section}>
       <Container>
         <Stack direction="column" gap="md" className={styles.stack}>
+          {/* the visual "title" below is a logo image — a real h1 text node
+              is needed for SEO/accessibility since this is the page's main heading */}
+          <Text as="h1" className="srOnly">
+            Kurz a tréning voľného lietania papagájov
+          </Text>
           <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} />
 
           <Squircle radius="2xl" className={styles.carouselWrapper}>

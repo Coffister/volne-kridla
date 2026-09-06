@@ -8,11 +8,7 @@ import {
   updateReview,
   type ReviewItem,
 } from "../lib/reviews";
-
-function msg(e: unknown): string {
-  if (e && typeof e === "object" && "message" in e) return String(e.message);
-  return "Nastala chyba.";
-}
+import { msg } from "../lib/errors";
 
 export default function ReviewsPage() {
   const [items, setItems] = useState<ReviewItem[]>([]);

@@ -6,6 +6,7 @@ import FaqItem from "./FaqItem";
 import { Box, Container, Section, Stack } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import { site } from "@/content";
+import JsonLd from "@/lib/JsonLd";
 
 import styles from "./VolneKridlaFaq.module.css";
 
@@ -13,6 +14,22 @@ import styles from "./VolneKridlaFaq.module.css";
 // to the hardcoded copy per group until that group has published items.
 const tips = site.faq.tipy.length ? site.faq.tipy : fallbackTips;
 const qna = site.faq.otazky.length ? site.faq.otazky : fallbackQna;
+
+// Only "otázky" is genuine FAQ schema material — "tipy" entries are article-style
+// titles, not questions a visitor actually asked, so marking them up as FAQPage
+// would misrepresent the content to search/AI crawlers.
+const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: qna.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
 
 interface FaqGroupProps {
   id: string;
@@ -66,6 +83,7 @@ function FaqGroup({ id, badge, items }: FaqGroupProps) {
 export default function VolneKridlaFaq() {
   return (
     <Section id="faq">
+      <JsonLd data={FAQ_JSON_LD} />
       <Container>
         <div className={styles.groups}>
           <FaqGroup id="tipy" badge="Tipy, triky a zaujímavosti" items={tips} />

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import Grain from "@/ui/effects/Grain";
 import { useParallax } from "@/hooks/useParallax";
 
 import clouds from "@/assets/core/background.webp";
@@ -33,8 +32,6 @@ export default function MainLayout({
             <main className={styles.content}>
                 {children}
             </main>
-
-            <Grain />
 
         </div>
     );

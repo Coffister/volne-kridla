@@ -38,15 +38,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         return;
       }
-      // is_admin() is a SECURITY DEFINER function — one round trip, no table read.
-      const { data, error } = await supabase.rpc("is_admin");
-      if (!active) return;
-      setSession(next);
-      setIsAdmin(!error && data === true);
-      setLoading(false);
+      try {
+        // is_admin() is a SECURITY DEFINER function — one round trip, no table read.
+        const { data, error } = await supabase.rpc("is_admin");
+        if (!active) return;
+        setSession(next);
+        setIsAdmin(!error && data === true);
+      } catch {
+        // network blip resolving admin status — don't hang the spinner forever
+        if (!active) return;
+        setSession(next);
+        setIsAdmin(false);
+      } finally {
+        if (active) setLoading(false);
+      }
     }
 
-    supabase.auth.getSession().then(({ data }) => resolveAdmin(data.session));
+    supabase.auth
+      .getSession()
+      .then(({ data }) => resolveAdmin(data.session))
+      .catch(() => {
+        // network blip on initial load — fall back to signed-out rather than
+        // leaving the admin panel spinning indefinitely
+        if (active) {
+          setSession(null);
+          setIsAdmin(false);
+          setLoading(false);
+        }
+      });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
       setLoading(true);

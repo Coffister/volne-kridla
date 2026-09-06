@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Stack, Text, Section } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import Button from "@/ui/components/Button";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
 import styles from "./Placeholder.module.css";
 
@@ -12,6 +13,14 @@ interface PlaceholderProps {
 // stand-in for a sub-page that doesn't have real content yet
 export default function Placeholder({ title }: PlaceholderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useDocumentMeta({
+    title,
+    description: `${title} — táto stránka sa pripravuje.`,
+    path: location.pathname,
+    noindex: true,
+  });
 
   return (
     <Section className={styles.section}>

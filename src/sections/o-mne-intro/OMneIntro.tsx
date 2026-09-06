@@ -1,4 +1,4 @@
-import { Container, Stack, Section, Squircle } from "@/ui/primitives";
+import { Container, Stack, Section, Squircle, Text } from "@/ui/primitives";
 import Carousel from "@/ui/components/Carousel";
 
 import { oMneCarouselImages } from "./carousel";
@@ -10,6 +10,11 @@ export default function OMneIntro() {
     <Section id="o-mne" className={styles.section}>
       <Container>
         <Stack direction="column" gap="md" className={styles.stack}>
+          {/* this page has no visible heading — a real h1 text node is still
+              needed for SEO/accessibility as the page's main heading */}
+          <Text as="h1" className="srOnly">
+            O mne — Franka
+          </Text>
           <Squircle radius="2xl" className={styles.carouselWrapper}>
             <Carousel
               images={oMneCarouselImages}

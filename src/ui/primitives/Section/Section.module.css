@@ -1,7 +1,11 @@
 .section {
     position: relative;
     min-height: 100dvh;
-    min-width: 100dvw;
+    /* 100% of the block parent, not 100dvw — dvw/vw includes the scrollbar
+       gutter on non-overlay scrollbars (classic Windows/Linux Chrome/Firefox),
+       so this element used to end up wider than the visible viewport and
+       force a permanent horizontal scrollbar site-wide. */
+    min-width: 100%;
     display: flex;
 
     flex-direction: column;
