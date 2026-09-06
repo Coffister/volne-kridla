@@ -178,11 +178,7 @@ textarea {
 }
 
 .admin-card input,
-.admin-gallery-body input,
-.admin-review-form input,
-.admin-review-form textarea,
-.admin-review-body input,
-.admin-review-body textarea {
+.admin-gallery-body input {
   width: 100%;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
@@ -196,22 +192,85 @@ textarea {
     box-shadow 0.12s ease;
 }
 
-.admin-card input::placeholder,
-.admin-review-form input::placeholder,
-.admin-review-form textarea::placeholder,
-.admin-review-body input::placeholder {
+.admin-card input::placeholder {
   color: var(--muted);
 }
 
 .admin-card input:focus-visible,
-.admin-gallery-body input:focus-visible,
-.admin-review-form input:focus-visible,
-.admin-review-form textarea:focus-visible,
-.admin-review-body input:focus-visible,
-.admin-review-body textarea:focus-visible {
+.admin-gallery-body input:focus-visible {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+/* borderless "squircle" field — separated from the card only by a background
+   shift, used wherever the value gets decorative affixes (@, quotes) glued
+   on so the whole thing reads as one shape instead of boxes-in-a-box */
+.admin-field {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-radius: var(--r-lg);
+  caret-color: var(--accent);
+  resize: vertical;
+}
+
+.admin-field::placeholder {
+  color: var(--muted);
+}
+
+.admin-field:focus-visible {
+  outline: none;
+}
+
+.admin-field-sm {
+  background: var(--sky);
+  border-radius: var(--r-lg);
+  transition: box-shadow 0.12s ease;
+}
+
+.admin-field-sm:focus-visible {
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.admin-field-affixed {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--sky);
+  border-radius: var(--r-lg);
+  padding-left: 0.8rem;
+  transition: box-shadow 0.12s ease;
+}
+
+.admin-field-affixed:focus-within {
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.admin-field-affixed .admin-field {
+  padding-left: 0;
+}
+
+.admin-field-affixed-quote {
+  align-items: flex-start;
+}
+
+.admin-field-affix {
+  flex-shrink: 0;
+  padding-top: 0.6rem;
+  font:
+    700 1rem / 1 var(--font-display);
+  color: var(--muted);
+}
+
+.admin-field-affix-end {
+  align-self: flex-end;
+  padding-top: 0;
+  padding-bottom: 0.6rem;
 }
 
 .admin-muted {
@@ -633,20 +692,44 @@ textarea {
   line-height: 1.5;
 }
 
-.admin-review-image-inputs {
+.admin-review-form-row {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.admin-review-image-inputs .admin-muted {
-  font-size: 0.8rem;
-}
-
-.admin-review-image-inputs input[type="url"] {
+.admin-review-form-fields {
   flex: 1;
-  min-width: 12rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.admin-avatar-upload {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  font: 600 0.78rem / 1.2 var(--font-ui);
+  color: var(--muted);
+  background-color: var(--sky);
+  background-size: cover;
+  background-position: center;
+  border: 2px dashed var(--line);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.admin-avatar-upload:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .admin-review-form .admin-btn {

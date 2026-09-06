@@ -9,12 +9,14 @@ import { site } from "@/content";
 import styles from "./testimonials.module.css";
 
 // Prefer reviews managed in the admin (baked in at build time); fall back to
-// the hardcoded list until the reviews table has content.
+// the hardcoded list until the reviews table has content. The admin stores
+// plain name/text — the "@" and quote marks are decoration added here, to
+// match the fallback list where they're already baked into the copy.
 const testimonials = site.reviews.length
   ? site.reviews.map((r) => ({
       id: r.id,
-      clientName: r.author,
-      text: r.body,
+      clientName: `@${r.author}`,
+      text: `“${r.body}”`,
       image: r.image,
     }))
   : fallbackTestimonials;

@@ -23,7 +23,20 @@ export default function ReviewsPage() {
   const [body, setBody] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+
+  // live preview for the clickable avatar square — an uploaded file wins
+  // over a typed URL, matching which one actually gets saved
+  useEffect(() => {
+    if (!imageFile) {
+      setAvatarPreview(imageUrl.trim() || null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(imageFile);
+    setAvatarPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imageFile, imageUrl]);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -113,23 +126,13 @@ export default function ReviewsPage() {
 
       <form className="admin-review-form" onSubmit={onAdd}>
         <h3>Pridať recenziu</h3>
-        <input
-          type="text"
-          placeholder="Meno klienta (napr. @Natália a Arny)"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Text recenzie"
-          rows={4}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          required
-        />
-        <div className="admin-review-image-inputs">
-          <label className="admin-btn admin-btn-sm">
-            {imageFile ? imageFile.name : "Nahrať fotku"}
+
+        <div className="admin-review-form-row">
+          <label
+            className="admin-avatar-upload"
+            style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : undefined}
+          >
+            {!avatarPreview && <span>+ Foto</span>}
             <input
               type="file"
               accept="image/*"
@@ -137,15 +140,44 @@ export default function ReviewsPage() {
               onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
             />
           </label>
-          <span className="admin-muted">alebo</span>
-          <input
-            type="url"
-            placeholder="URL fotky"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            disabled={!!imageFile}
-          />
+
+          <div className="admin-review-form-fields">
+            <div className="admin-field-affixed">
+              <span className="admin-field-affix">@</span>
+              <input
+                type="text"
+                className="admin-field"
+                placeholder="Meno klienta"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="admin-field-affixed admin-field-affixed-quote">
+              <span className="admin-field-affix">“</span>
+              <textarea
+                className="admin-field"
+                placeholder="Text recenzie"
+                rows={4}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                required
+              />
+              <span className="admin-field-affix admin-field-affix-end">”</span>
+            </div>
+          </div>
         </div>
+
+        <input
+          type="url"
+          className="admin-field admin-field-sm"
+          placeholder="alebo URL fotky"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          disabled={!!imageFile}
+        />
+
         <button type="submit" className="admin-btn" disabled={adding}>
           {adding ? "Pridávam…" : "Pridať"}
         </button>
@@ -160,22 +192,31 @@ export default function ReviewsPage() {
               <div className="admin-review-noimg">bez fotky</div>
             )}
             <div className="admin-review-body">
-              <input
-                type="text"
-                defaultValue={item.author}
-                onBlur={(e) => {
-                  const v = e.target.value.trim();
-                  if (v && v !== item.author) patch(item, { author: v });
-                }}
-              />
-              <textarea
-                defaultValue={item.body}
-                rows={4}
-                onBlur={(e) => {
-                  const v = e.target.value.trim();
-                  if (v && v !== item.body) patch(item, { body: v });
-                }}
-              />
+              <div className="admin-field-affixed">
+                <span className="admin-field-affix">@</span>
+                <input
+                  type="text"
+                  className="admin-field"
+                  defaultValue={item.author}
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v && v !== item.author) patch(item, { author: v });
+                  }}
+                />
+              </div>
+              <div className="admin-field-affixed admin-field-affixed-quote">
+                <span className="admin-field-affix">“</span>
+                <textarea
+                  className="admin-field"
+                  defaultValue={item.body}
+                  rows={4}
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v && v !== item.body) patch(item, { body: v });
+                  }}
+                />
+                <span className="admin-field-affix admin-field-affix-end">”</span>
+              </div>
               <div className="admin-gallery-actions">
                 <button type="button" onClick={() => move(i, -1)} disabled={i === 0}>
                   ↑
