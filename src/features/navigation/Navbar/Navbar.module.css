@@ -206,6 +206,12 @@
     left: 12px;
     right: 12px;
     width: auto;
+    /* the base rule's max-width (viewport - 48px) is narrower than the
+       space left/right leave open (viewport - 24px) — with left, right,
+       and a capped width all specified, the browser was resolving that
+       by keeping left fixed and dumping the leftover 24px on the right,
+       pushing the bar visibly off-center. */
+    max-width: none;
     transform: none;
   }
 
