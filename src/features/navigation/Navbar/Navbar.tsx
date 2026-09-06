@@ -83,6 +83,13 @@ export default function Navbar() {
     closeMenu();
 
     if (location.pathname === VK_PATH) {
+      // closing the mobile menu stops Lenis via a useEffect cleanup that
+      // only commits after this handler returns — calling scrollToSection
+      // in the meantime would ask a still-stopped Lenis to scroll, which is
+      // a silent no-op (see Lenis's scrollTo: `if (isStopped) return;`).
+      // Starting it explicitly here removes that race instead of relying on
+      // effect timing; it's a no-op itself if Lenis was already running.
+      getLenis()?.start();
       scrollToSection(id, offset);
     } else {
       // navigate to the page first, then scroll once the section is mounted
