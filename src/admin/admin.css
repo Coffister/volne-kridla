@@ -181,7 +181,8 @@ textarea {
 .admin-gallery-body input {
   width: 100%;
   padding: 0.55rem 0.7rem;
-  font-size: 0.9rem;
+  /* 16px — anything smaller makes iOS Safari zoom in on focus */
+  font-size: 1rem;
   color: var(--ink);
   background: var(--paper-2);
   border: 2px solid var(--line);
@@ -209,7 +210,8 @@ textarea {
 .admin-field {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  font-size: 0.9rem;
+  /* 16px — anything smaller makes iOS Safari zoom in on focus */
+  font-size: 1rem;
   font-family: var(--font-ui);
   color: var(--ink);
   background: transparent;
@@ -807,33 +809,77 @@ textarea {
   }
   .admin-sidebar {
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem 1rem;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
     overflow-y: visible;
     border-right: 0;
     border-bottom: 2px solid var(--line);
   }
+  .admin-brand {
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+  /* one scrollable row instead of wrapping — wrapped nav ate several lines
+     of vertical space above the fold on a real phone */
   .admin-sidebar nav {
+    flex: 1;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .admin-sidebar nav::-webkit-scrollbar {
+    display: none;
+  }
+  .admin-sidebar nav a {
+    flex: 0 0 auto;
+    padding: 0.6rem 0.85rem;
+    white-space: nowrap;
   }
   .admin-user {
+    flex-shrink: 0;
     margin: 0;
-    flex-basis: 100%;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .admin-user span {
+    display: none;
+  }
+  .admin-user button {
+    min-height: 2.5rem;
   }
   .admin-topbar {
-    padding: 0.75rem 1.5rem;
+    padding: 0.65rem 1rem;
   }
   .admin-view {
-    padding: 1.5rem;
+    padding: 1.15rem;
   }
   .admin-publish {
+    width: 100%;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: space-between;
+  }
+  .admin-page-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-page-head .admin-btn {
+    justify-content: center;
+  }
+  /* icon-ish buttons (↑ ↓ Skryť Zmazať …) need a real touch target */
+  .admin-gallery-actions button {
+    min-height: 2.75rem;
+    padding: 0.6rem 0.95rem;
+  }
+  .admin-review-form-row {
+    flex-direction: column;
+    align-items: center;
+  }
+  .admin-review-form-fields {
+    width: 100%;
   }
   .admin-review-list li {
     grid-template-columns: 1fr;
