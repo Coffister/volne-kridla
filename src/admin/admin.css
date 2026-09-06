@@ -703,6 +703,12 @@ textarea {
   min-width: 0;
 }
 
+/* FAQ items have no avatar column — a single grid cell would otherwise
+   collapse into the list's 6.5rem image column and squeeze the text. */
+.admin-review-list.is-textonly li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* --------------------------------------------------------------- responsive */
 
 @media (max-width: 1100px) {

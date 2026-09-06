@@ -134,7 +134,7 @@ function FaqGroupSection({ group, title }: FaqGroupSectionProps) {
         </button>
       </form>
 
-      <ul className="admin-review-list">
+      <ul className="admin-review-list is-textonly">
         {items.map((item, i) => (
           <li key={item.id} className={item.published ? "" : "is-hidden"}>
             <div className="admin-review-body">
