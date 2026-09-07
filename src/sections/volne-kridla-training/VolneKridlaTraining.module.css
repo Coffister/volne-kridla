@@ -9,10 +9,10 @@
 
 .card {
     display: flex;
-    gap: 16px;
+    gap: var(--spacing-sm);
 
     background: var(--color-surface-primary);
-    padding: 16px;
+    padding: var(--spacing-sm);
     margin-bottom: var(--spacing-xl);
 }
 
@@ -75,16 +75,16 @@
 
 .benefitsRow {
     display: flex;
-    gap: 16px;
+    gap: var(--spacing-sm);
 }
 
 .benefitCard {
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: var(--spacing-lg);
     background: var(--color-surface-secondary);
-    padding: 24px;
+    padding: var(--spacing-md);
 }
 
 .benefitIcon {

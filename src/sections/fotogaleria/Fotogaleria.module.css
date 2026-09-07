@@ -24,13 +24,13 @@
 /* CSS multi-column masonry — cheap, no layout JS, reflows on resize */
 .grid {
     column-count: 3;
-    column-gap: 16px;
+    column-gap: var(--spacing-sm);
 }
 
 .item {
     display: block;
     width: 100%;
-    margin: 0 0 16px;
+    margin: 0 0 var(--spacing-sm);
     padding: 0;
 
     border: none;

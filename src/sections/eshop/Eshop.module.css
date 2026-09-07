@@ -37,8 +37,8 @@
   top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: #4caf50;
-  color: #fff;
+  background: var(--color-success);
+  color: var(--color-surface-white);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.85rem;

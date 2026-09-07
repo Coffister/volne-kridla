@@ -2,18 +2,18 @@
   position: fixed;
   inset: 0;
   z-index: 1001;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--spacing-sm);
   overflow-y: auto;
 }
 
 .modal {
   position: relative;
-  background: #fff;
-  border-radius: 16px;
+  background: var(--color-surface-white);
+  border-radius: var(--radius-sm);
   width: 100%;
   max-width: 1000px;
   max-height: 90vh;
@@ -23,8 +23,8 @@
 
 .closeBtn {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
   width: 40px;
   height: 40px;
   padding: 0;
@@ -47,8 +47,8 @@
 .content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding: 40px;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
 }
 
 .cartSection,
@@ -71,7 +71,7 @@
 .cartItems {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-sm);
 }
 
 .cartItem {
@@ -136,7 +136,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-sm);
 }
 
 .field {
@@ -159,7 +159,7 @@
   font-family: inherit;
   font-size: 1rem;
   color: var(--color-text-primary);
-  background: #fff;
+  background: var(--color-surface-white);
 }
 
 .input:focus,
@@ -189,16 +189,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 60px 40px;
+  gap: var(--spacing-sm);
+  padding: 60px var(--spacing-xl);
   text-align: center;
 }
 
 .successIcon {
   width: 80px;
   height: 80px;
-  background: #4caf50;
-  color: #fff;
+  background: var(--color-success);
+  color: var(--color-surface-white);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -210,7 +210,7 @@
 @media (max-width: 768px) {
   .content {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: var(--spacing-md);
     padding: 20px;
   }
 

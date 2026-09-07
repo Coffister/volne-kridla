@@ -12,7 +12,7 @@
 
 .carouselWrapper {
     background: var(--color-surface-primary);
-    padding: 8px;
+    padding: var(--spacing-xs);
 }
 
 /* lock the carousel to the aspect ratio of the "flattest" photo in the set

@@ -15,10 +15,10 @@
 .card {
     display: flex;
     flex-direction: row-reverse;
-    gap: 16px;
+    gap: var(--spacing-sm);
 
     background: var(--color-surface-primary);
-    padding: 16px;
+    padding: var(--spacing-sm);
 }
 
 .mediaPanel {

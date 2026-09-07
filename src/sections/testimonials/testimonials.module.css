@@ -33,7 +33,7 @@
 
 .track {
     display: flex;
-    gap: 24px;
+    gap: var(--spacing-md);
 
     width: 100%;
     overflow-x: auto;
@@ -58,23 +58,23 @@
 }
 
 .reviewCard {
-    padding: 24px;
+    padding: var(--spacing-md);
     background: var(--color-surface-primary);
 
-    gap: 8px;
+    gap: var(--spacing-xs);
     white-space: pre-wrap;
     width: 50vw;
     height: 520px;
-    outline:#333;
+    outline: var(--color-border-primary);
     outline-width: 4px;
     outline-style: solid;
     outline-offset: -4px;
-    border-radius: 48px;
+    border-radius: var(--radius-2xl);
 }
 
 .mediaPanel {
     width: 50%;
-    border-radius: 24px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
@@ -126,7 +126,7 @@
     justify-content: center;
     align-items: center;
 
-    margin-bottom: 32px;
+    margin-bottom: var(--spacing-lg);
 }
 
 @media (max-width: 768px) {

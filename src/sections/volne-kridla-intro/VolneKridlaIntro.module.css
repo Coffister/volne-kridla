@@ -15,7 +15,7 @@
 
 .carouselWrapper {
     background: var(--color-surface-primary);
-    padding: 8px;
+    padding: var(--spacing-xs);
 }
 
 /* give the carousel a definite height via aspect-ratio so every slide's
