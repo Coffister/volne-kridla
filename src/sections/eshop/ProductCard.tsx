@@ -17,6 +17,11 @@ export default function ProductCard({
   onAddToCart,
   onShare,
 }: ProductCardProps) {
+  const priceLabel =
+    product.priceLabel && !product.priceLabel.includes("€")
+      ? `${product.priceLabel}€`
+      : product.priceLabel;
+
   return (
     <Squircle radius="lg" className={styles.card}>
       <div
@@ -47,11 +52,11 @@ export default function ProductCard({
         )}
       </div>
 
-      <Stack direction="row" align="flex-end" justify="space-between" className={styles.footer}>
-        <Stack direction="column" gap="xs">
-          {product.priceLabel && (
+      <Stack direction="row" align="center" justify="space-between" className={styles.footer}>
+        <Stack direction="column" className={styles.priceInfo}>
+          {priceLabel && (
             <Text as="span" variant="body" weight="bold" className={styles.price}>
-              {product.priceLabel}
+              {priceLabel}
             </Text>
           )}
           {product.inStock !== undefined && (
@@ -64,37 +69,23 @@ export default function ProductCard({
         </Stack>
 
         <Stack direction="row" gap="xs">
-          <Squircle
-            radius={10}
-            borderWidth={1.5}
-            borderColor="var(--color-border-primary)"
-            className={styles.iconBtnWrap}
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => onShare(product)}
+            aria-label="Zdieľať produkt"
           >
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => onShare(product)}
-              aria-label="Zdieľať produkt"
-            >
-              <ShareIcon />
-            </button>
-          </Squircle>
-          <Squircle
-            radius={10}
-            borderWidth={1.5}
-            borderColor="var(--color-border-primary)"
-            className={styles.iconBtnWrap}
+            <ShareIcon />
+          </button>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => onAddToCart(product)}
+            disabled={product.inStock === false}
+            aria-label="Pridať do košíka"
           >
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => onAddToCart(product)}
-              disabled={product.inStock === false}
-              aria-label="Pridať do košíka"
-            >
-              <CartIcon />
-            </button>
-          </Squircle>
+            <CartIcon />
+          </button>
         </Stack>
       </Stack>
     </Squircle>
