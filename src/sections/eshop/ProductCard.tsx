@@ -36,12 +36,12 @@ export default function ProductCard({
           )}
         </Squircle>
 
-        <Text as="h2" variant="sectionSubtitle" className={styles.name}>
+        <Text as="h2" variant="cardTitle" className={styles.name}>
           {product.name}
         </Text>
 
         {product.description && (
-          <Text as="p" variant="body" className={styles.description}>
+          <Text as="p" variant="caption" className={styles.description}>
             {product.description}
           </Text>
         )}
@@ -55,7 +55,7 @@ export default function ProductCard({
             </Text>
           )}
           {product.inStock !== undefined && (
-            <Text as="span" variant="body" weight="bold" className={styles.stock}>
+            <Text as="span" variant="caption" weight="bold" className={styles.stock}>
               {product.inStock
                 ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
                 : "Vypredané"}
@@ -65,8 +65,8 @@ export default function ProductCard({
 
         <Stack direction="row" gap="xs">
           <Squircle
-            radius={14}
-            borderWidth={2}
+            radius={16}
+            borderWidth={3}
             borderColor="var(--color-border-primary)"
             className={styles.iconBtnWrap}
           >
@@ -80,8 +80,8 @@ export default function ProductCard({
             </button>
           </Squircle>
           <Squircle
-            radius={14}
-            borderWidth={2}
+            radius={16}
+            borderWidth={3}
             borderColor="var(--color-border-primary)"
             className={styles.iconBtnWrap}
           >

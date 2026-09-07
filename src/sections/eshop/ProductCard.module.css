@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--color-surface-primary);
-  padding: 28px;
+  padding: var(--spacing-md);
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
@@ -23,8 +23,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  padding: 16px;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-sm);
 }
 
 .image {
@@ -42,16 +42,13 @@
 }
 
 .name {
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xs);
   color: var(--color-accent-secondary);
-  font-weight: 800;
 }
 
 .description {
-  margin: 0 0 16px;
+  margin: 0 0 var(--spacing-sm);
   color: var(--color-text-primary);
-  font-size: 0.9rem;
-  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -61,23 +58,24 @@
 
 .footer {
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: var(--spacing-xs);
 }
 
 .price {
-  font-size: 1.9rem;
+  font-family: var(--font-family-display) !important;
+  font-size: clamp(34px, 4vw, 44px) !important;
+  font-weight: 800 !important;
   color: var(--color-accent-primary);
   line-height: 1;
 }
 
 .stock {
-  font-size: 0.85rem;
   color: var(--color-text-primary);
 }
 
 .iconBtnWrap {
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   background: var(--color-surface-primary);
   flex-shrink: 0;
 }
@@ -102,15 +100,15 @@
 
 @media (max-width: 480px) {
   .card {
-    padding: 20px;
+    padding: var(--spacing-sm);
   }
 
   .price {
-    font-size: 1.6rem;
+    font-size: clamp(28px, 8vw, 34px);
   }
 
   .iconBtnWrap {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
 }
