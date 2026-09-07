@@ -72,7 +72,7 @@ try {
       .order("created_at", { ascending: true }),
     supabase
       .from("products")
-      .select("id, name, description, price_label, image_path, image_url, sort_order, published")
+      .select("id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, sort_order, published")
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
@@ -122,13 +122,34 @@ try {
       .map((row) => ({ question: row.question, answer: row.answer })),
   };
 
-  const products = productRows.map((row) => ({
-    id: row.id,
-    name: row.name ?? "",
-    description: row.description ?? "",
-    priceLabel: row.price_label ?? "",
-    image: row.image_path ? publicUrl(row.image_path) : (row.image_url ?? ""),
-  }));
+  const products = productRows.map((row) => {
+    const baseProduct = {
+      id: row.id,
+      name: row.name ?? "",
+      description: row.description ?? "",
+      priceLabel: row.price_label ?? "",
+      image: row.image_path ? publicUrl(row.image_path) : (row.image_url ?? ""),
+    };
+
+    // Add optional fields only if they have values
+    if (row.sku) baseProduct.sku = row.sku;
+    if (row.variants && Array.isArray(row.variants) && row.variants.length > 0) {
+      baseProduct.variants = row.variants;
+    }
+    if (row.images && Array.isArray(row.images) && row.images.length > 0) {
+      baseProduct.images = row.images.map((img) =>
+        img.storage_path ? publicUrl(img.storage_path) : img.image_url
+      );
+    }
+    if (row.stock_count !== null && row.stock_count !== undefined) {
+      baseProduct.stockCount = row.stock_count;
+    }
+    if (row.in_stock !== null && row.in_stock !== undefined) {
+      baseProduct.inStock = row.in_stock;
+    }
+
+    return baseProduct;
+  });
 
   const out = {
     publishedAt: new Date().toISOString(),

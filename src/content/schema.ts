@@ -25,13 +25,24 @@ export interface Review {
   image: string;
 }
 
+export interface ProductVariant {
+  type: 'color' | 'size';
+  options: string[];
+}
+
 export interface Product {
   id: string;
+  sku?: string;
   name: string;
   description: string;
   priceLabel: string;
-  /** resolved image URL (media bucket or external); "" if none */
+  /** resolved image URL (media bucket or external); "" if none. primary image for card. */
   image: string;
+  /** carousel images (multiple images for detail view) */
+  images?: string[];
+  variants?: ProductVariant[];
+  inStock?: boolean;
+  stockCount?: number;
 }
 
 export interface FaqEntry {
