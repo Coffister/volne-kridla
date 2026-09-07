@@ -1,13 +1,23 @@
 import { getSupabase } from "@/lib/supabase";
 import { MEDIA_BUCKET } from "./gallery";
 
+export interface ProductVariant {
+  type: "color" | "size";
+  options: string[];
+}
+
 export interface ProductRow {
   id: string;
+  sku: string;
   name: string;
   description: string;
   price_label: string;
   image_path: string | null;
   image_url: string | null;
+  images: string[]; // storage paths or URLs for additional carousel images
+  variants: ProductVariant[];
+  stock_count: number;
+  in_stock: boolean;
   sort_order: number;
   published: boolean;
   created_at: string;
@@ -16,17 +26,25 @@ export interface ProductRow {
 export interface ProductItem extends ProductRow {
   /** resolved image URL for preview, or "" */
   image: string;
+  /** resolved URLs for all carousel images */
+  resolvedImages: string[];
 }
 
 const COLS =
-  "id, name, description, price_label, image_path, image_url, sort_order, published, created_at";
+  "id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, sort_order, published, created_at";
+
+function resolveImagePath(pathOrUrl: string): string {
+  if (pathOrUrl.startsWith("http")) return pathOrUrl;
+  return getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(pathOrUrl).data.publicUrl;
+}
 
 function resolve(row: ProductRow): ProductItem {
   const image = row.image_path
     ? getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(row.image_path).data
         .publicUrl
     : (row.image_url ?? "");
-  return { ...row, image };
+  const resolvedImages = (row.images ?? []).map(resolveImagePath);
+  return { ...row, image, resolvedImages };
 }
 
 export async function listProducts(): Promise<ProductItem[]> {
@@ -40,11 +58,16 @@ export async function listProducts(): Promise<ProductItem[]> {
 }
 
 export async function createProduct(input: {
+  sku?: string;
   name: string;
   description: string;
   priceLabel: string;
   imageFile?: File | null;
   imageUrl?: string;
+  additionalImageFiles?: File[];
+  variants?: ProductVariant[];
+  stockCount?: number;
+  inStock?: boolean;
 }): Promise<ProductItem> {
   const supabase = getSupabase();
 
@@ -60,6 +83,17 @@ export async function createProduct(input: {
     if (upErr) throw upErr;
   }
 
+  const uploadedExtraPaths: string[] = [];
+  for (const file of input.additionalImageFiles ?? []) {
+    const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+    const path = `products/${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from(MEDIA_BUCKET)
+      .upload(path, file, { cacheControl: "31536000" });
+    if (upErr) throw upErr;
+    uploadedExtraPaths.push(path);
+  }
+
   const { data: last } = await supabase
     .from("products")
     .select("sort_order")
@@ -71,11 +105,16 @@ export async function createProduct(input: {
   const { data, error } = await supabase
     .from("products")
     .insert({
+      sku: input.sku?.trim() || "",
       name: input.name.trim(),
       description: input.description.trim(),
       price_label: input.priceLabel.trim(),
       image_path,
       image_url: image_path ? null : image_url,
+      images: uploadedExtraPaths,
+      variants: input.variants ?? [],
+      stock_count: input.stockCount ?? 0,
+      in_stock: input.inStock ?? true,
       sort_order,
     })
     .select(COLS)
@@ -84,6 +123,8 @@ export async function createProduct(input: {
   if (error) {
     if (image_path)
       await supabase.storage.from(MEDIA_BUCKET).remove([image_path]);
+    if (uploadedExtraPaths.length)
+      await supabase.storage.from(MEDIA_BUCKET).remove(uploadedExtraPaths);
     throw error;
   }
   return resolve(data);
@@ -92,7 +133,19 @@ export async function createProduct(input: {
 export async function updateProduct(
   id: string,
   patch: Partial<
-    Pick<ProductRow, "name" | "description" | "price_label" | "published" | "sort_order">
+    Pick<
+      ProductRow,
+      | "sku"
+      | "name"
+      | "description"
+      | "price_label"
+      | "published"
+      | "sort_order"
+      | "variants"
+      | "images"
+      | "stock_count"
+      | "in_stock"
+    >
   >,
 ): Promise<void> {
   const { error } = await getSupabase()
@@ -102,12 +155,41 @@ export async function updateProduct(
   if (error) throw error;
 }
 
+export async function addProductImage(item: ProductItem, file: File): Promise<string[]> {
+  const supabase = getSupabase();
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `products/${crypto.randomUUID()}.${ext}`;
+  const { error: upErr } = await supabase.storage
+    .from(MEDIA_BUCKET)
+    .upload(path, file, { cacheControl: "31536000" });
+  if (upErr) throw upErr;
+
+  const nextImages = [...(item.images ?? []), path];
+  await updateProduct(item.id, { images: nextImages });
+  return nextImages;
+}
+
+export async function removeProductImage(item: ProductItem, path: string): Promise<string[]> {
+  const nextImages = (item.images ?? []).filter((p) => p !== path);
+  await updateProduct(item.id, { images: nextImages });
+  if (!path.startsWith("http")) {
+    await getSupabase().storage.from(MEDIA_BUCKET).remove([path]);
+  }
+  return nextImages;
+}
+
 export async function deleteProduct(item: ProductItem): Promise<void> {
   const supabase = getSupabase();
   const { error } = await supabase.from("products").delete().eq("id", item.id);
   if (error) throw error;
-  if (item.image_path)
-    await supabase.storage.from(MEDIA_BUCKET).remove([item.image_path]);
+  const pathsToRemove: string[] = [];
+  if (item.image_path) pathsToRemove.push(item.image_path);
+  for (const img of item.images ?? []) {
+    if (!img.startsWith("http")) pathsToRemove.push(img);
+  }
+  if (pathsToRemove.length) {
+    await supabase.storage.from(MEDIA_BUCKET).remove(pathsToRemove);
+  }
 }
 
 export async function reorderProducts(items: ProductItem[]): Promise<void> {

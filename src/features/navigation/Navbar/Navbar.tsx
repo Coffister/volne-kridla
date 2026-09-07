@@ -10,6 +10,7 @@ import CloseIcon from "@/ui/icons/CloseIcon";
 import logo from "@/assets/logos/volnekridla-logo.svg";
 import { getLenis } from "@/lib/scroll";
 import { useKonzultaciaModal } from "@/features/konzultacia-modal";
+import CartButton from "@/features/navigation/CartButton/CartButton";
 
 import styles from "./Navbar.module.css";
 
@@ -233,6 +234,8 @@ export default function Navbar() {
           >
             Začať lietať
           </Button>
+
+          <CartButton />
 
           <button
             type="button"

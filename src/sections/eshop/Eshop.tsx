@@ -1,16 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Container, Section, Squircle, Stack, Text, Image } from "@/ui/primitives";
+import { Container, Section, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
-import Button from "@/ui/components/Button";
-import { site } from "@/content";
+import { site, type Product } from "@/content";
 
-import OrderModal from "./OrderModal";
+import ProductCard from "./ProductCard";
+import ProductDetailModal from "./ProductDetailModal";
+import CheckoutModal from "./CheckoutModal";
+import { useCart } from "@/lib/CartContext";
 import styles from "./Eshop.module.css";
 
 export default function Eshop() {
-  const [activeProduct, setActiveProduct] = useState<{ id: string; name: string } | null>(null);
   const products = site.products;
+  const { addItem } = useCart();
+  const navigate = useNavigate();
+  const { productId } = useParams<{ productId?: string }>();
+
+  const [detailProduct, setDetailProduct] = useState<Product | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [justAdded, setJustAdded] = useState<string | null>(null);
+
+  // Deep-link support: /eshop/produkt/:productId opens the detail modal directly.
+  useEffect(() => {
+    if (!productId) {
+      setDetailProduct(null);
+      return;
+    }
+    const found = products.find((p) => p.id === productId);
+    setDetailProduct(found ?? null);
+  }, [productId, products]);
+
+  const openDetail = (product: Product) => {
+    navigate(`/eshop/produkt/${product.id}`);
+  };
+
+  const closeDetail = () => {
+    navigate("/eshop");
+  };
+
+  const handleAddToCart = (product: Product) => {
+    addItem(product, {}, 1);
+    setJustAdded(product.id);
+    setTimeout(() => setJustAdded((cur) => (cur === product.id ? null : cur)), 1200);
+  };
+
+  const handleOpenCheckout = (_product: Product, _variants: Record<string, string>) => {
+    // Product + selected variants were already added to the cart by the
+    // detail modal before calling this — checkout just reviews the cart.
+    setDetailProduct(null);
+    navigate("/eshop");
+    setCheckoutOpen(true);
+  };
 
   return (
     <Section id="eshop" className={styles.section}>
@@ -29,50 +70,30 @@ export default function Eshop() {
         ) : (
           <div className={styles.grid}>
             {products.map((product) => (
-              <Squircle key={product.id} radius="xl" className={styles.card}>
-                <div className={styles.imageWrap}>
-                  {product.image ? (
-                    <Image src={product.image} alt={product.name} className={styles.image} />
-                  ) : (
-                    <div className={styles.imagePlaceholder} aria-hidden />
-                  )}
-                </div>
-                <Stack direction="column" gap="xs" className={styles.body}>
-                  <Text as="h2" variant="sectionSubtitle" className={styles.name}>
-                    {product.name}
-                  </Text>
-                  {product.description && (
-                    <Text as="p" variant="body" className={styles.description}>
-                      {product.description}
-                    </Text>
-                  )}
-                  <Stack direction="row" align="center" justify="space-between" className={styles.footer}>
-                    {product.priceLabel && (
-                      <Text as="span" variant="body" weight="bold" className={styles.price}>
-                        {product.priceLabel}
-                      </Text>
-                    )}
-                    <Button
-                      variant="primary"
-                      onClick={() => setActiveProduct({ id: product.id, name: product.name })}
-                    >
-                      Mám záujem
-                    </Button>
-                  </Stack>
-                </Stack>
-              </Squircle>
+              <div key={product.id} className={styles.cardSlot}>
+                <ProductCard
+                  product={product}
+                  onViewDetails={openDetail}
+                  onAddToCart={handleAddToCart}
+                />
+                {justAdded === product.id && (
+                  <div className={styles.addedToast}>Pridané do košíka ✓</div>
+                )}
+              </div>
             ))}
           </div>
         )}
       </Container>
 
-      {activeProduct && (
-        <OrderModal
-          productId={activeProduct.id}
-          productName={activeProduct.name}
-          onClose={() => setActiveProduct(null)}
+      {detailProduct && (
+        <ProductDetailModal
+          product={detailProduct}
+          onClose={closeDetail}
+          onOpenCheckout={handleOpenCheckout}
         />
       )}
+
+      {checkoutOpen && <CheckoutModal onClose={() => setCheckoutOpen(false)} />}
     </Section>
   );
 }

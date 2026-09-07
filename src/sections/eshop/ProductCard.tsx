@@ -1,6 +1,5 @@
-import { Product } from "@/content";
-import { Container, Stack, Text } from "@/ui/primitives";
-import Button from "@/ui/components/Button";
+import type { Product } from "@/content";
+import { Squircle, Stack, Text, Image } from "@/ui/primitives";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
@@ -15,8 +14,7 @@ export default function ProductCard({
   onAddToCart,
 }: ProductCardProps) {
   return (
-    <div className={styles.card}>
-      {/* Click on card to view details */}
+    <Squircle radius="xl" className={styles.card}>
       <div
         className={styles.clickableArea}
         onClick={() => onViewDetails(product)}
@@ -26,59 +24,61 @@ export default function ProductCard({
           if (e.key === "Enter" || e.key === " ") onViewDetails(product);
         }}
       >
-        {/* Image */}
+        {product.sku && (
+          <Text as="span" variant="body" className={styles.sku}>
+            {product.sku}
+          </Text>
+        )}
+
         <div className={styles.imageWrap}>
           {product.image ? (
-            <img src={product.image} alt={product.name} className={styles.image} />
+            <Image src={product.image} alt={product.name} className={styles.image} />
           ) : (
             <div className={styles.imagePlaceholder} aria-hidden />
           )}
         </div>
 
-        {/* SKU Code */}
-        {product.sku && <div className={styles.sku}>{product.sku}</div>}
-
-        {/* Title */}
         <Text as="h2" variant="sectionSubtitle" className={styles.name}>
           {product.name}
         </Text>
 
-        {/* Description (truncated) */}
         {product.description && (
           <Text as="p" variant="body" className={styles.description}>
-            {product.description.length > 80
-              ? `${product.description.substring(0, 80)}…`
-              : product.description}
+            {product.description}
           </Text>
         )}
       </div>
 
-      {/* Footer: Price + Stock + Add to Cart button */}
-      <div className={styles.footer}>
-        <div className={styles.priceAndStock}>
+      <Stack direction="row" align="flex-end" justify="space-between" className={styles.footer}>
+        <Stack direction="column" gap="xs">
           {product.priceLabel && (
             <Text as="span" variant="body" weight="bold" className={styles.price}>
               {product.priceLabel}
             </Text>
           )}
           {product.inStock !== undefined && (
-            <div className={`${styles.stock} ${product.inStock ? styles.inStock : styles.outOfStock}`}>
+            <Text
+              as="span"
+              variant="body"
+              className={`${styles.stock} ${product.inStock ? styles.inStock : styles.outOfStock}`}
+            >
               {product.inStock
-                ? `Skladem${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
-                : "Vyprodáno"}
-            </div>
+                ? `Skladom${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
+                : "Vypredané"}
+            </Text>
           )}
-        </div>
+        </Stack>
 
-        <Button
-          variant="primary"
+        <button
+          type="button"
+          className={styles.cartButton}
           onClick={() => onAddToCart(product)}
           disabled={product.inStock === false}
-          className={styles.cartButton}
+          aria-label="Pridať do košíka"
         >
           🛒
-        </Button>
-      </div>
-    </div>
+        </button>
+      </Stack>
+    </Squircle>
   );
 }

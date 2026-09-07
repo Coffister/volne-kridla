@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Text, Stack } from "@/ui/primitives";
+import { Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import { useCart } from "@/lib/CartContext";
 import { submitProductInquiry } from "@/lib/inquiries";
@@ -9,6 +9,8 @@ import styles from "./CheckoutModal.module.css";
 interface CheckoutModalProps {
   onClose: () => void;
 }
+
+const VARIANT_LABELS: Record<string, string> = { color: "Farba", size: "Veľkosť" };
 
 export default function CheckoutModal({ onClose }: CheckoutModalProps) {
   const { items, clearCart } = useCart();
@@ -28,7 +30,7 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
     setError(null);
 
     try {
-      // Submit each item as a separate inquiry with variants
+      // Submit each item as a separate inquiry with its own variants + quantity
       for (const item of items) {
         await submitProductInquiry({
           productId: item.product.id,
@@ -36,20 +38,16 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
           name: name.trim(),
           email: email.trim(),
           phone: phone.trim(),
-          message: `${message.trim()}\n\nVarianty: ${
-            Object.keys(item.variants).length > 0
-              ? Object.entries(item.variants)
-                  .map(([k, v]) => `${k}: ${v}`)
-                  .join(", ")
-              : "žádné"
-          }\nKusy: ${item.quantity}`,
+          message: message.trim(),
+          variants: item.variants,
+          quantity: item.quantity,
         });
       }
 
       setSuccess(true);
       clearCart();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Chyba při odesílání");
+      setError(e instanceof Error ? e.message : "Chyba pri odosielaní");
     } finally {
       setSubmitting(false);
     }
@@ -65,13 +63,13 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
           <div className={styles.successState}>
             <div className={styles.successIcon}>✓</div>
             <Text as="h2" variant="sectionTitle">
-              Děkujeme!
+              Ďakujeme!
             </Text>
             <Text as="p" variant="body">
-              Vaše objednávka byla přijata. Brzy se vám ozveme.
+              Tvoja objednávka bola prijatá. Čoskoro sa ti ozveme.
             </Text>
             <Button variant="primary" onClick={onClose}>
-              Zavřít
+              Zavrieť
             </Button>
           </div>
         </div>
@@ -91,12 +89,12 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
           {/* Cart items */}
           <div className={styles.cartSection}>
             <Text as="h2" variant="sectionTitle" className={styles.heading}>
-              Váš košík
+              Tvoj košík
             </Text>
 
             {items.length === 0 ? (
               <Text as="p" variant="body" className={styles.empty}>
-                Košík je prázdný
+                Košík je prázdny
               </Text>
             ) : (
               <div className={styles.cartItems}>
@@ -114,7 +112,7 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
                       {Object.keys(item.variants).length > 0 && (
                         <Text as="p" variant="body" className={styles.itemVariants}>
                           {Object.entries(item.variants)
-                            .map(([k, v]) => `${k}: ${v}`)
+                            .map(([k, v]) => `${VARIANT_LABELS[k] ?? k}: ${v}`)
                             .join(" • ")}
                         </Text>
                       )}
@@ -129,11 +127,11 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
 
             <div className={styles.paymentNote}>
               <Text as="p" variant="body" weight="bold">
-                💳 Jak to funguje?
+                💳 Ako to funguje?
               </Text>
               <Text as="p" variant="body" className={styles.noteText}>
-                Odešlete svou objednávku a my vás budeme kontaktovat s detaily o platbě a doručení.
-                Platbu si můžete vybrat sami podle vašich potřeb.
+                Odošleš svoju objednávku a my ťa budeme kontaktovať s detailmi o platbe a doručení.
+                Platbu si môžeš vybrať sám podľa svojich potrieb.
               </Text>
             </div>
           </div>
@@ -141,14 +139,14 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
           {/* Form */}
           <div className={styles.formSection}>
             <Text as="h2" variant="sectionTitle" className={styles.heading}>
-              Vaše údaje
+              Tvoje údaje
             </Text>
 
             {error && <p className={styles.error}>{error}</p>}
 
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.field}>
-                <label className={styles.label}>Jméno *</label>
+                <label className={styles.label}>Meno *</label>
                 <input
                   type="text"
                   className={styles.input}
@@ -180,18 +178,18 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
               </div>
 
               <div className={styles.field}>
-                <label className={styles.label}>Zpráva</label>
+                <label className={styles.label}>Správa</label>
                 <textarea
                   className={styles.textarea}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  placeholder="Vaše poznámky k objednávce…"
+                  placeholder="Tvoje poznámky k objednávke…"
                 />
               </div>
 
               <Button type="submit" variant="primary" disabled={submitting || items.length === 0}>
-                {submitting ? "Odesílám…" : "Odeslat objednávku"}
+                {submitting ? "Odosielam…" : "Odoslať objednávku"}
               </Button>
             </form>
           </div>

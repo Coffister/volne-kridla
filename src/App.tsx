@@ -10,6 +10,7 @@ import Eshop from "./pages/Eshop";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
+import { CartProvider } from "./lib/CartContext";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
 // modal opened from any route via "?konzultacia=1&vetva=...". Old/shared
@@ -29,7 +30,7 @@ const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 function SiteApp() {
   return (
-    <>
+    <CartProvider>
       <Cursor />
       <KonzultaciaModal />
       <Routes>
@@ -43,9 +44,10 @@ function SiteApp() {
           <Route path="/o-mne" element={<OMne />} />
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/eshop" element={<Eshop />} />
+          <Route path="/eshop/produkt/:productId" element={<Eshop />} />
         </Route>
       </Routes>
-    </>
+    </CartProvider>
   );
 }
 

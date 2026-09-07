@@ -9,6 +9,8 @@ export async function submitProductInquiry(input: {
   email: string;
   phone?: string;
   message?: string;
+  variants?: Record<string, string>;
+  quantity?: number;
 }): Promise<void> {
   const { error } = await getSupabase().from("product_inquiries").insert({
     product_id: input.productId,
@@ -17,6 +19,8 @@ export async function submitProductInquiry(input: {
     email: input.email.trim(),
     phone: input.phone?.trim() || "",
     message: input.message?.trim() || "",
+    variants: input.variants ?? {},
+    quantity: input.quantity ?? 1,
   });
   if (error) throw error;
 }

@@ -137,8 +137,9 @@ try {
       baseProduct.variants = row.variants;
     }
     if (row.images && Array.isArray(row.images) && row.images.length > 0) {
+      // stored as plain strings: either a storage path or a full external URL
       baseProduct.images = row.images.map((img) =>
-        img.storage_path ? publicUrl(img.storage_path) : img.image_url
+        typeof img === "string" && !img.startsWith("http") ? publicUrl(img) : img
       );
     }
     if (row.stock_count !== null && row.stock_count !== undefined) {
