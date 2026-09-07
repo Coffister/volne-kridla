@@ -1,12 +1,12 @@
 import type { CarouselImage } from "@/ui/components/Carousel";
 
-import slide1 from "@/assets/omne/IMG_0199-1.png";
+import slide1 from "@/assets/omne/IMG_0199-1.webp";
 import slide2 from "@/assets/omne/0fa59025-3a08-49f6-9105-bb356cf48128.webp";
-import slide3 from "@/assets/omne/Frame-53.png";
-import slide4 from "@/assets/omne/Frame-54.png";
+import slide3 from "@/assets/omne/Frame-53.webp";
+import slide4 from "@/assets/omne/Frame-54.webp";
 import slide5 from "@/assets/omne/IMG_8043.webp";
-import slide6 from "@/assets/omne/obrazok_2025-10-09_210924895.png";
-import slide7 from "@/assets/omne/obrazok_2025-10-09_211018935.png";
+import slide6 from "@/assets/omne/obrazok_2025-10-09_210924895.webp";
+import slide7 from "@/assets/omne/obrazok_2025-10-09_211018935.webp";
 
 export const oMneCarouselImages: CarouselImage[] = [
   { id: "o-mne-1", src: slide1, alt: "Franka pri tréningu voľného letu s papagájom" },
