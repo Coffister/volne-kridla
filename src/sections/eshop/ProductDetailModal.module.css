@@ -12,7 +12,7 @@
 
 .modal {
   position: relative;
-  background: var(--color-surface-white);
+  background: var(--color-surface-primary);
   border-radius: var(--radius-sm);
   width: 100%;
   max-width: 900px;
@@ -110,7 +110,7 @@
 
 .carouselBtn:hover {
   background: var(--color-accent-primary);
-  color: var(--color-surface-white);
+  color: var(--color-surface-primary);
 }
 
 .indicators {
@@ -202,7 +202,7 @@
 
 .variantOption {
   padding: 8px 16px;
-  background: var(--color-surface-white);
+  background: var(--color-surface-primary);
   border: 2px solid var(--color-border-primary);
   border-radius: 8px;
   cursor: pointer;
@@ -217,7 +217,7 @@
 
 .variantOption.selected {
   background: var(--color-accent-primary);
-  color: var(--color-surface-white);
+  color: var(--color-surface-primary);
   border-color: var(--color-accent-primary);
 }
 
