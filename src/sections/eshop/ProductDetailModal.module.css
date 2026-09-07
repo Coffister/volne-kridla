@@ -169,7 +169,7 @@
 }
 
 .inStock {
-  color: var(--color-success);
+  color: var(--color-accent-primary);
 }
 
 .outOfStock {

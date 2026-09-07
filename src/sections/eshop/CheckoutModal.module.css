@@ -197,7 +197,7 @@
 .successIcon {
   width: 80px;
   height: 80px;
-  background: var(--color-success);
+  background: var(--color-accent-primary);
   color: var(--color-surface-primary);
   border-radius: 50%;
   display: flex;
