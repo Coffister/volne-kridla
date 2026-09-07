@@ -65,8 +65,8 @@ export default function ProductCard({
 
         <Stack direction="row" gap="xs">
           <Squircle
-            radius={16}
-            borderWidth={3}
+            radius={10}
+            borderWidth={1.5}
             borderColor="var(--color-border-primary)"
             className={styles.iconBtnWrap}
           >
@@ -80,8 +80,8 @@ export default function ProductCard({
             </button>
           </Squircle>
           <Squircle
-            radius={16}
-            borderWidth={3}
+            radius={10}
+            borderWidth={1.5}
             borderColor="var(--color-border-primary)"
             className={styles.iconBtnWrap}
           >
