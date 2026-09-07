@@ -18,6 +18,7 @@ export interface ProductRow {
   variants: ProductVariant[];
   stock_count: number;
   in_stock: boolean;
+  category: string;
   sort_order: number;
   published: boolean;
   created_at: string;
@@ -31,7 +32,7 @@ export interface ProductItem extends ProductRow {
 }
 
 const COLS =
-  "id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, sort_order, published, created_at";
+  "id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, category, sort_order, published, created_at";
 
 function resolveImagePath(pathOrUrl: string): string {
   if (pathOrUrl.startsWith("http")) return pathOrUrl;
@@ -68,6 +69,7 @@ export async function createProduct(input: {
   variants?: ProductVariant[];
   stockCount?: number;
   inStock?: boolean;
+  category?: string;
 }): Promise<ProductItem> {
   const supabase = getSupabase();
 
@@ -115,6 +117,7 @@ export async function createProduct(input: {
       variants: input.variants ?? [],
       stock_count: input.stockCount ?? 0,
       in_stock: input.inStock ?? true,
+      category: input.category ?? "",
       sort_order,
     })
     .select(COLS)
@@ -145,6 +148,7 @@ export async function updateProduct(
       | "images"
       | "stock_count"
       | "in_stock"
+      | "category"
     >
   >,
 ): Promise<void> {

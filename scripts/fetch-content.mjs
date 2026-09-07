@@ -72,7 +72,7 @@ try {
       .order("created_at", { ascending: true }),
     supabase
       .from("products")
-      .select("id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, sort_order, published")
+      .select("id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, category, sort_order, published")
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
@@ -148,6 +148,7 @@ try {
     if (row.in_stock !== null && row.in_stock !== undefined) {
       baseProduct.inStock = row.in_stock;
     }
+    if (row.category) baseProduct.category = row.category;
 
     return baseProduct;
   });

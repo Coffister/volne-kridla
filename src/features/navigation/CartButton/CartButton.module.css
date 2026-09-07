@@ -2,23 +2,8 @@
   position: relative;
 }
 
-.trigger {
+.triggerWrap {
   position: relative;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.trigger:hover {
-  background: rgba(0, 0, 0, 0.06);
 }
 
 .badge {

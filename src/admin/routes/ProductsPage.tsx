@@ -12,6 +12,7 @@ import {
   type ProductVariant,
 } from "../lib/products";
 import { msg } from "../lib/errors";
+import { PRODUCT_CATEGORIES } from "@/content/categories";
 
 /** "Red, Blue, Green" -> ["Red", "Blue", "Green"] */
 function parseOptions(raw: string): string[] {
@@ -50,6 +51,7 @@ export default function ProductsPage() {
   const [sizesText, setSizesText] = useState("");
   const [stockCount, setStockCount] = useState("");
   const [inStock, setInStock] = useState(true);
+  const [category, setCategory] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
@@ -96,6 +98,7 @@ export default function ProductsPage() {
         variants: buildVariants(colorsText, sizesText),
         stockCount: stockCount.trim() ? Number(stockCount) : 0,
         inStock,
+        category,
       });
       setSku("");
       setName("");
@@ -108,6 +111,7 @@ export default function ProductsPage() {
       setSizesText("");
       setStockCount("");
       setInStock(true);
+      setCategory("");
       await refresh();
     } catch (e) {
       setError(msg(e));
@@ -135,7 +139,15 @@ export default function ProductsPage() {
     p: Partial<
       Pick<
         ProductItem,
-        "sku" | "name" | "description" | "price_label" | "published" | "variants" | "stock_count" | "in_stock"
+        | "sku"
+        | "name"
+        | "description"
+        | "price_label"
+        | "published"
+        | "variants"
+        | "stock_count"
+        | "in_stock"
+        | "category"
       >
     >,
   ) {
@@ -250,6 +262,19 @@ export default function ProductsPage() {
           onChange={(e) => setImageUrl(e.target.value)}
           disabled={!!imageFile}
         />
+
+        <select
+          className="admin-field admin-field-sm"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">Bez kategórie</option>
+          {PRODUCT_CATEGORIES.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
 
         <div className="admin-review-form-row">
           <input
@@ -401,6 +426,19 @@ export default function ProductsPage() {
                   Dostupné
                 </label>
               </div>
+
+              <select
+                className="admin-field admin-field-sm"
+                defaultValue={item.category}
+                onChange={(e) => patch(item, { category: e.target.value })}
+              >
+                <option value="">Bez kategórie</option>
+                {PRODUCT_CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
 
               {/* Additional carousel images */}
               <div className="admin-gallery-actions" style={{ flexWrap: "wrap" }}>

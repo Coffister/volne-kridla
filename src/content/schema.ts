@@ -43,6 +43,8 @@ export interface Product {
   variants?: ProductVariant[];
   inStock?: boolean;
   stockCount?: number;
+  /** category slug, e.g. "trening" / "lietanie"; "" = uncategorized. See src/content/categories.ts. */
+  category?: string;
 }
 
 export interface FaqEntry {

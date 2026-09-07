@@ -26,6 +26,7 @@ interface ButtonProps {
   disabled?: boolean;
   onClick?: () => void;
   ariaLabel?: string;
+  ariaExpanded?: boolean;
 }
 
 export default function Button({
@@ -45,6 +46,7 @@ export default function Button({
   disabled,
   onClick,
   ariaLabel,
+  ariaExpanded,
 }: ButtonProps) {
   const recipe = buttonRecipe({
     variant,
@@ -64,6 +66,7 @@ export default function Button({
       disabled={disabled}
       onClick={onClick}
       aria-label={ariaLabel}
+      aria-expanded={ariaExpanded}
     >
         <span
           className={`${styles.content} ${recipe.size} ${
