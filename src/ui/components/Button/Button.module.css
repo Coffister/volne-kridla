@@ -155,6 +155,10 @@
     padding: var(--spacing-xs) var(--spacing-sm);
 }
 
+.square {
+    padding: var(--spacing-xs);
+}
+
 .content {
     display: inline-flex;
     align-items: center;
@@ -171,4 +175,8 @@
 .iconRight .icon {
   margin-right: 0;
   margin-left: 8px;
+}
+
+.iconOnly {
+  margin: 0;
 }

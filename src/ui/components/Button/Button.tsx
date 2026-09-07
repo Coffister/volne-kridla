@@ -9,7 +9,7 @@ import type { ButtonSize, ButtonVariant } from "./recipe";
 import styles from "./Button.module.css";
 
 interface ButtonProps {
-  children: ReactNode;
+  children?: ReactNode;
   icon?: ReactNode;
   iconPosition?: "left" | "right";
   className?: string;
@@ -25,6 +25,7 @@ interface ButtonProps {
 
   disabled?: boolean;
   onClick?: () => void;
+  ariaLabel?: string;
 }
 
 export default function Button({
@@ -43,6 +44,7 @@ export default function Button({
 
   disabled,
   onClick,
+  ariaLabel,
 }: ButtonProps) {
   const recipe = buttonRecipe({
     variant,
@@ -51,6 +53,7 @@ export default function Button({
 
   const isLabelSize = size === "label";
   const isFullWidth = Boolean(fullWidth || fullwidth);
+  const isIconOnly = !children;
 
   return (
     <button
@@ -60,32 +63,38 @@ export default function Button({
       }`}
       disabled={disabled}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
         <span
           className={`${styles.content} ${recipe.size} ${
-            icon && iconPosition === "right" ? styles.iconRight : ""
+            icon && iconPosition === "right" && !isIconOnly ? styles.iconRight : ""
           }`}
         >
-          {icon && iconPosition === "left" ? (
-            <span className={styles.icon} aria-hidden>
+          {icon && (iconPosition === "left" || isIconOnly) ? (
+            <span
+              className={`${styles.icon} ${isIconOnly ? styles.iconOnly : ""}`}
+              aria-hidden
+            >
               {icon}
             </span>
           ) : null}
 
-          <Text
-            as="span"
-            variant="button"
-            weight={weight}
-            style={
-              isLabelSize
-                ? { fontSize: "var(--font-size-label)", lineHeight: 1.5 }
-                : undefined
-            }
-          >
-            {children}
-          </Text>
+          {!isIconOnly && (
+            <Text
+              as="span"
+              variant="button"
+              weight={weight}
+              style={
+                isLabelSize
+                  ? { fontSize: "var(--font-size-label)", lineHeight: 1.5 }
+                  : undefined
+              }
+            >
+              {children}
+            </Text>
+          )}
 
-          {icon && iconPosition === "right" ? (
+          {icon && iconPosition === "right" && !isIconOnly ? (
             <span className={styles.icon} aria-hidden>
               {icon}
             </span>

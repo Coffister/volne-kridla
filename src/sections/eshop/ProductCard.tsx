@@ -1,5 +1,6 @@
 import type { Product } from "@/content";
 import { Squircle, Stack, Text, Image } from "@/ui/primitives";
+import Button from "@/ui/components/Button";
 import CartIcon from "@/ui/icons/CartIcon";
 import ShareIcon from "@/ui/icons/ShareIcon";
 import styles from "./ProductCard.module.css";
@@ -69,23 +70,21 @@ export default function ProductCard({
         </Stack>
 
         <Stack direction="row" gap="xs">
-          <button
-            type="button"
-            className={styles.iconBtn}
+          <Button
+            variant="primary"
+            size="square"
+            icon={<ShareIcon />}
             onClick={() => onShare(product)}
-            aria-label="Zdieľať produkt"
-          >
-            <ShareIcon />
-          </button>
-          <button
-            type="button"
-            className={styles.iconBtn}
+            ariaLabel="Zdieľať produkt"
+          />
+          <Button
+            variant="primary"
+            size="square"
+            icon={<CartIcon />}
             onClick={() => onAddToCart(product)}
             disabled={product.inStock === false}
-            aria-label="Pridať do košíka"
-          >
-            <CartIcon />
-          </button>
+            ariaLabel="Pridať do košíka"
+          />
         </Stack>
       </Stack>
     </Squircle>
