@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--color-surface-primary);
-  padding: 24px;
+  padding: 28px;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
@@ -17,20 +17,14 @@
   flex-direction: column;
 }
 
-.sku {
-  align-self: flex-end;
-  color: var(--color-text-primary);
-  opacity: 0.5;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
-}
-
 .imageWrap {
   aspect-ratio: 1 / 1;
+  background: var(--color-surface-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
 }
 
 .image {
@@ -45,19 +39,17 @@
 .imagePlaceholder {
   width: 100%;
   height: 100%;
-  background: var(--color-surface-secondary);
-  border-radius: 8px;
 }
 
 .name {
   margin: 0 0 8px;
-  color: var(--color-text-primary);
+  color: var(--color-accent-secondary);
+  font-weight: 800;
 }
 
 .description {
   margin: 0 0 16px;
   color: var(--color-text-primary);
-  opacity: 0.6;
   font-size: 0.9rem;
   line-height: 1.4;
   overflow: hidden;
@@ -73,63 +65,52 @@
 }
 
 .price {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   color: var(--color-accent-primary);
   line-height: 1;
 }
 
 .stock {
   font-size: 0.85rem;
-  opacity: 0.7;
-}
-
-.inStock {
   color: var(--color-text-primary);
 }
 
-.outOfStock {
-  color: #d32f2f;
-  opacity: 1;
-}
-
-.cartButton {
-  flex-shrink: 0;
+.iconBtnWrap {
   width: 52px;
   height: 52px;
+  background: var(--color-surface-primary);
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  width: 100%;
+  height: 100%;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
-  background: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  background: none;
   border: none;
-  border-radius: 50%;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
 }
 
-.cartButton:hover:not(:disabled) {
-  background: var(--color-accent-primary);
-  transform: scale(1.05);
-}
-
-.cartButton:disabled {
+.iconBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
   .card {
-    padding: 16px;
+    padding: 20px;
   }
 
   .price {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
-  .cartButton {
+  .iconBtnWrap {
     width: 44px;
     height: 44px;
-    font-size: 1.1rem;
   }
 }

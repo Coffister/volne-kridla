@@ -1,20 +1,24 @@
 import type { Product } from "@/content";
 import { Squircle, Stack, Text, Image } from "@/ui/primitives";
+import CartIcon from "@/ui/icons/CartIcon";
+import ShareIcon from "@/ui/icons/ShareIcon";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
   product: Product;
   onViewDetails: (product: Product) => void;
   onAddToCart: (product: Product) => void;
+  onShare: (product: Product) => void;
 }
 
 export default function ProductCard({
   product,
   onViewDetails,
   onAddToCart,
+  onShare,
 }: ProductCardProps) {
   return (
-    <Squircle radius="xl" className={styles.card}>
+    <Squircle radius="lg" className={styles.card}>
       <div
         className={styles.clickableArea}
         onClick={() => onViewDetails(product)}
@@ -24,19 +28,13 @@ export default function ProductCard({
           if (e.key === "Enter" || e.key === " ") onViewDetails(product);
         }}
       >
-        {product.sku && (
-          <Text as="span" variant="body" className={styles.sku}>
-            {product.sku}
-          </Text>
-        )}
-
-        <div className={styles.imageWrap}>
+        <Squircle radius="md" className={styles.imageWrap}>
           {product.image ? (
             <Image src={product.image} alt={product.name} className={styles.image} />
           ) : (
             <div className={styles.imagePlaceholder} aria-hidden />
           )}
-        </div>
+        </Squircle>
 
         <Text as="h2" variant="sectionSubtitle" className={styles.name}>
           {product.name}
@@ -57,27 +55,47 @@ export default function ProductCard({
             </Text>
           )}
           {product.inStock !== undefined && (
-            <Text
-              as="span"
-              variant="body"
-              className={`${styles.stock} ${product.inStock ? styles.inStock : styles.outOfStock}`}
-            >
+            <Text as="span" variant="body" weight="bold" className={styles.stock}>
               {product.inStock
-                ? `Skladom${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
+                ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
                 : "Vypredané"}
             </Text>
           )}
         </Stack>
 
-        <button
-          type="button"
-          className={styles.cartButton}
-          onClick={() => onAddToCart(product)}
-          disabled={product.inStock === false}
-          aria-label="Pridať do košíka"
-        >
-          🛒
-        </button>
+        <Stack direction="row" gap="xs">
+          <Squircle
+            radius={14}
+            borderWidth={2}
+            borderColor="var(--color-border-primary)"
+            className={styles.iconBtnWrap}
+          >
+            <button
+              type="button"
+              className={styles.iconBtn}
+              onClick={() => onShare(product)}
+              aria-label="Zdieľať produkt"
+            >
+              <ShareIcon />
+            </button>
+          </Squircle>
+          <Squircle
+            radius={14}
+            borderWidth={2}
+            borderColor="var(--color-border-primary)"
+            className={styles.iconBtnWrap}
+          >
+            <button
+              type="button"
+              className={styles.iconBtn}
+              onClick={() => onAddToCart(product)}
+              disabled={product.inStock === false}
+              aria-label="Pridať do košíka"
+            >
+              <CartIcon />
+            </button>
+          </Squircle>
+        </Stack>
       </Stack>
     </Squircle>
   );

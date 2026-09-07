@@ -20,6 +20,7 @@ export default function Eshop() {
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [justAdded, setJustAdded] = useState<string | null>(null);
+  const [linkCopiedFor, setLinkCopiedFor] = useState<string | null>(null);
 
   // Deep-link support: /eshop/produkt/:productId opens the detail modal directly.
   useEffect(() => {
@@ -43,6 +44,21 @@ export default function Eshop() {
     addItem(product, {}, 1);
     setJustAdded(product.id);
     setTimeout(() => setJustAdded((cur) => (cur === product.id ? null : cur)), 1200);
+  };
+
+  const handleShare = async (product: Product) => {
+    const url = `${window.location.origin}/eshop/produkt/${product.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: product.name, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setLinkCopiedFor(product.id);
+      setTimeout(() => setLinkCopiedFor((cur) => (cur === product.id ? null : cur)), 1500);
+    } catch {
+      // user cancelled the share sheet, or clipboard denied — no-op
+    }
   };
 
   const handleOpenCheckout = (_product: Product, _variants: Record<string, string>) => {
@@ -75,9 +91,13 @@ export default function Eshop() {
                   product={product}
                   onViewDetails={openDetail}
                   onAddToCart={handleAddToCart}
+                  onShare={handleShare}
                 />
                 {justAdded === product.id && (
                   <div className={styles.addedToast}>Pridané do košíka ✓</div>
+                )}
+                {linkCopiedFor === product.id && (
+                  <div className={styles.addedToast}>Odkaz skopírovaný ✓</div>
                 )}
               </div>
             ))}
