@@ -40,6 +40,9 @@ export default function PageTransition() {
   }));
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+  // set by the exit effect, read (and cleared) by the entrance effect so a
+  // skipped exit also skips the matching entrance fade
+  const skipNextEnter = useRef(false);
 
   // route changed -> animate the current page out, then swap
   useEffect(() => {
@@ -47,18 +50,27 @@ export default function PageTransition() {
 
     const element = containerRef.current;
 
+    // /eshop <-> /eshop/produkt/:id is a modal opening over the same page,
+    // not a real page change — skip the crossfade and scroll reset so the
+    // product card grid underneath doesn't visibly flash/reload.
+    const isEshopModalNav =
+      location.pathname.startsWith("/eshop") && shown.key.startsWith("/eshop");
+    if (isEshopModalNav) skipNextEnter.current = true;
+
     const swap = () => {
-      // land the incoming page at the top of the viewport
-      const lenis = getLenis();
-      if (lenis) {
-        lenis.scrollTo(0, { immediate: true, force: true });
+      if (!isEshopModalNav) {
+        // land the incoming page at the top of the viewport
+        const lenis = getLenis();
+        if (lenis) {
+          lenis.scrollTo(0, { immediate: true, force: true });
+        }
+        window.scrollTo(0, 0);
       }
-      window.scrollTo(0, 0);
 
       setShown({ node: latestOutlet.current, key: location.pathname });
     };
 
-    if (!element || prefersReducedMotion()) {
+    if (!element || prefersReducedMotion() || isEshopModalNav) {
       swap();
       return;
     }
@@ -93,6 +105,12 @@ export default function PageTransition() {
       // that layout and scroll position have changed
       ScrollTrigger.refresh();
     };
+
+    if (skipNextEnter.current) {
+      skipNextEnter.current = false;
+      gsap.set(element, { clearProps: "opacity,filter,transform" });
+      return;
+    }
 
     if (prefersReducedMotion()) {
       gsap.set(element, { opacity: 1, y: 0, filter: "blur(0px)" });
