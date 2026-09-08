@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { X, CaretRight, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
-import { Squircle, Stack, Text } from "@/ui/primitives";
+import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
-import CartIcon from "@/ui/icons/CartIcon";
-import CloseIcon from "@/ui/icons/CloseIcon";
-import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
 import { useCart } from "@/lib/CartContext";
-import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductDetailModal.module.css";
 
 interface ProductDetailModalProps {
@@ -66,36 +63,41 @@ export default function ProductDetailModal({
     <div className={styles.overlay} onClick={onClose}>
       <Squircle
         radius="lg"
-        borderWidth={5}
-        borderColor="var(--color-accent-secondary)"
+        borderWidth={4}
+        borderColor="var(--color-border-primary)"
         className={styles.modal}
       >
-        <div onClick={(e) => e.stopPropagation()}>
+        <Box className={styles.modalInner} onClick={(e) => e.stopPropagation()}>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
-            <CloseIcon />
+            <X size={20} weight="bold" />
           </button>
 
           <div className={styles.content}>
             {/* Image carousel */}
-            <div className={styles.imageSection}>
+            <Stack direction="column" gap="sm" className={styles.imageSection}>
               {allImages.length > 0 && (
                 <>
-                  <Squircle radius="md" className={styles.imageWrap}>
+                  <Squircle
+                    radius="md"
+                    borderWidth={2}
+                    borderColor="var(--color-border-primary)"
+                    className={styles.imageWrap}
+                  >
                     <img src={currentImage} alt={product.name} className={styles.mainImage} />
+                    {allImages.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={nextImage}
+                        className={styles.navBtn}
+                        aria-label="Ďalší obrázok"
+                      >
+                        <CaretRight size={18} weight="bold" />
+                      </button>
+                    )}
                   </Squircle>
+
                   {allImages.length > 1 && (
-                    <button
-                      onClick={nextImage}
-                      className={styles.navBtn}
-                      aria-label="Ďalší obrázok"
-                    >
-                      <span className={styles.navBtnIcon}>
-                        <ChevronDownIcon />
-                      </span>
-                    </button>
-                  )}
-                  {allImages.length > 1 && (
-                    <Stack direction="row" gap="xs" className={styles.thumbnails}>
+                    <Stack direction="row" gap="xs">
                       {allImages.map((img, i) => (
                         <Squircle
                           key={i}
@@ -118,10 +120,10 @@ export default function ProductDetailModal({
                   )}
                 </>
               )}
-            </div>
+            </Stack>
 
             {/* Details */}
-            <div className={styles.details}>
+            <Stack direction="column" gap="sm" className={styles.details}>
               <Text as="h1" variant="cardTitle" className={styles.title}>
                 {product.name}
               </Text>
@@ -140,10 +142,15 @@ export default function ProductDetailModal({
 
                   <div className={styles.divider} />
 
-                  <Stack direction="column" gap="sm" className={styles.variants}>
+                  <Stack direction="column" gap="sm">
                     {product.variants.map((variant: ProductVariant) => (
-                      <div key={variant.label} className={styles.variantGroup}>
-                        <Text as="label" variant="caption" weight="semibold" className={styles.variantLabel}>
+                      <Stack key={variant.label} direction="column" gap="xs">
+                        <Text
+                          as="label"
+                          variant="caption"
+                          weight="semibold"
+                          className={styles.variantLabel}
+                        >
                           {variant.label}
                         </Text>
                         <select
@@ -161,7 +168,7 @@ export default function ProductDetailModal({
                             </option>
                           ))}
                         </select>
-                      </div>
+                      </Stack>
                     ))}
                   </Stack>
                 </>
@@ -169,7 +176,7 @@ export default function ProductDetailModal({
 
               <div className={styles.divider} />
 
-              <div>
+              <div className={styles.priceRow}>
                 {product.priceLabel && (
                   <Text as="div" className={styles.price}>
                     {product.priceLabel}
@@ -192,11 +199,11 @@ export default function ProductDetailModal({
                   onClick={handleShare}
                   aria-label={linkCopied ? "Odkaz skopírovaný" : "Zdieľať produkt"}
                 >
-                  <img src={shareIcon} alt="" className={styles.shareIcon} />
+                  <ShareNetwork size={22} weight="bold" />
                 </button>
                 <Button
                   variant="primary"
-                  icon={<CartIcon />}
+                  icon={<ShoppingCart size={22} weight="bold" />}
                   className={styles.cartBtn}
                   fullWidth
                   disabled={product.inStock === false}
@@ -205,9 +212,9 @@ export default function ProductDetailModal({
                   {addedToCart ? "Pridané" : "Pridať do košíka"}
                 </Button>
               </Stack>
-            </div>
+            </Stack>
           </div>
-        </div>
+        </Box>
       </Squircle>
     </div>,
     document.body,
