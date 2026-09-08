@@ -4,6 +4,7 @@ import type { Product, ProductVariant } from "@/content";
 import { Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import { useCart } from "@/lib/CartContext";
+import { colorHex } from "@/content/colorPalette";
 import styles from "./ProductDetailModal.module.css";
 
 interface ProductDetailModalProps {
@@ -144,22 +145,34 @@ export default function ProductDetailModal({
             {product.variants && product.variants.length > 0 && (
               <Stack direction="column" gap="md" className={styles.variants}>
                 {product.variants.map((variant: ProductVariant) => (
-                  <div key={variant.type} className={styles.variantGroup}>
-                    <label className={styles.variantLabel}>
-                      {variant.type === "color" ? "Farba" : "Veľkosť"}:
-                    </label>
+                  <div key={variant.label} className={styles.variantGroup}>
+                    <label className={styles.variantLabel}>{variant.label}:</label>
                     <div className={styles.variantOptions}>
-                      {variant.options.map((option: string) => (
-                        <button
-                          key={option}
-                          className={`${styles.variantOption} ${
-                            selectedVariants[variant.type] === option ? styles.selected : ""
-                          }`}
-                          onClick={() => handleVariantSelect(variant.type, option)}
-                        >
-                          {option}
-                        </button>
-                      ))}
+                      {variant.options.map((option: string) =>
+                        variant.isColor ? (
+                          <button
+                            key={option}
+                            type="button"
+                            title={option}
+                            className={`${styles.colorSwatch} ${
+                              selectedVariants[variant.label] === option ? styles.selected : ""
+                            }`}
+                            style={{ background: colorHex(option) }}
+                            onClick={() => handleVariantSelect(variant.label, option)}
+                          />
+                        ) : (
+                          <button
+                            key={option}
+                            type="button"
+                            className={`${styles.variantOption} ${
+                              selectedVariants[variant.label] === option ? styles.selected : ""
+                            }`}
+                            onClick={() => handleVariantSelect(variant.label, option)}
+                          >
+                            {option}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </div>
                 ))}

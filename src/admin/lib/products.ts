@@ -2,7 +2,10 @@ import { getSupabase } from "@/lib/supabase";
 import { MEDIA_BUCKET } from "./gallery";
 
 export interface ProductVariant {
-  type: "color" | "size";
+  /** admin-chosen name, e.g. "Farba ľadvinky", "Veľkosť" */
+  label: string;
+  /** when true, options are color names from the shared palette (see colorPalette.ts) */
+  isColor?: boolean;
   options: string[];
 }
 
@@ -157,6 +160,30 @@ export async function updateProduct(
     .update({ ...patch, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) throw error;
+}
+
+export async function replaceProductImage(item: ProductItem, file: File): Promise<string> {
+  const supabase = getSupabase();
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `products/${crypto.randomUUID()}.${ext}`;
+  const { error: upErr } = await supabase.storage
+    .from(MEDIA_BUCKET)
+    .upload(path, file, { cacheControl: "31536000" });
+  if (upErr) throw upErr;
+
+  const { error } = await supabase
+    .from("products")
+    .update({ image_path: path, image_url: null, updated_at: new Date().toISOString() })
+    .eq("id", item.id);
+  if (error) {
+    await supabase.storage.from(MEDIA_BUCKET).remove([path]);
+    throw error;
+  }
+
+  if (item.image_path) {
+    await supabase.storage.from(MEDIA_BUCKET).remove([item.image_path]);
+  }
+  return getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
 export async function addProductImage(item: ProductItem, file: File): Promise<string[]> {

@@ -10,8 +10,6 @@ interface CheckoutModalProps {
   onClose: () => void;
 }
 
-const VARIANT_LABELS: Record<string, string> = { color: "Farba", size: "Veľkosť" };
-
 export default function CheckoutModal({ onClose }: CheckoutModalProps) {
   const { items, clearCart } = useCart();
   const [name, setName] = useState("");
@@ -112,7 +110,7 @@ export default function CheckoutModal({ onClose }: CheckoutModalProps) {
                       {Object.keys(item.variants).length > 0 && (
                         <Text as="p" variant="body" className={styles.itemVariants}>
                           {Object.entries(item.variants)
-                            .map(([k, v]) => `${VARIANT_LABELS[k] ?? k}: ${v}`)
+                            .map(([k, v]) => `${k}: ${v}`)
                             .join(" • ")}
                         </Text>
                       )}

@@ -8,8 +8,6 @@ import CheckoutModal from "@/sections/eshop/CheckoutModal";
 
 import styles from "./CartButton.module.css";
 
-const VARIANT_LABELS: Record<string, string> = { color: "Farba", size: "Veľkosť" };
-
 export default function CartButton() {
   const { items, totalItems, removeItem } = useCart();
   const [open, setOpen] = useState(false);
@@ -60,7 +58,7 @@ export default function CartButton() {
                       {Object.keys(item.variants).length > 0 && (
                         <span className={styles.itemVariants}>
                           {Object.entries(item.variants)
-                            .map(([k, v]) => `${VARIANT_LABELS[k] ?? k}: ${v}`)
+                            .map(([k, v]) => `${k}: ${v}`)
                             .join(" • ")}
                         </span>
                       )}

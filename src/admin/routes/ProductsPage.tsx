@@ -7,14 +7,16 @@ import {
   listProducts,
   removeProductImage,
   reorderProducts,
+  replaceProductImage,
   updateProduct,
   type ProductItem,
   type ProductVariant,
 } from "../lib/products";
 import { msg } from "../lib/errors";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
+import { COLOR_PALETTE } from "@/content/colorPalette";
 
-/** "Red, Blue, Green" -> ["Red", "Blue", "Green"] */
+/** "S, M, L" -> ["S", "M", "L"] */
 function parseOptions(raw: string): string[] {
   return raw
     .split(",")
@@ -22,17 +24,87 @@ function parseOptions(raw: string): string[] {
     .filter(Boolean);
 }
 
-function variantsToText(variants: ProductVariant[], type: "color" | "size"): string {
-  return variants.find((v) => v.type === type)?.options.join(", ") ?? "";
+interface VariantGroupsEditorProps {
+  groups: ProductVariant[];
+  onLabelChange: (i: number, label: string) => void;
+  onToggleIsColor: (i: number) => void;
+  onOptionsChange: (i: number, options: string[]) => void;
+  onRemove: (i: number) => void;
+  onAdd: () => void;
 }
 
-function buildVariants(colorsText: string, sizesText: string): ProductVariant[] {
-  const variants: ProductVariant[] = [];
-  const colors = parseOptions(colorsText);
-  const sizes = parseOptions(sizesText);
-  if (colors.length) variants.push({ type: "color", options: colors });
-  if (sizes.length) variants.push({ type: "size", options: sizes });
-  return variants;
+function VariantGroupsEditor({
+  groups,
+  onLabelChange,
+  onToggleIsColor,
+  onOptionsChange,
+  onRemove,
+  onAdd,
+}: VariantGroupsEditorProps) {
+  return (
+    <div>
+      {groups.map((group, i) => (
+        <div key={i} className="admin-variant-group">
+          <div className="admin-review-form-row">
+            <input
+              type="text"
+              className="admin-field admin-field-sm"
+              placeholder="Názov vlastnosti (napr. Farba ľadvinky)"
+              defaultValue={group.label}
+              onBlur={(e) => onLabelChange(i, e.target.value)}
+            />
+            <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <input
+                type="checkbox"
+                checked={!!group.isColor}
+                onChange={() => onToggleIsColor(i)}
+              />
+              Farba
+            </label>
+            <button type="button" className="is-danger" onClick={() => onRemove(i)}>
+              Zmazať
+            </button>
+          </div>
+
+          {group.isColor ? (
+            <div className="admin-color-swatches">
+              {COLOR_PALETTE.map((c) => {
+                const selected = group.options.includes(c.label);
+                return (
+                  <button
+                    key={c.label}
+                    type="button"
+                    title={c.label}
+                    className={`admin-color-swatch ${selected ? "is-selected" : ""}`}
+                    style={{ background: c.hex }}
+                    onClick={() =>
+                      onOptionsChange(
+                        i,
+                        selected
+                          ? group.options.filter((o) => o !== c.label)
+                          : [...group.options, c.label],
+                      )
+                    }
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <input
+              type="text"
+              className="admin-field admin-field-sm"
+              placeholder="Možnosti oddelené čiarkou (napr. S, M, L)"
+              defaultValue={group.options.join(", ")}
+              onBlur={(e) => onOptionsChange(i, parseOptions(e.target.value))}
+            />
+          )}
+        </div>
+      ))}
+      <button type="button" className="admin-btn admin-btn-sm" onClick={onAdd}>
+        + Pridať vlastnosť
+      </button>
+    </div>
+  );
 }
 
 export default function ProductsPage() {
@@ -47,8 +119,7 @@ export default function ProductsPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [additionalImageFiles, setAdditionalImageFiles] = useState<File[]>([]);
-  const [colorsText, setColorsText] = useState("");
-  const [sizesText, setSizesText] = useState("");
+  const [variantGroups, setVariantGroups] = useState<ProductVariant[]>([]);
   const [stockCount, setStockCount] = useState("");
   const [inStock, setInStock] = useState(true);
   const [category, setCategory] = useState("");
@@ -95,7 +166,7 @@ export default function ProductsPage() {
         imageFile,
         imageUrl,
         additionalImageFiles,
-        variants: buildVariants(colorsText, sizesText),
+        variants: variantGroups.filter((g) => g.label.trim() && g.options.length > 0),
         stockCount: stockCount.trim() ? Number(stockCount) : 0,
         inStock,
         category,
@@ -107,8 +178,7 @@ export default function ProductsPage() {
       setImageFile(null);
       setImageUrl("");
       setAdditionalImageFiles([]);
-      setColorsText("");
-      setSizesText("");
+      setVariantGroups([]);
       setStockCount("");
       setInStock(true);
       setCategory("");
@@ -171,6 +241,16 @@ export default function ProductsPage() {
     }
   }
 
+  async function onReplaceImage(item: ProductItem, file: File) {
+    try {
+      const image = await replaceProductImage(item, file);
+      setItems((cur) => cur.map((i) => (i.id === item.id ? { ...i, image } : i)));
+    } catch (e) {
+      setError(msg(e));
+      await refresh();
+    }
+  }
+
   async function onAddImage(item: ProductItem, file: File) {
     try {
       const images = await addProductImage(item, file);
@@ -189,6 +269,10 @@ export default function ProductsPage() {
     } catch (e) {
       setError(msg(e));
     }
+  }
+
+  function patchVariants(item: ProductItem, next: ProductVariant[]) {
+    patch(item, { variants: next });
   }
 
   return (
@@ -276,22 +360,24 @@ export default function ProductsPage() {
           ))}
         </select>
 
-        <div className="admin-review-form-row">
-          <input
-            type="text"
-            className="admin-field admin-field-sm"
-            placeholder="Farby (napr. Červená, Modrá) — nepovinné"
-            value={colorsText}
-            onChange={(e) => setColorsText(e.target.value)}
-          />
-          <input
-            type="text"
-            className="admin-field admin-field-sm"
-            placeholder="Veľkosti (napr. S, M, L) — nepovinné"
-            value={sizesText}
-            onChange={(e) => setSizesText(e.target.value)}
-          />
-        </div>
+        <VariantGroupsEditor
+          groups={variantGroups}
+          onLabelChange={(i, label) =>
+            setVariantGroups((cur) => cur.map((g, idx) => (idx === i ? { ...g, label } : g)))
+          }
+          onToggleIsColor={(i) =>
+            setVariantGroups((cur) =>
+              cur.map((g, idx) => (idx === i ? { ...g, isColor: !g.isColor, options: [] } : g)),
+            )
+          }
+          onOptionsChange={(i, options) =>
+            setVariantGroups((cur) => cur.map((g, idx) => (idx === i ? { ...g, options } : g)))
+          }
+          onRemove={(i) => setVariantGroups((cur) => cur.filter((_, idx) => idx !== i))}
+          onAdd={() =>
+            setVariantGroups((cur) => [...cur, { label: "", isColor: false, options: [] }])
+          }
+        />
 
         <div className="admin-review-form-row">
           <input
@@ -331,11 +417,23 @@ export default function ProductsPage() {
       <ul className="admin-review-list">
         {items.map((item, i) => (
           <li key={item.id} className={item.published ? "" : "is-hidden"}>
-            {item.image ? (
-              <img src={item.image} alt={item.name} loading="lazy" />
-            ) : (
-              <div className="admin-review-noimg">bez fotky</div>
-            )}
+            <label
+              className="admin-avatar-upload"
+              style={item.image ? { backgroundImage: `url(${item.image})` } : undefined}
+              title="Zmeniť fotku"
+            >
+              {!item.image && <span>+ Foto</span>}
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onReplaceImage(item, f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
             <div className="admin-review-body">
               <input
                 type="text"
@@ -376,34 +474,41 @@ export default function ProductsPage() {
                 }}
               />
 
-              <div className="admin-review-form-row">
-                <input
-                  type="text"
-                  className="admin-field admin-field-sm"
-                  defaultValue={variantsToText(item.variants ?? [], "color")}
-                  placeholder="Farby (čiarkou oddelené)"
-                  onBlur={(e) => {
-                    const next = buildVariants(
-                      e.target.value,
-                      variantsToText(item.variants ?? [], "size"),
-                    );
-                    patch(item, { variants: next });
-                  }}
-                />
-                <input
-                  type="text"
-                  className="admin-field admin-field-sm"
-                  defaultValue={variantsToText(item.variants ?? [], "size")}
-                  placeholder="Veľkosti (čiarkou oddelené)"
-                  onBlur={(e) => {
-                    const next = buildVariants(
-                      variantsToText(item.variants ?? [], "color"),
-                      e.target.value,
-                    );
-                    patch(item, { variants: next });
-                  }}
-                />
-              </div>
+              <VariantGroupsEditor
+                groups={item.variants ?? []}
+                onLabelChange={(vi, label) =>
+                  patchVariants(
+                    item,
+                    (item.variants ?? []).map((g, idx) => (idx === vi ? { ...g, label } : g)),
+                  )
+                }
+                onToggleIsColor={(vi) =>
+                  patchVariants(
+                    item,
+                    (item.variants ?? []).map((g, idx) =>
+                      idx === vi ? { ...g, isColor: !g.isColor, options: [] } : g,
+                    ),
+                  )
+                }
+                onOptionsChange={(vi, options) =>
+                  patchVariants(
+                    item,
+                    (item.variants ?? []).map((g, idx) => (idx === vi ? { ...g, options } : g)),
+                  )
+                }
+                onRemove={(vi) =>
+                  patchVariants(
+                    item,
+                    (item.variants ?? []).filter((_, idx) => idx !== vi),
+                  )
+                }
+                onAdd={() =>
+                  patchVariants(item, [
+                    ...(item.variants ?? []),
+                    { label: "", isColor: false, options: [] },
+                  ])
+                }
+              />
 
               <div className="admin-review-form-row">
                 <input

@@ -26,7 +26,10 @@ export interface Review {
 }
 
 export interface ProductVariant {
-  type: 'color' | 'size';
+  /** admin-chosen name, e.g. "Farba ľadvinky", "Veľkosť" */
+  label: string;
+  /** when true, options are color names from the shared palette (see colorPalette.ts) */
+  isColor?: boolean;
   options: string[];
 }
 
