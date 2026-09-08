@@ -1,7 +1,7 @@
 import styles from "./Button.module.css";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "label" | "contact" | "navbar";
-export type ButtonSize = "sm" | "md" | "lg" | "label";
+export type ButtonSize = "sm" | "md" | "lg" | "label" | "square";
 
 interface ButtonRecipeProps {
     variant: ButtonVariant;

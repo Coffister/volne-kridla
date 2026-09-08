@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Button from "@/ui/components/Button";
+import CartIcon from "@/ui/icons/CartIcon";
 import { useCart } from "@/lib/CartContext";
 import CheckoutModal from "@/sections/eshop/CheckoutModal";
 
@@ -28,16 +29,17 @@ export default function CartButton() {
 
   return (
     <div className={styles.wrap} ref={wrapRef}>
-      <button
-        type="button"
-        className={styles.trigger}
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Košík"
-        aria-expanded={open}
-      >
-        🛒
+      <div className={styles.triggerWrap}>
+        <Button
+          variant="primary"
+          size="square"
+          icon={<CartIcon />}
+          onClick={() => setOpen((v) => !v)}
+          ariaLabel="Košík"
+          ariaExpanded={open}
+        />
         {totalItems > 0 && <span className={styles.badge}>{totalItems}</span>}
-      </button>
+      </div>
 
       {open && (
         <div className={styles.dropdown}>

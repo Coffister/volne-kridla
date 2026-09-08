@@ -22,9 +22,24 @@
   color: var(--color-text-primary);
 }
 
+.toolbar {
+  background: var(--color-surface-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.tabs {
+  flex-wrap: wrap;
+}
+
+.tab {
+  all: unset;
+  cursor: pointer;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 420px));
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 300px));
   gap: var(--spacing-md);
 }
 

@@ -1,5 +1,5 @@
 import type { Product } from "@/content";
-import { Squircle, Text, Image } from "@/ui/primitives";
+import { Squircle, Stack, Text, Image } from "@/ui/primitives";
 import cartIcon from "@/assets/icons/cart-filled.png";
 import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductCard.module.css";
@@ -17,8 +17,13 @@ export default function ProductCard({
   onAddToCart,
   onShare,
 }: ProductCardProps) {
+  const priceLabel =
+    product.priceLabel && !product.priceLabel.includes("€")
+      ? `${product.priceLabel}€`
+      : product.priceLabel;
+
   return (
-    <Squircle radius="2xl" className={styles.card}>
+    <Squircle radius="lg" className={styles.card}>
       <div
         className={styles.clickableArea}
         onClick={() => onViewDetails(product)}
@@ -28,7 +33,7 @@ export default function ProductCard({
           if (e.key === "Enter" || e.key === " ") onViewDetails(product);
         }}
       >
-        <Squircle radius="lg" className={styles.imageWrap}>
+        <Squircle radius="md" className={styles.imageWrap}>
           {product.image ? (
             <Image src={product.image} alt={product.name} className={styles.image} />
           ) : (
@@ -36,32 +41,42 @@ export default function ProductCard({
           )}
         </Squircle>
 
-        <div className={styles.info}>
-          <Text as="h2" className={styles.name}>
-            {product.name}
-          </Text>
+        <Text as="h2" variant="cardTitle" className={styles.name}>
+          {product.name}
+        </Text>
 
-          {product.description && (
-            <Text as="p" className={styles.description}>
-              {product.description}
-            </Text>
-          )}
-        </div>
+        {product.description && (
+          <Text as="p" variant="caption" className={styles.description}>
+            {product.description}
+          </Text>
+        )}
       </div>
 
-      <div className={styles.actions}>
-        <div className={styles.priceBlock}>
-          {product.priceLabel && <Text as="p" className={styles.price}>{product.priceLabel}</Text>}
+      <Stack direction="row" align="center" justify="space-between" className={styles.footer}>
+        <Stack direction="column" className={styles.priceInfo}>
+          {priceLabel && (
+            <Text as="span" variant="body" weight="bold" className={styles.price}>
+              {priceLabel}
+            </Text>
+          )}
           {product.inStock !== undefined && (
-            <Text as="p" className={styles.stock}>
+            <Text as="span" variant="caption" weight="bold" className={styles.stock}>
               {product.inStock
                 ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
                 : "Vypredané"}
             </Text>
           )}
-        </div>
+        </Stack>
 
-        <div className={styles.buttons}>
+        <Stack direction="row" gap="xs">
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => onShare(product)}
+            aria-label="Zdieľať produkt"
+          >
+            <img src={shareIcon} alt="" className={styles.icon} />
+          </button>
           <button
             type="button"
             className={styles.iconBtn}
@@ -71,16 +86,8 @@ export default function ProductCard({
           >
             <img src={cartIcon} alt="" className={styles.icon} />
           </button>
-          <button
-            type="button"
-            className={styles.iconBtn}
-            onClick={() => onShare(product)}
-            aria-label="Zdieľať produkt"
-          >
-            <img src={shareIcon} alt="" className={styles.icon} />
-          </button>
-        </div>
-      </div>
+        </Stack>
+      </Stack>
     </Squircle>
   );
 }
