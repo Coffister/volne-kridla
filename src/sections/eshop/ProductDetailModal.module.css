@@ -42,29 +42,6 @@
   padding: var(--spacing-sm);
 }
 
-.closeBtn {
-  position: absolute;
-  top: var(--spacing-lg);
-  right: var(--spacing-lg);
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  background: var(--color-surface-primary);
-  color: var(--color-text-primary);
-  border: 2px solid var(--color-border-primary);
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.closeBtn:hover {
-  background: var(--color-surface-secondary);
-}
-
 .imageWrap {
   aspect-ratio: 675 / 688;
   background: var(--color-surface-secondary);
@@ -98,8 +75,9 @@
 }
 
 .divider {
-  border: none;
-  border-top: 1.5px dashed var(--color-surface-muted);
+  display: block;
+  width: 100%;
+  height: 1px;
 }
 
 .variantLabel {
@@ -156,13 +134,7 @@
   outline-offset: 2px;
 }
 
-.priceRow {
-  display: flex;
-  flex-direction: column;
-}
-
 .price {
-  color: var(--color-accent-primary);
   line-height: var(--line-height-tight);
 }
 
@@ -227,6 +199,16 @@
 .cartBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.shareIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.cartIcon {
+  width: 29px;
+  height: 26px;
 }
 
 .cartBtnLabel {

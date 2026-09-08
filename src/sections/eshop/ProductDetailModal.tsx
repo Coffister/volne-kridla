@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
-import { Squircle, Stack, Text } from "@/ui/primitives";
+import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import { colorHex } from "@/content/colorPalette";
 import { useCart } from "@/lib/CartContext";
+import shareIcon from "@/assets/icons/share-filled.png";
+import cartIcon from "@/assets/icons/cart-outline.svg";
+import dividerIcon from "@/assets/icons/dashed-divider.svg";
 import styles from "./ProductDetailModal.module.css";
 
 interface ProductDetailModalProps {
@@ -51,20 +53,16 @@ export default function ProductDetailModal({
   };
 
   return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
+    <Box className={styles.overlay} onClick={onClose}>
       <Squircle radius="3xl" className={styles.modal}>
-        <div onClick={(e) => e.stopPropagation()} className={styles.grid}>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
-            <X size={18} weight="bold" />
-          </button>
-
+        <Box onClick={(e) => e.stopPropagation()} className={styles.grid}>
           <Squircle radius="2xl" className={styles.imageWrap}>
             {product.image && (
               <img src={product.image} alt={product.name} className={styles.mainImage} />
             )}
           </Squircle>
 
-          <div className={styles.info}>
+          <Box className={styles.info}>
             <Stack direction="column" gap="md">
               <Text
                 as="h1"
@@ -93,7 +91,7 @@ export default function ProductDetailModal({
                 </Text>
               )}
 
-              <div className={styles.divider} />
+              <img src={dividerIcon} alt="" className={styles.divider} />
             </Stack>
 
             {product.variants && product.variants.length > 0 && (
@@ -138,11 +136,11 @@ export default function ProductDetailModal({
                   </Stack>
                 ))}
 
-                <div className={styles.divider} />
+                <img src={dividerIcon} alt="" className={styles.divider} />
               </Stack>
             )}
 
-            <div className={styles.priceRow}>
+            <Stack direction="column">
               {product.priceLabel && (
                 <Text
                   as="div"
@@ -151,6 +149,7 @@ export default function ProductDetailModal({
                     fontFamily: "var(--font-family-display)",
                     fontWeight: "var(--font-weight-extrabold)",
                     fontSize: "64px",
+                    color: "#ee4b0b",
                   }}
                 >
                   {product.priceLabel}
@@ -164,7 +163,7 @@ export default function ProductDetailModal({
                     : "Vypredané"}
                 </Text>
               )}
-            </div>
+            </Stack>
 
             <Stack direction="row" justify="space-between" className={styles.actions}>
               <button
@@ -173,7 +172,7 @@ export default function ProductDetailModal({
                 onClick={handleShare}
                 aria-label={linkCopied ? "Odkaz skopírovaný" : "Zdieľať produkt"}
               >
-                <ShareNetwork size={32} weight="bold" />
+                <img src={shareIcon} alt="" className={styles.shareIcon} />
               </button>
 
               <button
@@ -182,16 +181,16 @@ export default function ProductDetailModal({
                 disabled={product.inStock === false}
                 onClick={handleAddToCart}
               >
-                <ShoppingCart size={26} weight="bold" color="var(--color-text-secondary)" />
+                <img src={cartIcon} alt="" className={styles.cartIcon} />
                 <Text as="span" variant="body" weight="bold" className={styles.cartBtnLabel}>
                   {addedToCart ? "Pridané" : "Pridať do košíka"}
                 </Text>
               </button>
             </Stack>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </Squircle>
-    </div>,
+    </Box>,
     document.body,
   );
 }
