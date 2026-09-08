@@ -1,7 +1,7 @@
 import type { Product } from "@/content";
-import { Squircle, Stack, Text, Image } from "@/ui/primitives";
-import CartIcon from "@/ui/icons/CartIcon";
-import ShareIcon from "@/ui/icons/ShareIcon";
+import { Squircle, Text, Image } from "@/ui/primitives";
+import cartIcon from "@/assets/icons/cart-filled.png";
+import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
@@ -18,7 +18,7 @@ export default function ProductCard({
   onShare,
 }: ProductCardProps) {
   return (
-    <Squircle radius="lg" className={styles.card}>
+    <Squircle radius="2xl" className={styles.card}>
       <div
         className={styles.clickableArea}
         onClick={() => onViewDetails(product)}
@@ -28,7 +28,7 @@ export default function ProductCard({
           if (e.key === "Enter" || e.key === " ") onViewDetails(product);
         }}
       >
-        <Squircle radius="md" className={styles.imageWrap}>
+        <Squircle radius="lg" className={styles.imageWrap}>
           {product.image ? (
             <Image src={product.image} alt={product.name} className={styles.image} />
           ) : (
@@ -36,67 +36,51 @@ export default function ProductCard({
           )}
         </Squircle>
 
-        <Text as="h2" variant="cardTitle" className={styles.name}>
-          {product.name}
-        </Text>
-
-        {product.description && (
-          <Text as="p" variant="caption" className={styles.description}>
-            {product.description}
+        <div className={styles.info}>
+          <Text as="h2" className={styles.name}>
+            {product.name}
           </Text>
-        )}
-      </div>
 
-      <Stack direction="row" align="flex-end" justify="space-between" className={styles.footer}>
-        <Stack direction="column" gap="xs">
-          {product.priceLabel && (
-            <Text as="span" variant="body" weight="bold" className={styles.price}>
-              {product.priceLabel}
+          {product.description && (
+            <Text as="p" className={styles.description}>
+              {product.description}
             </Text>
           )}
+        </div>
+      </div>
+
+      <div className={styles.actions}>
+        <div className={styles.priceBlock}>
+          {product.priceLabel && <Text as="p" className={styles.price}>{product.priceLabel}</Text>}
           {product.inStock !== undefined && (
-            <Text as="span" variant="caption" weight="bold" className={styles.stock}>
+            <Text as="p" className={styles.stock}>
               {product.inStock
                 ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
                 : "Vypredané"}
             </Text>
           )}
-        </Stack>
+        </div>
 
-        <Stack direction="row" gap="xs">
-          <Squircle
-            radius={10}
-            borderWidth={1.5}
-            borderColor="var(--color-border-primary)"
-            className={styles.iconBtnWrap}
+        <div className={styles.buttons}>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => onAddToCart(product)}
+            disabled={product.inStock === false}
+            aria-label="Pridať do košíka"
           >
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => onShare(product)}
-              aria-label="Zdieľať produkt"
-            >
-              <ShareIcon />
-            </button>
-          </Squircle>
-          <Squircle
-            radius={10}
-            borderWidth={1.5}
-            borderColor="var(--color-border-primary)"
-            className={styles.iconBtnWrap}
+            <img src={cartIcon} alt="" className={styles.icon} />
+          </button>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={() => onShare(product)}
+            aria-label="Zdieľať produkt"
           >
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => onAddToCart(product)}
-              disabled={product.inStock === false}
-              aria-label="Pridať do košíka"
-            >
-              <CartIcon />
-            </button>
-          </Squircle>
-        </Stack>
-      </Stack>
+            <img src={shareIcon} alt="" className={styles.icon} />
+          </button>
+        </div>
+      </div>
     </Squircle>
   );
 }
