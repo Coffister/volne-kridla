@@ -61,12 +61,7 @@ export default function ProductDetailModal({
 
   return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <Squircle
-        radius="lg"
-        borderWidth={4}
-        borderColor="var(--color-border-primary)"
-        className={styles.modal}
-      >
+      <Squircle radius="lg" className={styles.modal}>
         <Box className={styles.modalInner} onClick={(e) => e.stopPropagation()}>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
             <X size={20} weight="bold" />
