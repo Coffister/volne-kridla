@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { X, CaretRight, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
+import { X, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
-import { Box, Squircle, Stack, Text } from "@/ui/primitives";
-import Button from "@/ui/components/Button";
+import { Squircle, Stack, Text } from "@/ui/primitives";
+import { colorHex } from "@/content/colorPalette";
 import { useCart } from "@/lib/CartContext";
 import styles from "./ProductDetailModal.module.css";
 
@@ -18,18 +18,9 @@ export default function ProductDetailModal({
   onClose,
 }: ProductDetailModalProps) {
   const { addItem } = useCart();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [addedToCart, setAddedToCart] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-
-  // Get all images (primary + carousel)
-  const allImages = [product.image, ...(product.images || [])].filter(Boolean);
-  const currentImage = allImages[currentImageIndex] || product.image;
-
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
 
   const handleVariantSelect = (type: string, value: string) => {
     setSelectedVariants((prev) => ({
@@ -61,155 +52,144 @@ export default function ProductDetailModal({
 
   return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <Squircle radius="lg" className={styles.modal}>
-        <Box className={styles.modalInner} onClick={(e) => e.stopPropagation()}>
+      <Squircle radius="3xl" className={styles.modal}>
+        <div onClick={(e) => e.stopPropagation()} className={styles.grid}>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
-            <X size={20} weight="bold" />
+            <X size={18} weight="bold" />
           </button>
 
-          <div className={styles.content}>
-            {/* Image carousel */}
-            <Stack direction="column" gap="sm" className={styles.imageSection}>
-              {allImages.length > 0 && (
-                <>
-                  <Squircle
-                    radius="md"
-                    borderWidth={2}
-                    borderColor="var(--color-border-primary)"
-                    className={styles.imageWrap}
-                  >
-                    <img src={currentImage} alt={product.name} className={styles.mainImage} />
-                    {allImages.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={nextImage}
-                        className={styles.navBtn}
-                        aria-label="Ďalší obrázok"
-                      >
-                        <CaretRight size={18} weight="bold" />
-                      </button>
-                    )}
-                  </Squircle>
+          <Squircle radius="2xl" className={styles.imageWrap}>
+            {product.image && (
+              <img src={product.image} alt={product.name} className={styles.mainImage} />
+            )}
+          </Squircle>
 
-                  {allImages.length > 1 && (
-                    <Stack direction="row" gap="xs">
-                      {allImages.map((img, i) => (
-                        <Squircle
-                          key={i}
-                          radius="xs"
-                          borderWidth={2}
-                          borderColor="var(--color-border-primary)"
-                          className={styles.thumb}
-                        >
-                          <button
-                            type="button"
-                            className={styles.thumbBtn}
-                            onClick={() => setCurrentImageIndex(i)}
-                            aria-label={`Obrázok ${i + 1}`}
-                          >
-                            <img src={img} alt="" className={styles.thumbImage} />
-                          </button>
-                        </Squircle>
-                      ))}
-                    </Stack>
-                  )}
-                </>
-              )}
-            </Stack>
-
-            {/* Details */}
-            <Stack direction="column" gap="sm" className={styles.details}>
-              <Text as="h1" variant="cardTitle" className={styles.title}>
+          <div className={styles.info}>
+            <Stack direction="column" gap="md">
+              <Text
+                as="h1"
+                weight="extrabold"
+                className={styles.title}
+                style={{
+                  fontFamily: "var(--font-family-display)",
+                  fontSize: "48px",
+                  letterSpacing: "-0.96px",
+                  lineHeight: "normal",
+                }}
+              >
                 {product.name}
               </Text>
 
               {product.description && (
-                <Text as="p" variant="body" className={styles.description}>
+                <Text as="p" variant="caption" weight="medium" className={styles.description}>
                   {product.description}
+                  {product.variants && product.variants.length > 0 && (
+                    <>
+                      <br />
+                      <br />
+                      Prispôsobte si farebnosť vášej fantázii.
+                    </>
+                  )}
                 </Text>
               )}
 
-              {product.variants && product.variants.length > 0 && (
-                <>
-                  <Text as="p" variant="caption" weight="medium" className={styles.hint}>
-                    Prispôsobte si farebnosť vášej fantázii.
-                  </Text>
+              <div className={styles.divider} />
+            </Stack>
 
-                  <div className={styles.divider} />
-
-                  <Stack direction="column" gap="sm">
-                    {product.variants.map((variant: ProductVariant) => (
-                      <Stack key={variant.label} direction="column" gap="xs">
-                        <Text
-                          as="label"
-                          variant="caption"
-                          weight="semibold"
-                          className={styles.variantLabel}
-                        >
-                          {variant.label}
-                        </Text>
-                        <select
-                          required
-                          className={styles.select}
-                          value={selectedVariants[variant.label] || ""}
-                          onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
-                        >
-                          <option value="" disabled>
-                            zvolte {variant.isColor ? "farbu" : "možnosť"}
-                          </option>
-                          {variant.options.map((option: string) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
+            {product.variants && product.variants.length > 0 && (
+              <Stack direction="column" gap="sm">
+                {product.variants.map((variant: ProductVariant) => (
+                  <Stack key={variant.label} direction="column" gap="xs">
+                    <Text as="label" variant="caption" weight="semibold" className={styles.variantLabel}>
+                      {variant.label}
+                    </Text>
+                    {variant.isColor ? (
+                      <Stack direction="row" gap="xs">
+                        {variant.options.map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            title={option}
+                            className={`${styles.swatch} ${
+                              selectedVariants[variant.label] === option ? styles.swatchSelected : ""
+                            }`}
+                            style={{ background: colorHex(option) }}
+                            onClick={() => handleVariantSelect(variant.label, option)}
+                          />
+                        ))}
                       </Stack>
-                    ))}
+                    ) : (
+                      <select
+                        required
+                        className={styles.select}
+                        value={selectedVariants[variant.label] || ""}
+                        onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
+                      >
+                        <option value="" disabled>
+                          zvolte možnosť
+                        </option>
+                        {variant.options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    )}
                   </Stack>
-                </>
+                ))}
+
+                <div className={styles.divider} />
+              </Stack>
+            )}
+
+            <div className={styles.priceRow}>
+              {product.priceLabel && (
+                <Text
+                  as="div"
+                  className={styles.price}
+                  style={{
+                    fontFamily: "var(--font-family-display)",
+                    fontWeight: "var(--font-weight-extrabold)",
+                    fontSize: "64px",
+                  }}
+                >
+                  {product.priceLabel}
+                </Text>
               )}
 
-              <div className={styles.divider} />
+              {product.inStock !== undefined && (
+                <Text as="p" variant="caption" weight="semibold" className={styles.stock}>
+                  {product.inStock
+                    ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
+                    : "Vypredané"}
+                </Text>
+              )}
+            </div>
 
-              <div className={styles.priceRow}>
-                {product.priceLabel && (
-                  <Text as="div" className={styles.price}>
-                    {product.priceLabel}
-                  </Text>
-                )}
+            <Stack direction="row" justify="space-between" className={styles.actions}>
+              <button
+                type="button"
+                className={styles.shareBtn}
+                onClick={handleShare}
+                aria-label={linkCopied ? "Odkaz skopírovaný" : "Zdieľať produkt"}
+              >
+                <ShareNetwork size={32} weight="bold" />
+              </button>
 
-                {product.inStock !== undefined && (
-                  <Text as="p" variant="caption" weight="semibold" className={styles.stock}>
-                    {product.inStock
-                      ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
-                      : "Vypredané"}
-                  </Text>
-                )}
-              </div>
-
-              <Stack direction="row" gap="sm" className={styles.actions}>
-                <button
-                  type="button"
-                  className={styles.shareBtn}
-                  onClick={handleShare}
-                  aria-label={linkCopied ? "Odkaz skopírovaný" : "Zdieľať produkt"}
-                >
-                  <ShareNetwork size={22} weight="bold" />
-                </button>
-                <Button
-                  variant="primary"
-                  icon={<ShoppingCart size={22} weight="bold" />}
-                  className={styles.cartBtn}
-                  fullWidth
-                  disabled={product.inStock === false}
-                  onClick={handleAddToCart}
-                >
+              <button
+                type="button"
+                className={styles.cartBtn}
+                disabled={product.inStock === false}
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart size={26} weight="bold" color="var(--color-text-secondary)" />
+                <Text as="span" variant="body" weight="bold" className={styles.cartBtnLabel}>
                   {addedToCart ? "Pridané" : "Pridať do košíka"}
-                </Button>
-              </Stack>
+                </Text>
+              </button>
             </Stack>
           </div>
-        </Box>
+        </div>
       </Squircle>
     </div>,
     document.body,
