@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import type { Product, ProductVariant } from "@/content";
-import { Stack, Text } from "@/ui/primitives";
+import { Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
+import CartIcon from "@/ui/icons/CartIcon";
+import CloseIcon from "@/ui/icons/CloseIcon";
+import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
 import { useCart } from "@/lib/CartContext";
-import { colorHex } from "@/content/colorPalette";
+import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductDetailModal.module.css";
 
 interface ProductDetailModalProps {
@@ -16,7 +19,6 @@ interface ProductDetailModalProps {
 export default function ProductDetailModal({
   product,
   onClose,
-  onOpenCheckout,
 }: ProductDetailModalProps) {
   const { addItem } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -32,10 +34,6 @@ export default function ProductDetailModal({
     setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
   };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
-  };
-
   const handleVariantSelect = (type: string, value: string) => {
     setSelectedVariants((prev) => ({
       ...prev,
@@ -47,11 +45,6 @@ export default function ProductDetailModal({
     addItem(product, selectedVariants, 1);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 1500);
-  };
-
-  const handleCheckout = () => {
-    addItem(product, selectedVariants, 1);
-    onOpenCheckout(product, selectedVariants);
   };
 
   const handleShare = async () => {
@@ -71,151 +64,151 @@ export default function ProductDetailModal({
 
   return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
-          ✕
-        </button>
+      <Squircle
+        radius="lg"
+        borderWidth={5}
+        borderColor="var(--color-accent-secondary)"
+        className={styles.modal}
+      >
+        <div onClick={(e) => e.stopPropagation()}>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Zavrieť">
+            <CloseIcon />
+          </button>
 
-        <button className={styles.shareBtn} onClick={handleShare} aria-label="Zdieľať produkt">
-          {linkCopied ? "✓ Odkaz skopírovaný" : "↗ Zdieľať"}
-        </button>
-
-        <div className={styles.content}>
-          {/* Image carousel */}
-          <div className={styles.imageSection}>
-            {allImages.length > 0 && (
-              <>
-                <img src={currentImage} alt={product.name} className={styles.mainImage} />
-                {allImages.length > 1 && (
-                  <div className={styles.carousel}>
-                    <button onClick={prevImage} className={styles.carouselBtn}>
-                      ‹
+          <div className={styles.content}>
+            {/* Image carousel */}
+            <div className={styles.imageSection}>
+              {allImages.length > 0 && (
+                <>
+                  <Squircle radius="md" className={styles.imageWrap}>
+                    <img src={currentImage} alt={product.name} className={styles.mainImage} />
+                  </Squircle>
+                  {allImages.length > 1 && (
+                    <button
+                      onClick={nextImage}
+                      className={styles.navBtn}
+                      aria-label="Ďalší obrázok"
+                    >
+                      <span className={styles.navBtnIcon}>
+                        <ChevronDownIcon />
+                      </span>
                     </button>
-                    <div className={styles.indicators}>
-                      {allImages.map((_, i) => (
-                        <button
+                  )}
+                  {allImages.length > 1 && (
+                    <Stack direction="row" gap="xs" className={styles.thumbnails}>
+                      {allImages.map((img, i) => (
+                        <Squircle
                           key={i}
-                          className={`${styles.indicator} ${i === currentImageIndex ? styles.active : ""}`}
-                          onClick={() => setCurrentImageIndex(i)}
-                          aria-label={`Obrázok ${i + 1}`}
-                        />
-                      ))}
-                    </div>
-                    <button onClick={nextImage} className={styles.carouselBtn}>
-                      ›
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Details */}
-          <div className={styles.details}>
-            {product.sku && (
-              <Text as="span" variant="body" className={styles.sku}>
-                {product.sku}
-              </Text>
-            )}
-
-            <Text as="h1" variant="sectionTitle" className={styles.title}>
-              {product.name}
-            </Text>
-
-            {product.priceLabel && (
-              <Text as="div" className={styles.price}>
-                {product.priceLabel}
-              </Text>
-            )}
-
-            {product.inStock !== undefined && (
-              <Text
-                as="p"
-                variant="body"
-                className={`${styles.stock} ${product.inStock ? styles.inStock : styles.outOfStock}`}
-              >
-                {product.inStock
-                  ? `Skladom${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
-                  : "Vypredané"}
-              </Text>
-            )}
-
-            {/* Variants */}
-            {product.variants && product.variants.length > 0 && (
-              <Stack direction="column" gap="md" className={styles.variants}>
-                {product.variants.map((variant: ProductVariant) => (
-                  <div key={variant.label} className={styles.variantGroup}>
-                    <label className={styles.variantLabel}>{variant.label}:</label>
-                    <div className={styles.variantOptions}>
-                      {variant.options.map((option: string) =>
-                        variant.isColor ? (
+                          radius="xs"
+                          borderWidth={2}
+                          borderColor="var(--color-border-primary)"
+                          className={styles.thumb}
+                        >
                           <button
-                            key={option}
                             type="button"
-                            title={option}
-                            className={`${styles.colorSwatch} ${
-                              selectedVariants[variant.label] === option ? styles.selected : ""
-                            }`}
-                            style={{ background: colorHex(option) }}
-                            onClick={() => handleVariantSelect(variant.label, option)}
-                          />
-                        ) : (
-                          <button
-                            key={option}
-                            type="button"
-                            className={`${styles.variantOption} ${
-                              selectedVariants[variant.label] === option ? styles.selected : ""
-                            }`}
-                            onClick={() => handleVariantSelect(variant.label, option)}
+                            className={styles.thumbBtn}
+                            onClick={() => setCurrentImageIndex(i)}
+                            aria-label={`Obrázok ${i + 1}`}
                           >
-                            {option}
+                            <img src={img} alt="" className={styles.thumbImage} />
                           </button>
-                        ),
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </Stack>
-            )}
+                        </Squircle>
+                      ))}
+                    </Stack>
+                  )}
+                </>
+              )}
+            </div>
 
-            {/* Description */}
-            {product.description && (
-              <Text as="p" variant="body" className={styles.description}>
-                {product.description}
+            {/* Details */}
+            <div className={styles.details}>
+              <Text as="h1" variant="cardTitle" className={styles.title}>
+                {product.name}
               </Text>
-            )}
 
-            {/* Actions */}
-            <div className={styles.actions}>
-              <Button
-                variant="secondary"
-                onClick={handleAddToCart}
-                className={styles.cartBtn}
-              >
-                {addedToCart ? "✓ Pridané" : "🛒 Do košíka"}
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleCheckout}
-                disabled={product.inStock === false}
-              >
-                Objednať
-              </Button>
+              {product.description && (
+                <Text as="p" variant="body" className={styles.description}>
+                  {product.description}
+                </Text>
+              )}
+
+              {product.variants && product.variants.length > 0 && (
+                <>
+                  <Text as="p" variant="caption" weight="medium" className={styles.hint}>
+                    Prispôsobte si farebnosť vášej fantázii.
+                  </Text>
+
+                  <div className={styles.divider} />
+
+                  <Stack direction="column" gap="sm" className={styles.variants}>
+                    {product.variants.map((variant: ProductVariant) => (
+                      <div key={variant.label} className={styles.variantGroup}>
+                        <Text as="label" variant="caption" weight="semibold" className={styles.variantLabel}>
+                          {variant.label}
+                        </Text>
+                        <select
+                          required
+                          className={styles.select}
+                          value={selectedVariants[variant.label] || ""}
+                          onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
+                        >
+                          <option value="" disabled>
+                            zvolte {variant.isColor ? "farbu" : "možnosť"}
+                          </option>
+                          {variant.options.map((option: string) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </Stack>
+                </>
+              )}
+
+              <div className={styles.divider} />
+
+              <div>
+                {product.priceLabel && (
+                  <Text as="div" className={styles.price}>
+                    {product.priceLabel}
+                  </Text>
+                )}
+
+                {product.inStock !== undefined && (
+                  <Text as="p" variant="caption" weight="semibold" className={styles.stock}>
+                    {product.inStock
+                      ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
+                      : "Vypredané"}
+                  </Text>
+                )}
+              </div>
+
+              <Stack direction="row" gap="sm" className={styles.actions}>
+                <button
+                  type="button"
+                  className={styles.shareBtn}
+                  onClick={handleShare}
+                  aria-label={linkCopied ? "Odkaz skopírovaný" : "Zdieľať produkt"}
+                >
+                  <img src={shareIcon} alt="" className={styles.shareIcon} />
+                </button>
+                <Button
+                  variant="primary"
+                  icon={<CartIcon />}
+                  className={styles.cartBtn}
+                  fullWidth
+                  disabled={product.inStock === false}
+                  onClick={handleAddToCart}
+                >
+                  {addedToCart ? "Pridané" : "Pridať do košíka"}
+                </Button>
+              </Stack>
             </div>
           </div>
         </div>
-
-        {/* Reviews — placeholder until product-specific reviews are collected */}
-        <div className={styles.reviewsSection}>
-          <Text as="h2" variant="sectionSubtitle" className={styles.reviewsHeading}>
-            Recenzie
-          </Text>
-          <Text as="p" variant="body" className={styles.reviewsEmpty}>
-            K tomuto produktu zatiaľ nemáme žiadne recenzie. Buď prvý, kto ho vyskúša!
-          </Text>
-        </div>
-      </div>
+      </Squircle>
     </div>,
     document.body,
   );
