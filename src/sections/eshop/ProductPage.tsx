@@ -45,9 +45,9 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
   return (
     <div className={styles.page}>
-      <button type="button" onClick={onBack} className={styles.backLink}>
+      <Squircle radius="xl"><button type="button" onClick={onBack} className={styles.backLink}>
         ← Späť na produkty
-      </button>
+      </button></Squircle>
 
       {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
       {product.image && <img src={product.image} alt={product.name} className={styles.image} />}
