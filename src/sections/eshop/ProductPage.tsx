@@ -2,6 +2,9 @@ import { useState } from "react";
 import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
 import styles from "./ProductPage.module.css";
+import { Box, Container, Stack, Text, Image, Section, Squircle } from "@/ui/primitives";
+import Button from "@/ui/components/Button";
+import Badge from "@/ui/components/Badge";
 
 interface ProductPageProps {
   product: Product;
