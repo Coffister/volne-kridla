@@ -63,7 +63,7 @@ export default function ProductDetailModal({
           </Squircle>
 
           <Box className={styles.info}>
-            <Stack direction="column" gap="md">
+            <Stack direction="column" gap="xs">
               <Text
                 as="h1"
                 weight="extrabold"
@@ -140,7 +140,7 @@ export default function ProductDetailModal({
               </Stack>
             )}
 
-            <Stack direction="column" spacing="xs">
+            <Stack direction="column" gap="xs">
               {product.priceLabel && (
                 <Text
                   as="div"
