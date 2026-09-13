@@ -1,0 +1,31 @@
+/* Bare scaffolding only — restyle freely, this just keeps things from
+   overlapping while the real layout is being built by hand. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.backLink {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.image {
+  max-width: 100%;
+}
+
+.variants > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}

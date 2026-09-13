@@ -10,7 +10,7 @@ import { site, type Product } from "@/content";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
 
 import ProductCard from "./ProductCard";
-import ProductDetailModal from "./ProductDetailModal";
+import ProductPage from "./ProductPage";
 import CheckoutModal from "./CheckoutModal";
 import { useCart } from "@/lib/CartContext";
 import styles from "./Eshop.module.css";
@@ -72,14 +72,6 @@ export default function Eshop() {
     }
   };
 
-  const handleOpenCheckout = (_product: Product, _variants: Record<string, string>) => {
-    // Product + selected variants were already added to the cart by the
-    // detail modal before calling this — checkout just reviews the cart.
-    setDetailProduct(null);
-    navigate("/eshop");
-    setCheckoutOpen(true);
-  };
-
   return (
     <Section id="eshop" className={styles.section}>
       <Container>
@@ -126,7 +118,9 @@ export default function Eshop() {
           </Stack>
         </Squircle>
 
-        {products.length === 0 ? (
+        {detailProduct ? (
+          <ProductPage product={detailProduct} onBack={closeDetail} />
+        ) : products.length === 0 ? (
           <Text as="p" variant="body" className={styles.empty}>
             Produkty sa práve pripravujú — čoskoro tu nájdeš viac.
           </Text>
@@ -151,14 +145,6 @@ export default function Eshop() {
           </div>
         )}
       </Container>
-
-      {detailProduct && (
-        <ProductDetailModal
-          product={detailProduct}
-          onClose={closeDetail}
-          onOpenCheckout={handleOpenCheckout}
-        />
-      )}
 
       {checkoutOpen && <CheckoutModal onClose={() => setCheckoutOpen(false)} />}
     </Section>
