@@ -140,7 +140,7 @@ export default function ProductDetailModal({
               </Stack>
             )}
 
-            <Stack direction="column" gap="sm">
+            <Stack direction="column" gap="xs">
               {product.priceLabel && (
                 <Text
                   as="div"

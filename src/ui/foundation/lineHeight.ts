@@ -1,4 +1,5 @@
 export const lineHeight = {
+    fit: 0.8,
     tight: 1,
     snug: 1.1,
     normal: 1.4,
