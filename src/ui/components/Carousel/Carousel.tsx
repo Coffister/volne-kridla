@@ -20,6 +20,10 @@ interface CarouselProps {
   autoplayInterval?: number;
   borderWidth?: number;
   borderColor?: string;
+  /** external slide index (e.g. driven by thumbnails) — omit for uncontrolled use */
+  activeIndex?: number;
+  /** fires whenever the slide changes, from autoplay, drag, or activeIndex */
+  onActiveIndexChange?: (index: number) => void;
 }
 
 // drag-to-swipe image carousel with autoplay — reused wherever the site needs
@@ -31,25 +35,38 @@ export default function Carousel({
   autoplayInterval = 4000,
   borderWidth = 0,
   borderColor,
+  activeIndex,
+  onActiveIndexChange,
 }: CarouselProps) {
   const count = images.length;
 
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(activeIndex ?? 0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
 
   const startXRef = useRef(0);
   const widthRef = useRef(1);
 
+  // stay in sync when a parent (e.g. thumbnail rail) drives the index
+  useEffect(() => {
+    if (activeIndex !== undefined) setIndex(activeIndex);
+  }, [activeIndex]);
+
+  const goTo = (next: number) => {
+    setIndex(next);
+    onActiveIndexChange?.(next);
+  };
+
   useEffect(() => {
     if (isDragging || !autoplayInterval || count < 2) return;
 
     const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % count);
+      goTo((index + 1) % count);
     }, autoplayInterval);
 
     return () => clearInterval(id);
-  }, [isDragging, count, autoplayInterval]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDragging, count, autoplayInterval, index]);
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -69,9 +86,9 @@ export default function Carousel({
     const threshold = widthRef.current * 0.15;
 
     if (dragOffset < -threshold) {
-      setIndex((prev) => (prev + 1) % count);
+      goTo((index + 1) % count);
     } else if (dragOffset > threshold) {
-      setIndex((prev) => (prev - 1 + count) % count);
+      goTo((index - 1 + count) % count);
     }
 
     setIsDragging(false);

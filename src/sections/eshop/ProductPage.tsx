@@ -24,6 +24,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
   >({});
   const [addedToCart, setAddedToCart] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
   const handleVariantSelect = (label: string, value: string) => {
     setSelectedVariants((prev) => ({ ...prev, [label]: value }));
@@ -78,7 +79,32 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
         <Stack direction="row" gap="lg">
           {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
           {images.length > 0 && (
-            <Carousel images={images} radius="lg" className={styles.image} />
+            <Box className={styles.imageWrap}>
+              <Carousel
+                images={images}
+                radius="lg"
+                className={styles.image}
+                activeIndex={activeImage}
+                onActiveIndexChange={setActiveImage}
+              />
+
+              {images.length > 1 && (
+                <Stack direction="column" gap="xs" className={styles.thumbs}>
+                  {images.map((img, i) => (
+                    <button
+                      key={img.id}
+                      type="button"
+                      onClick={() => setActiveImage(i)}
+                      className={`${styles.thumb} ${
+                        i === activeImage ? styles.thumbActive : ""
+                      }`}
+                    >
+                      <img src={img.src} alt="" className={styles.thumbImage} />
+                    </button>
+                  ))}
+                </Stack>
+              )}
+            </Box>
           )}
 
           <Box className={styles.productInfo}>
