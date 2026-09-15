@@ -7,7 +7,6 @@
 
 .backLink {
   align-self: flex-start;
-  background: var(--color-surface-primary);
 }
 
 .container {
@@ -35,6 +34,7 @@
 
 .name {
   margin: 0;
+  color: var(--color-accent-secondary);
 }
 
 .description {
@@ -43,4 +43,5 @@
 
 .price {
   font-weight: var(--font-weight-bold);
+  color: var(--color-accent-primary);
 }
