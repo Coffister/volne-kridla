@@ -43,6 +43,11 @@ export default function Carousel({
   const [index, setIndex] = useState(activeIndex ?? 0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  // wrapping from the last slide to the first (or back) jumps the track by
+  // several widths at once — animating that with the normal transition
+  // sweeps visibly across every slide in between, briefly showing the wrong
+  // image. Skip the transition for just that one jump so it snaps instead.
+  const [skipTransition, setSkipTransition] = useState(false);
 
   const startXRef = useRef(0);
   const widthRef = useRef(1);
@@ -52,7 +57,14 @@ export default function Carousel({
     if (activeIndex !== undefined) setIndex(activeIndex);
   }, [activeIndex]);
 
-  const goTo = (next: number) => {
+  useEffect(() => {
+    if (!skipTransition) return;
+    const id = requestAnimationFrame(() => setSkipTransition(false));
+    return () => cancelAnimationFrame(id);
+  }, [skipTransition]);
+
+  const goTo = (next: number, isWrap = false) => {
+    if (isWrap) setSkipTransition(true);
     setIndex(next);
     onActiveIndexChange?.(next);
   };
@@ -61,7 +73,7 @@ export default function Carousel({
     if (isDragging || !autoplayInterval || count < 2) return;
 
     const id = setInterval(() => {
-      goTo((index + 1) % count);
+      goTo((index + 1) % count, index === count - 1);
     }, autoplayInterval);
 
     return () => clearInterval(id);
@@ -86,9 +98,9 @@ export default function Carousel({
     const threshold = widthRef.current * 0.15;
 
     if (dragOffset < -threshold) {
-      goTo((index + 1) % count);
+      goTo((index + 1) % count, index === count - 1);
     } else if (dragOffset > threshold) {
-      goTo((index - 1 + count) % count);
+      goTo((index - 1 + count) % count, index === 0);
     }
 
     setIsDragging(false);
@@ -117,7 +129,7 @@ export default function Carousel({
           className={styles.carouselTrack}
           style={{
             transform: `translateX(calc(${-index * 100}% + ${dragPercent}%))`,
-            transition: isDragging ? "none" : undefined,
+            transition: isDragging || skipTransition ? "none" : undefined,
           }}
         >
           {images.map((image) => (
