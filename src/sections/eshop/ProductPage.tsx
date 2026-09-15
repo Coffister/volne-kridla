@@ -51,9 +51,9 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
         ← Späť na produkty
       </button></Squircle>
 
-      <Container>
+      <Container className={styles.container}>
         <Box>
-          <Squircle radius="xl">
+          <Squircle radius="xl" className="{styles.product}">
             <Stack direction="row" >
               {product.image && <Image src={product.image} alt={product.name} className={styles.image} />}
               <Box className="{styles.productInfo}">
