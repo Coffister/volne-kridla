@@ -45,3 +45,10 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-accent-primary);
 }
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row-reverse;
+}
