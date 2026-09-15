@@ -43,7 +43,7 @@ export default function ProductPage({ product }: ProductPageProps) {
   return (
     <Stack direction="column" gap="md" className={styles.page}>
       <Squircle radius="xl" className={styles.product}>
-        <Stack direction="row" gap="lg">
+        <Stack direction="row" gap="lg" className={styles.productRow}>
           {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
           {images.length > 0 && (
             <Box className={styles.imageWrap}>

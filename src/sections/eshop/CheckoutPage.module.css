@@ -116,3 +116,25 @@
   padding: var(--spacing-3xl) var(--spacing-lg);
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--spacing-sm);
+  }
+
+  /* Stack sets flex-direction inline — a plain media-query rule can't
+     override that without !important. */
+  .content {
+    flex-direction: column !important;
+  }
+
+  .cartSection,
+  .formSection {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .successState {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+}

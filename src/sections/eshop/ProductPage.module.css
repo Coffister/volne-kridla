@@ -89,6 +89,25 @@
   margin-top: var(--spacing-sm);
 }
 
+@media (max-width: 768px) {
+  .product {
+    padding: var(--spacing-sm);
+  }
+
+  /* Stack sets flex-direction inline, so a plain media-query rule can't
+     win the specificity fight — !important is required here. */
+  .productRow {
+    flex-direction: column !important;
+  }
+
+  .imageWrap,
+  .image,
+  .productInfo {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 .selector {
   width: 100%;
   appearance: none;

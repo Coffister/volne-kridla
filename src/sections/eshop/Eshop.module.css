@@ -74,3 +74,13 @@
     transform: translate(-50%, 0);
   }
 }
+
+@media (max-width: 768px) {
+  .heading {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .toolbar {
+    padding: var(--spacing-sm);
+  }
+}
