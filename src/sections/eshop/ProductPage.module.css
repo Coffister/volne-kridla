@@ -69,6 +69,6 @@
     background-size: 5px 5px, 5px 5px;
     background-repeat: no-repeat;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     cursor: pointer;
 }
