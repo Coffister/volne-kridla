@@ -52,14 +52,23 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
   return (
     <Stack direction="column" gap="md" className={styles.page}>
       <Squircle radius="xl" className={styles.breadcrumbs}>
-        <Button
-          variant="primary"
-          icon={<ArrowLeft size={18} weight="bold" />}
-          onClick={onBack}
-          className={styles.backLink}
-        >
-          Späť na produkty
-        </Button>
+        <Stack direction="row" className="generalcontrols">
+          <Button
+            variant="secondary"
+            icon={<ArrowLeft size={18} weight="bold" />}
+            onClick={onBack}
+            className={styles.backLink}
+          >
+            Späť na produkty
+          </Button>
+          <Button
+            variant="secondary"
+            icon={<ShareNetwork size={20} weight="bold" />}
+            onClick={handleShare}
+          >
+            {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
+          </Button>
+        </Stack>
       </Squircle>
 
       <Container className={styles.container}>
@@ -104,7 +113,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                           {variant.label}
                         </Text>
                         <select
-                        className={styles.selector}
+                          className={styles.selector}
                           value={selectedVariants[variant.label] || ""}
                           onChange={(e) =>
                             handleVariantSelect(variant.label, e.target.value)
@@ -125,27 +134,34 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                 )}
                 <img src={dividerIcon} alt="" className={styles.divider} />
                 <Stack direction="column" gap="xs" className={styles.pricing}>
-                {/* CENA — product.priceLabel */}
-                {product.priceLabel && (
-                  <Text as="h2" variant="sectionTitle" className={styles.price}>
-                    {product.priceLabel.includes("€")
-                      ? product.priceLabel
-                      : `${product.priceLabel}€`}
-                  </Text>
-                )}
+                  {/* CENA — product.priceLabel */}
+                  {product.priceLabel && (
+                    <Text
+                      as="h2"
+                      variant="sectionTitle"
+                      className={styles.price}
+                    >
+                      {product.priceLabel.includes("€")
+                        ? product.priceLabel
+                        : `${product.priceLabel}€`}
+                    </Text>
+                  )}
 
-                {/* DOSTUPNOSŤ — product.inStock / product.stockCount */}
-                {product.inStock !== undefined && (
-                  <Text as="p" variant="caption" className={styles.stock}>
-                    {product.inStock
-                      ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
-                      : "Vypredané"}
-                  </Text>
-                )}
-</Stack>
+                  {/* DOSTUPNOSŤ — product.inStock / product.stockCount */}
+                  {product.inStock !== undefined && (
+                    <Text as="p" variant="caption" className={styles.stock}>
+                      {product.inStock
+                        ? `Dostupné${
+                            product.stockCount
+                              ? ` (${product.stockCount}ks)`
+                              : ""
+                          }`
+                        : "Vypredané"}
+                    </Text>
+                  )}
+                </Stack>
                 {/* AKCIE */}
                 <Stack direction="row" gap="sm" className={styles.actions}>
-
                   <Button
                     variant="primary"
                     icon={<ShoppingCart size={20} weight="bold" />}
@@ -153,13 +169,6 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                     disabled={product.inStock === false}
                   >
                     {addedToCart ? "Pridané" : "Pridať do košíka"}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    icon={<ShareNetwork size={20} weight="bold" />}
-                    onClick={handleShare}
-                  >
-                    {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
                   </Button>
                 </Stack>
               </Stack>
