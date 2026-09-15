@@ -21,13 +21,15 @@
 }
 
 .productInfo {
-  flex: 1;
+  flex: 1 1 50%;
   min-width: 0;
 }
 
 .image {
-  width: 320px;
-  max-width: 40%;
+  flex: 1 1 50%;
+  width: 50%;
+  max-width: 50%;
+  height: auto;
   object-fit: cover;
 }
 
