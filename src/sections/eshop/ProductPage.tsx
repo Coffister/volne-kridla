@@ -137,7 +137,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                 )}
 </Stack>
                 {/* AKCIE */}
-                <Stack direction="row-reverse" gap="sm" className={styles.actions}>
+                <Stack direction="row" gap="sm" className={styles.actions}>
                   <Button
                     variant="secondary"
                     icon={<ShareNetwork size={20} weight="bold" />}
