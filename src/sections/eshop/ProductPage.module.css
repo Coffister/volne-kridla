@@ -1,10 +1,6 @@
 /* Bare scaffolding only — restyle freely, this just keeps things from
    overlapping while the real layout is being built by hand. */
 
-.page {
-  padding-block: var(--spacing-md);
-}
-
 .backLink {
   align-self: flex-start;
   align-items: start;
