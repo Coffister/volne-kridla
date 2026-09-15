@@ -52,15 +52,56 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
         ← Späť na produkty
       </button></Squircle>
 
+      <Container>
+        <Box>
+          <Squircle radius="xl">
+            <Stack direction="row" >
+              {product.image && <Image src={product.image} alt={product.name} className={styles.image} />}
+              <Box className="{styles.productInfo}">
+                      {/* NÁZOV — product.name */}
+      <Text as="h1" className={styles.name}>{product.name}</Text>
+
+{/* POPIS — product.description */}
+{product.description && <Text as="p" className={styles.description}>{product.description}</Text>}
+
+{/* VARIANTY — product.variants (label, isColor, options[]) */}
+{product.variants && product.variants.length > 0 && (
+  <div className={styles.variants}>
+    {product.variants.map((variant: ProductVariant) => (
+      <div key={variant.label}>
+        <label>{variant.label}</label>
+        <select
+          value={selectedVariants[variant.label] || ""}
+          onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
+        >
+          <option value="" disabled>
+            zvoľte {variant.isColor ? "farbu" : "možnosť"}
+          </option>
+          {variant.options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    ))}
+  </div>
+)}
+              </Box>
+            </Stack>
+          </Squircle>
+        </Box>
+      </Container>
+
       {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
-      {product.image && <img src={product.image} alt={product.name} className={styles.image} />}
+      {product.image && <Image src={product.image} alt={product.name} className={styles.image} />}
 
       {/* NÁZOV — product.name */}
-      <h1 className={styles.name}>{product.name}</h1>
+      <Text as="h1" className={styles.name}>{product.name}</Text>
 
       {/* POPIS — product.description */}
-      {product.description && <p className={styles.description}>{product.description}</p>}
-
+      {product.description && <Text as="p" className={styles.description}>{product.description}</Text>}
+      
       {/* VARIANTY — product.variants (label, isColor, options[]) */}
       {product.variants && product.variants.length > 0 && (
         <div className={styles.variants}>
