@@ -7,7 +7,7 @@
 
 .backLink {
   align-self: flex-start;
-  background: var(--color-surface-primary);
+  align-items: start;
   width: 100%;
 }
 
@@ -22,6 +22,7 @@
 }
 
 .productInfo {
+  width: 60%;
   flex: 1;
   min-width: 0;
 }
