@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
-import { Box, Container, Image, Squircle, Stack, Text } from "@/ui/primitives";
-import Button from "@/ui/components/Button";
 import styles from "./ProductPage.module.css";
+import { Box, Container, Stack, Text, Image, Squircle } from "@/ui/primitives";
+import Button from "@/ui/components/Button";
 
 interface ProductPageProps {
   product: Product;
@@ -13,7 +13,7 @@ interface ProductPageProps {
 // Intentionally bare — this is the container the product detail gets
 // hand-designed into. The placeholders below just wire up the data and
 // behavior that vary per product (image, description, price, stock,
-// variants, add-to-cart/share); restyle freely, keep the wiring.
+// variants, add-to-cart/share); replace the markup, keep the wiring.
 export default function ProductPage({ product, onBack }: ProductPageProps) {
   const { addItem } = useCart();
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
@@ -46,93 +46,106 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
   };
 
   return (
-    <Stack direction="column" gap="md" className={styles.page}>
-      <Button variant="ghost" onClick={onBack} className={styles.backLink}>
+    <div className={styles.page}>
+      <Squircle radius="xl"><button type="button" onClick={onBack} className={styles.backLink}>
         ← Späť na produkty
-      </Button>
+      </button></Squircle>
 
       <Container className={styles.container}>
-        <Squircle radius="xl" className={styles.product}>
-          <Stack direction="row" gap="lg">
-            {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
-            {product.image && (
-              <Image src={product.image} alt={product.name} className={styles.image} />
-            )}
+        <Box>
+          <Squircle radius="xl" className="{styles.product}">
+            <Stack direction="row" >
+              {product.image && <Image src={product.image} alt={product.name} className={styles.image} />}
+              <Box className="{styles.productInfo}">
+                      {/* NÁZOV — product.name */}
+      <Text as="h1" className={styles.name}>{product.name}</Text>
 
-            <Box className={styles.productInfo}>
-              <Stack direction="column" gap="sm">
-                {/* NÁZOV — product.name */}
-                <Text as="h1" className={styles.name}>
-                  {product.name}
-                </Text>
+{/* POPIS — product.description */}
+{product.description && <Text as="p" className={styles.description}>{product.description}</Text>}
 
-                {/* POPIS — product.description */}
-                {product.description && (
-                  <Text as="p" className={styles.description}>
-                    {product.description}
-                  </Text>
-                )}
-
-                {/* VARIANTY — product.variants (label, isColor, options[]) */}
-                {product.variants && product.variants.length > 0 && (
-                  <Stack direction="column" gap="xs" className={styles.variants}>
-                    {product.variants.map((variant: ProductVariant) => (
-                      <Stack key={variant.label} direction="column" gap="xs">
-                        <Text as="label" variant="caption">
-                          {variant.label}
-                        </Text>
-                        <select
-                          value={selectedVariants[variant.label] || ""}
-                          onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
-                        >
-                          <option value="" disabled>
-                            zvoľte {variant.isColor ? "farbu" : "možnosť"}
-                          </option>
-                          {variant.options.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </Stack>
-                    ))}
-                  </Stack>
-                )}
-
-                {/* CENA — product.priceLabel */}
-                {product.priceLabel && (
-                  <Text as="div" className={styles.price}>
-                    {product.priceLabel}
-                  </Text>
-                )}
-
-                {/* DOSTUPNOSŤ — product.inStock / product.stockCount */}
-                {product.inStock !== undefined && (
-                  <Text as="p" variant="caption" className={styles.stock}>
-                    {product.inStock
-                      ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
-                      : "Vypredané"}
-                  </Text>
-                )}
-
-                {/* AKCIE */}
-                <Stack direction="row" gap="sm" className={styles.actions}>
-                  <Button variant="secondary" onClick={handleShare}>
-                    {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
-                  </Button>
-                  <Button
-                    variant="primary"
-                    onClick={handleAddToCart}
-                    disabled={product.inStock === false}
-                  >
-                    {addedToCart ? "Pridané" : "Pridať do košíka"}
-                  </Button>
-                </Stack>
-              </Stack>
-            </Box>
-          </Stack>
-        </Squircle>
+{/* VARIANTY — product.variants (label, isColor, options[]) */}
+{product.variants && product.variants.length > 0 && (
+  <div className={styles.variants}>
+    {product.variants.map((variant: ProductVariant) => (
+      <div key={variant.label}>
+        <label>{variant.label}</label>
+        <select
+          value={selectedVariants[variant.label] || ""}
+          onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
+        >
+          <option value="" disabled>
+            zvoľte {variant.isColor ? "farbu" : "možnosť"}
+          </option>
+          {variant.options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    ))}
+  </div>
+)}
+              </Box>
+            </Stack>
+          </Squircle>
+        </Box>
       </Container>
-    </Stack>
+
+      {/* OBRÁZOK — product.image (+ product.images pre galériu) */}
+      {product.image && <Image src={product.image} alt={product.name} className={styles.image} />}
+
+      {/* NÁZOV — product.name */}
+      <Text as="h1" className={styles.name}>{product.name}</Text>
+
+      {/* POPIS — product.description */}
+      {product.description && <Text as="p" className={styles.description}>{product.description}</Text>}
+      
+      {/* VARIANTY — product.variants (label, isColor, options[]) */}
+      {product.variants && product.variants.length > 0 && (
+        <div className={styles.variants}>
+          {product.variants.map((variant: ProductVariant) => (
+            <div key={variant.label}>
+              <label>{variant.label}</label>
+              <select
+                value={selectedVariants[variant.label] || ""}
+                onChange={(e) => handleVariantSelect(variant.label, e.target.value)}
+              >
+                <option value="" disabled>
+                  zvoľte {variant.isColor ? "farbu" : "možnosť"}
+                </option>
+                {variant.options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* CENA — product.priceLabel */}
+      {product.priceLabel && <div className={styles.price}>{product.priceLabel}</div>}
+
+      {/* DOSTUPNOSŤ — product.inStock / product.stockCount */}
+      {product.inStock !== undefined && (
+        <div className={styles.stock}>
+          {product.inStock
+            ? `Dostupné${product.stockCount ? ` (${product.stockCount}ks)` : ""}`
+            : "Vypredané"}
+        </div>
+      )}
+
+      {/* AKCIE */}
+      <div className={styles.actions}>
+        <Button type="button" onClick={handleShare}>
+          {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
+        </Button>
+        <Button type="button" onClick={handleAddToCart} disabled={product.inStock === false}>
+          {addedToCart ? "Pridané" : "Pridať do košíka"}
+        </Button>
+      </div>
+    </div>
   );
 }
