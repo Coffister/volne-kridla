@@ -51,7 +51,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
   return (
     <Stack direction="column" gap="md" className={styles.page}>
-      <Squircle radius="xl" className={styles.breadcrumbs}>
+      <Squircle radius="md" className={styles.breadcrumbs}>
         <Stack direction="row" className="generalcontrols">
           <Button
             variant="secondary"
