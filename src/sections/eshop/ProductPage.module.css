@@ -12,9 +12,12 @@
 }
 
 .product {
-  display: block;
+  display: grid;
+  grid-template-rows: 1, 1fr;
   padding: var(--spacing-lg);
   background: var(--color-surface-primary);
+
+  
 }
 
 .productInfo {
