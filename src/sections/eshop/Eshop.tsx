@@ -106,7 +106,7 @@ export default function Eshop() {
             {detailProduct ? (
               <>
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   icon={<ArrowLeft size={18} weight="bold" />}
                   onClick={closeDetail}
                 >

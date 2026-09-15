@@ -159,6 +159,14 @@
     padding: var(--spacing-xs);
 }
 
+/* size="square" pads the inner content span symmetrically, but variants
+   like .primary also put their own horizontal-only padding on the outer
+   button — without this, that extra left/right padding stretches the
+   button into a rectangle instead of a square. */
+.button:has(.square) {
+    padding: 0;
+}
+
 .content {
     display: inline-flex;
     align-items: center;
