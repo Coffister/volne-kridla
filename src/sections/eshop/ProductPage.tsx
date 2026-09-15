@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
+import { ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
@@ -10,20 +10,20 @@ import styles from "./ProductPage.module.css";
 
 interface ProductPageProps {
   product: Product;
-  onBack: () => void;
 }
 
 // Intentionally bare — this is the container the product detail gets
 // hand-designed into. The placeholders below just wire up the data and
 // behavior that vary per product (image, description, price, stock,
 // variants, add-to-cart/share); restyle freely, keep the wiring.
-export default function ProductPage({ product, onBack }: ProductPageProps) {
+// Back/share live in Eshop's toolbar (it swaps categories+sort for
+// breadcrumbs when a product is open), not here.
+export default function ProductPage({ product }: ProductPageProps) {
   const { addItem } = useCart();
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >({});
   const [addedToCart, setAddedToCart] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 
   const handleVariantSelect = (label: string, value: string) => {
@@ -40,41 +40,8 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
     .filter(Boolean)
     .map((src, i) => ({ id: String(i), src, alt: product.name }));
 
-  const handleShare = async () => {
-    const url = `${window.location.origin}/eshop/produkt/${product.id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: product.name, url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 1500);
-    } catch {
-      // user cancelled the share sheet, or clipboard denied — no-op
-    }
-  };
-
   return (
     <Stack direction="column" gap="md" className={styles.page}>
-      <Squircle radius="md" className={styles.breadcrumbs}>
-        <Button
-          variant="secondary"
-          icon={<ArrowLeft size={18} weight="bold" />}
-          onClick={onBack}
-          className={styles.backLink}
-        >
-          Späť na produkty
-        </Button>
-        <Button
-          variant="secondary"
-          icon={<ShareNetwork size={20} weight="bold" />}
-          onClick={handleShare}
-        >
-          {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
-        </Button>
-      </Squircle>
-
       <Squircle radius="xl" className={styles.product}>
         <Stack direction="row" gap="lg">
           {/* OBRÁZOK — product.image (+ product.images pre galériu) */}

@@ -1,20 +1,6 @@
 /* Bare scaffolding only — restyle freely, this just keeps things from
    overlapping while the real layout is being built by hand. */
 
-.breadcrumbs {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface-primary);
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.backLink {
-  align-self: flex-start;
-}
-
 .product {
   display: block;
   padding: var(--spacing-lg);

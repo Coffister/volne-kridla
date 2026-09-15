@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, ShareNetwork } from "@phosphor-icons/react";
 
 import { Container, Section, Squircle, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
@@ -11,11 +12,13 @@ import { PRODUCT_CATEGORIES } from "@/content/categories";
 
 import ProductCard from "./ProductCard";
 import ProductPage from "./ProductPage";
-import CheckoutModal from "./CheckoutModal";
 import { useCart } from "@/lib/CartContext";
 import styles from "./Eshop.module.css";
 
-const CATEGORY_TABS = [{ value: "", label: "Všetky produkty" }, ...PRODUCT_CATEGORIES];
+const CATEGORY_TABS = [
+  { value: "", label: "Všetky produkty" },
+  ...PRODUCT_CATEGORIES,
+];
 
 export default function Eshop() {
   const allProducts = site.products;
@@ -25,7 +28,6 @@ export default function Eshop() {
 
   const [activeCategory, setActiveCategory] = useState("");
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [justAdded, setJustAdded] = useState<string | null>(null);
   const [linkCopiedFor, setLinkCopiedFor] = useState<string | null>(null);
 
@@ -54,7 +56,10 @@ export default function Eshop() {
   const handleAddToCart = (product: Product) => {
     addItem(product, {}, 1);
     setJustAdded(product.id);
-    setTimeout(() => setJustAdded((cur) => (cur === product.id ? null : cur)), 1200);
+    setTimeout(
+      () => setJustAdded((cur) => (cur === product.id ? null : cur)),
+      1200,
+    );
   };
 
   const handleShare = async (product: Product) => {
@@ -66,7 +71,10 @@ export default function Eshop() {
       }
       await navigator.clipboard.writeText(url);
       setLinkCopiedFor(product.id);
-      setTimeout(() => setLinkCopiedFor((cur) => (cur === product.id ? null : cur)), 1500);
+      setTimeout(
+        () => setLinkCopiedFor((cur) => (cur === product.id ? null : cur)),
+        1500,
+      );
     } catch {
       // user cancelled the share sheet, or clipboard denied — no-op
     }
@@ -75,7 +83,12 @@ export default function Eshop() {
   return (
     <Section id="eshop" className={styles.section}>
       <Container>
-        <Stack direction="column" align="center" gap="sm" className={styles.heading}>
+        <Stack
+          direction="column"
+          align="center"
+          gap="sm"
+          className={styles.heading}
+        >
           <Text as="h1" variant="sectionTitle" className={styles.title}>
             E-shop
           </Text>
@@ -83,43 +96,76 @@ export default function Eshop() {
         </Stack>
 
         <Squircle radius="md" className={styles.toolbar}>
-          <Stack direction="row" align="center" justify="space-between" gap="md" wrap="wrap">
-            <Stack direction="row" gap="md" className={styles.tabs}>
-              {CATEGORY_TABS.map((tab) => (
-                <button
-                  key={tab.value}
-                  type="button"
-                  className={styles.tab}
-                  onClick={() => setActiveCategory(tab.value)}
+          <Stack
+            direction="row"
+            align="center"
+            justify="space-between"
+            gap="md"
+            wrap="wrap"
+          >
+            {detailProduct ? (
+              <>
+                <Button
+                  variant="ghost"
+                  icon={<ArrowLeft size={18} weight="bold" />}
+                  onClick={closeDetail}
                 >
-                  <Text
-                    as="span"
-                    variant="body"
-                    weight="bold"
-                    style={{
-                      color:
-                        activeCategory === tab.value
-                          ? "var(--color-accent-primary)"
-                          : "var(--color-text-primary)",
-                    }}
-                  >
-                    {tab.label}
-                  </Text>
-                </button>
-              ))}
-            </Stack>
+                  Späť na produkty
+                </Button>
 
-            <Stack direction="row" align="center" gap="sm">
-              <Button variant="navbar" icon={<SortIcon />}>
-                Zoradiť
-              </Button>
-              <CartButton />
-            </Stack>
+                <Stack direction="row" align="center" gap="sm">
+                  <Button
+                    variant="secondary"
+                    icon={<ShareNetwork size={20} weight="bold" />}
+                    onClick={() => handleShare(detailProduct)}
+                  >
+                    {linkCopiedFor === detailProduct.id
+                      ? "Odkaz skopírovaný"
+                      : "Zdieľať"}
+                  </Button>
+                  <CartButton />
+                </Stack>
+              </>
+            ) : (
+              <>
+                <Stack direction="row" gap="md" className={styles.tabs}>
+                  {CATEGORY_TABS.map((tab) => (
+                    <button
+                      key={tab.value}
+                      type="button"
+                      className={styles.tab}
+                      onClick={() => setActiveCategory(tab.value)}
+                    >
+                      <Text
+                        as="span"
+                        variant="body"
+                        weight="bold"
+                        style={{
+                          color:
+                            activeCategory === tab.value
+                              ? "var(--color-accent-primary)"
+                              : "var(--color-text-primary)",
+                        }}
+                      >
+                        {tab.label}
+                      </Text>
+                    </button>
+                  ))}
+                </Stack>
+
+                <Stack direction="row" align="center" gap="sm">
+                  <Button variant="navbar" icon={<SortIcon />}>
+                    Zoradiť
+                  </Button>
+                  <CartButton />
+                </Stack>
+              </>
+            )}
           </Stack>
         </Squircle>
 
         {detailProduct ? (
-          <ProductPage product={detailProduct} onBack={closeDetail} />
+          <ProductPage product={detailProduct} />
         ) : products.length === 0 ? (
           <Text as="p" variant="body" className={styles.empty}>
             Produkty sa práve pripravujú — čoskoro tu nájdeš viac.
@@ -145,8 +191,6 @@ export default function Eshop() {
           </div>
         )}
       </Container>
-
-      {checkoutOpen && <CheckoutModal onClose={() => setCheckoutOpen(false)} />}
     </Section>
   );
 }
