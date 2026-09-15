@@ -53,7 +53,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
     <Stack direction="column" gap="md" className={styles.page}>
       <Squircle radius="xl" className={styles.breadcrumbs}>
         <Button
-          variant="ghost"
+          variant="primary"
           icon={<ArrowLeft size={18} weight="bold" />}
           onClick={onBack}
           className={styles.backLink}
