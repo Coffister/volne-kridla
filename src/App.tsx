@@ -1,5 +1,11 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import SiteLayout from "./layouts/SiteLayout";
 import Home from "./pages/Home";
@@ -45,6 +51,7 @@ function SiteApp() {
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/eshop/produkt/:productId" element={<Eshop />} />
+          <Route path="/eshop/checkout" element={<Eshop />} />
         </Route>
       </Routes>
     </CartProvider>

@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@/ui/components/Button";
 import CartIcon from "@/ui/icons/CartIcon";
 import { Box, Text } from "@/ui/primitives";
 import { useCart } from "@/lib/CartContext";
-import CheckoutModal from "@/sections/eshop/CheckoutModal";
 
 import styles from "./CartButton.module.css";
 
 export default function CartButton() {
   const { totalItems } = useCart();
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <Box className={styles.triggerWrap}>
@@ -18,7 +17,7 @@ export default function CartButton() {
         variant="primary"
         size="square"
         icon={<CartIcon />}
-        onClick={() => setCheckoutOpen(true)}
+        onClick={() => navigate("/eshop/checkout")}
         ariaLabel="Košík"
       />
       {totalItems > 0 && (
@@ -31,8 +30,6 @@ export default function CartButton() {
           {totalItems}
         </Text>
       )}
-
-      {checkoutOpen && <CheckoutModal onClose={() => setCheckoutOpen(false)} />}
     </Box>
   );
 }

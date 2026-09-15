@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ShareNetwork } from "@phosphor-icons/react";
 
 import { Container, Section, Squircle, Stack, Text } from "@/ui/primitives";
@@ -12,6 +12,7 @@ import { PRODUCT_CATEGORIES } from "@/content/categories";
 
 import ProductCard from "./ProductCard";
 import ProductPage from "./ProductPage";
+import CheckoutPage from "./CheckoutPage";
 import { useCart } from "@/lib/CartContext";
 import styles from "./Eshop.module.css";
 
@@ -24,7 +25,9 @@ export default function Eshop() {
   const allProducts = site.products;
   const { addItem } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const { productId } = useParams<{ productId?: string }>();
+  const isCheckout = location.pathname === "/eshop/checkout";
 
   const [activeCategory, setActiveCategory] = useState("");
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
@@ -103,7 +106,15 @@ export default function Eshop() {
             gap="md"
             wrap="wrap"
           >
-            {detailProduct ? (
+            {isCheckout ? (
+              <Button
+                variant="secondary"
+                icon={<ArrowLeft size={18} weight="bold" />}
+                onClick={closeDetail}
+              >
+                Späť na produkty
+              </Button>
+            ) : detailProduct ? (
               <>
                 <Button
                   variant="secondary"
@@ -164,7 +175,9 @@ export default function Eshop() {
           </Stack>
         </Squircle>
 
-        {detailProduct ? (
+        {isCheckout ? (
+          <CheckoutPage />
+        ) : detailProduct ? (
           <ProductPage product={detailProduct} />
         ) : products.length === 0 ? (
           <Text as="p" variant="body" className={styles.empty}>
