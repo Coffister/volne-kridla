@@ -52,7 +52,6 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
   return (
     <Stack direction="column" gap="md" className={styles.page}>
       <Squircle radius="md" className={styles.breadcrumbs}>
-        <Stack direction="row" className="generalcontrols">
           <Button
             variant="secondary"
             icon={<ArrowLeft size={18} weight="bold" />}
@@ -68,7 +67,6 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
           >
             {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
           </Button>
-        </Stack>
       </Squircle>
 
       <Container className={styles.container}>

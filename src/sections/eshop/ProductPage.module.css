@@ -5,6 +5,10 @@
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-surface-primary);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .backLink {
@@ -15,13 +19,6 @@
   width: 100%;
   padding: 0;
   margin: 0;
-}
-
-.generalcontrols {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
 }
 
 .product {
