@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowLeft, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
 import { Box, Container, Image, Squircle, Stack, Text } from "@/ui/primitives";
@@ -49,8 +50,13 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
   return (
     <Stack direction="column" gap="md" className={styles.page}>
-      <Button variant="ghost" onClick={onBack} className={styles.backLink}>
-        ← Späť na produkty
+      <Button
+        variant="ghost"
+        icon={<ArrowLeft size={18} weight="bold" />}
+        onClick={onBack}
+        className={styles.backLink}
+      >
+        Späť na produkty
       </Button>
 
       <Container className={styles.container}>
@@ -131,11 +137,16 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
                 {/* AKCIE */}
                 <Stack direction="row" gap="sm" className={styles.actions}>
-                  <Button variant="secondary" onClick={handleShare}>
+                  <Button
+                    variant="secondary"
+                    icon={<ShareNetwork size={20} weight="bold" />}
+                    onClick={handleShare}
+                  >
                     {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
                   </Button>
                   <Button
                     variant="primary"
+                    icon={<ShoppingCart size={20} weight="bold" />}
                     onClick={handleAddToCart}
                     disabled={product.inStock === false}
                   >
