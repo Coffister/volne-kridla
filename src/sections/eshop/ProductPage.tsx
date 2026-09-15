@@ -4,6 +4,7 @@ import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
 import { Box, Container, Image, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
+import dividerIcon from "@/assets/icons/dashed-divider.svg";
 import styles from "./ProductPage.module.css";
 
 interface ProductPageProps {
@@ -50,14 +51,16 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
   return (
     <Stack direction="column" gap="md" className={styles.page}>
-      <Button
-        variant="ghost"
-        icon={<ArrowLeft size={18} weight="bold" />}
-        onClick={onBack}
-        className={styles.backLink}
-      >
-        Späť na produkty
-      </Button>
+      <Squircle radius="xl" className={styles.breadcrumbs}>
+        <Button
+          variant="ghost"
+          icon={<ArrowLeft size={18} weight="bold" />}
+          onClick={onBack}
+          className={styles.backLink}
+        >
+          Späť na produkty
+        </Button>
+      </Squircle>
 
       <Container className={styles.container}>
         <Squircle radius="xl" className={styles.product}>
@@ -86,6 +89,9 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                 )}
 
                 {/* VARIANTY — product.variants (label, isColor, options[]) */}
+                {product.variants && product.variants.length > 0 && (
+                  <img src={dividerIcon} alt="" className={styles.divider} />
+                )}
                 {product.variants && product.variants.length > 0 && (
                   <Stack
                     direction="column"
@@ -117,7 +123,8 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                     ))}
                   </Stack>
                 )}
-<Stack direction="column" gap="xs" className={styles.pricing}>
+                <img src={dividerIcon} alt="" className={styles.divider} />
+                <Stack direction="column" gap="xs" className={styles.pricing}>
                 {/* CENA — product.priceLabel */}
                 {product.priceLabel && (
                   <Text as="h2" variant="sectionTitle" className={styles.price}>

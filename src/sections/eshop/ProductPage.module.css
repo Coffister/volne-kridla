@@ -5,6 +5,12 @@
   padding-block: var(--spacing-md);
 }
 
+.breadcrumbs {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-primary);
+}
+
 .backLink {
   align-self: flex-start;
 }
@@ -44,8 +50,19 @@
 }
 
 .price {
+  margin: 0;
   font-weight: var(--font-weight-bold);
   color: var(--color-accent-primary);
+}
+
+.stock {
+  margin: 0;
+}
+
+.divider {
+  display: block;
+  width: 100%;
+  height: 1px;
 }
 
 .actions {
@@ -53,6 +70,7 @@
   justify-content: flex-start;
   align-items: center;
   flex-direction: row-reverse;
+  margin-top: var(--spacing-sm);
 }
 
 .selector {
