@@ -138,13 +138,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 </Stack>
                 {/* AKCIE */}
                 <Stack direction="row" gap="sm" className={styles.actions}>
-                  <Button
-                    variant="secondary"
-                    icon={<ShareNetwork size={20} weight="bold" />}
-                    onClick={handleShare}
-                  >
-                    {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
-                  </Button>
+
                   <Button
                     variant="primary"
                     icon={<ShoppingCart size={20} weight="bold" />}
@@ -152,6 +146,13 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                     disabled={product.inStock === false}
                   >
                     {addedToCart ? "Pridané" : "Pridať do košíka"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    icon={<ShareNetwork size={20} weight="bold" />}
+                    onClick={handleShare}
+                  >
+                    {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
                   </Button>
                 </Stack>
               </Stack>
