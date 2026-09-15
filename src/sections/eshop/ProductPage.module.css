@@ -2,30 +2,42 @@
    overlapping while the real layout is being built by hand. */
 
 .page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding-block: var(--spacing-md);
 }
 
 .backLink {
   align-self: flex-start;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+}
+
+.container {
+  width: 100%;
+}
+
+.product {
+  display: block;
+  padding: var(--spacing-lg);
+  background: var(--color-surface-primary);
+}
+
+.productInfo {
+  flex: 1;
+  min-width: 0;
 }
 
 .image {
-  max-width: 100%;
+  width: 320px;
+  max-width: 40%;
+  object-fit: cover;
 }
 
-.variants > div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.name {
+  margin: 0;
 }
 
-.actions {
-  display: flex;
-  gap: 12px;
+.description {
+  margin: 0;
+}
+
+.price {
+  font-weight: var(--font-weight-bold);
 }
