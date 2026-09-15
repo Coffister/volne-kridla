@@ -116,7 +116,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                     ))}
                   </Stack>
                 )}
-
+<Stack direction="column" gap="xs" className={styles.pricing}>
                 {/* CENA — product.priceLabel */}
                 {product.priceLabel && (
                   <Text as="div" variant="cardTitle" className={styles.price}>
@@ -134,7 +134,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
                       : "Vypredané"}
                   </Text>
                 )}
-
+</Stack>
                 {/* AKCIE */}
                 <Stack direction="row" gap="sm" className={styles.actions}>
                   <Button
