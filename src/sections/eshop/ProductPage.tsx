@@ -68,7 +68,7 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
             <Box className={styles.productInfo}>
               <Stack direction="column" gap="sm">
                 {/* NÁZOV — product.name */}
-                <Text as="h1" className={styles.name}>
+                <Text as="h1" variant="cardTitle" className={styles.name}>
                   {product.name}
                 </Text>
 
@@ -113,8 +113,8 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
                 {/* CENA — product.priceLabel */}
                 {product.priceLabel && (
-                  <Text as="div" className={styles.price}>
-                    {product.priceLabel}
+                  <Text as="div" variant="cardTitle" className={styles.price}>
+                    {product.priceLabel}€
                   </Text>
                 )}
 
