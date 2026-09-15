@@ -2,9 +2,8 @@ import { useState } from "react";
 import type { Product, ProductVariant } from "@/content";
 import { useCart } from "@/lib/CartContext";
 import styles from "./ProductPage.module.css";
-import { Box, Container, Stack, Text, Image, Section, Squircle } from "@/ui/primitives";
+import { Box, Container, Stack, Text, Image, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
-import Badge from "@/ui/components/Badge";
 
 interface ProductPageProps {
   product: Product;
@@ -140,12 +139,12 @@ export default function ProductPage({ product, onBack }: ProductPageProps) {
 
       {/* AKCIE */}
       <div className={styles.actions}>
-        <button type="button" onClick={handleShare}>
+        <Button type="button" onClick={handleShare}>
           {linkCopied ? "Odkaz skopírovaný" : "Zdieľať"}
-        </button>
-        <button type="button" onClick={handleAddToCart} disabled={product.inStock === false}>
+        </Button>
+        <Button type="button" onClick={handleAddToCart} disabled={product.inStock === false}>
           {addedToCart ? "Pridané" : "Pridať do košíka"}
-        </button>
+        </Button>
       </div>
     </div>
   );
