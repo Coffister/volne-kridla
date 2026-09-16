@@ -5,6 +5,7 @@ import { useCart } from "@/lib/CartContext";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Carousel from "@/ui/components/Carousel";
+import Select from "@/ui/components/Select";
 import dividerIcon from "@/assets/icons/dashed-divider.svg";
 import styles from "./ProductPage.module.css";
 
@@ -99,22 +100,14 @@ export default function ProductPage({ product }: ProductPageProps) {
                       <Text as="label" variant="caption">
                         {variant.label}
                       </Text>
-                      <select
-                        className={styles.selector}
+                      <Select
+                        options={variant.options}
                         value={selectedVariants[variant.label] || ""}
-                        onChange={(e) =>
-                          handleVariantSelect(variant.label, e.target.value)
+                        onChange={(value) =>
+                          handleVariantSelect(variant.label, value)
                         }
-                      >
-                        <option value="" disabled>
-                          zvoľte {variant.isColor ? "farbu" : "možnosť"}
-                        </option>
-                        {variant.options.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
+                        placeholder={`zvoľte ${variant.isColor ? "farbu" : "možnosť"}`}
+                      />
                     </Stack>
                   ))}
                 </Stack>
