@@ -7,12 +7,16 @@ import { useCart } from "@/lib/CartContext";
 
 import styles from "./CartButton.module.css";
 
-export default function CartButton() {
+interface CartButtonProps {
+  className?: string;
+}
+
+export default function CartButton({ className }: CartButtonProps) {
   const { totalItems } = useCart();
   const navigate = useNavigate();
 
   return (
-    <Box className={styles.triggerWrap}>
+    <Box className={`${styles.triggerWrap} ${className ?? ""}`}>
       <Button
         variant="primary"
         size="square"

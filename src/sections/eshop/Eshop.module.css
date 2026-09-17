@@ -32,6 +32,18 @@
   flex-wrap: wrap;
 }
 
+.detailToolbar {
+  width: 100%;
+}
+
+.mobileCartCta {
+  display: none;
+}
+
+.backButtonIcon {
+  display: none;
+}
+
 .tab {
   all: unset;
   cursor: pointer;
@@ -85,5 +97,21 @@
 
   .toolbar {
     padding: var(--spacing-sm);
+  }
+
+  .mobileCartCta {
+    display: flex;
+  }
+
+  .backButtonText {
+    display: none;
+  }
+
+  .backButtonIcon {
+    display: inline-flex;
+  }
+
+  .desktopCartIcon {
+    display: none;
   }
 }

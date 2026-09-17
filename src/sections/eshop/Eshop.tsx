@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ShareNetwork } from "@phosphor-icons/react";
+import { ArrowLeft, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
 
 import { Container, Section, Squircle, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
@@ -117,28 +117,59 @@ export default function Eshop() {
                 Späť na produkty
               </Button>
             ) : detailProduct ? (
-              <>
+              <Stack
+                direction="column"
+                gap="sm"
+                className={styles.detailToolbar}
+              >
                 <Button
-                  variant="secondary"
-                  icon={<ArrowLeft size={18} weight="bold" />}
-                  onClick={closeDetail}
+                  variant="navbar"
+                  icon={<ShoppingCart size={20} weight="bold" />}
+                  fullWidth
+                  className={styles.mobileCartCta}
+                  onClick={() => navigate("/eshop/checkout")}
                 >
-                  Späť na produkty
+                  Prejsť do košíka
                 </Button>
 
-                <Stack direction="row" align="center" gap="sm">
+                <Stack
+                  direction="row"
+                  align="center"
+                  justify="space-between"
+                  gap="sm"
+                  wrap="wrap"
+                >
                   <Button
                     variant="secondary"
-                    icon={<ShareNetwork size={20} weight="bold" />}
-                    onClick={() => handleShare(detailProduct)}
+                    icon={<ArrowLeft size={18} weight="bold" />}
+                    onClick={closeDetail}
+                    className={styles.backButtonText}
                   >
-                    {linkCopiedFor === detailProduct.id
-                      ? "Odkaz skopírovaný"
-                      : "Zdieľať"}
+                    Späť na produkty
                   </Button>
-                  <CartButton />
+                  <Button
+                    variant="secondary"
+                    size="square"
+                    icon={<ArrowLeft size={18} weight="bold" />}
+                    onClick={closeDetail}
+                    ariaLabel="Späť na produkty"
+                    className={styles.backButtonIcon}
+                  />
+
+                  <Stack direction="row" align="center" gap="sm">
+                    <Button
+                      variant="secondary"
+                      icon={<ShareNetwork size={20} weight="bold" />}
+                      onClick={() => handleShare(detailProduct)}
+                    >
+                      {linkCopiedFor === detailProduct.id
+                        ? "Odkaz skopírovaný"
+                        : "Zdieľať"}
+                    </Button>
+                    <CartButton className={styles.desktopCartIcon} />
+                  </Stack>
                 </Stack>
-              </>
+              </Stack>
             ) : (
               <>
                 <Stack direction="row" gap="sm" className={styles.tabs}>
