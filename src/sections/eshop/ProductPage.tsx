@@ -104,32 +104,42 @@ export default function ProductPage({ product }: ProductPageProps) {
                       {variant.isColor ? (
                         <Stack
                           direction="row"
-                          gap="xs"
+                          align="center"
+                          gap="sm"
                           wrap="wrap"
-                          className={styles.swatches}
                         >
-                          {variant.options.map((option) => {
-                            const isSelected =
-                              selectedVariants[variant.label] === option;
-                            return (
-                              <button
-                                key={option}
-                                type="button"
-                                title={option}
-                                aria-label={option}
-                                aria-pressed={isSelected}
-                                className={`${styles.swatch} ${
-                                  isSelected ? styles.swatchSelected : ""
-                                }`}
-                                style={{
-                                  backgroundColor: colorHex(option) ?? "#ccc",
-                                }}
-                                onClick={() =>
-                                  handleVariantSelect(variant.label, option)
-                                }
-                              />
-                            );
-                          })}
+                          <Stack
+                            direction="row"
+                            gap="xs"
+                            wrap="wrap"
+                            className={styles.swatches}
+                          >
+                            {variant.options.map((option) => {
+                              const isSelected =
+                                selectedVariants[variant.label] === option;
+                              return (
+                                <button
+                                  key={option}
+                                  type="button"
+                                  title={option}
+                                  aria-label={option}
+                                  aria-pressed={isSelected}
+                                  className={`${styles.swatch} ${
+                                    isSelected ? styles.swatchSelected : ""
+                                  }`}
+                                  style={{
+                                    backgroundColor: colorHex(option) ?? "#ccc",
+                                  }}
+                                  onClick={() =>
+                                    handleVariantSelect(variant.label, option)
+                                  }
+                                />
+                              );
+                            })}
+                          </Stack>
+                          <Text as="span" variant="caption">
+                            {selectedVariants[variant.label] || "zvoľte farbu"}
+                          </Text>
                         </Stack>
                       ) : (
                         <Select
