@@ -29,6 +29,7 @@ export default function AdminLayout() {
             <NavLink to="/admin" end onClick={closeNav}>
               Prehľad
             </NavLink>
+            <hr className="admin-divider" />
             <NavLink to="/admin/fotogaleria" onClick={closeNav}>
               Fotogaléria
             </NavLink>
@@ -38,12 +39,14 @@ export default function AdminLayout() {
             <NavLink to="/admin/otazky" onClick={closeNav}>
               Otázky
             </NavLink>
+            <hr className="admin-divider" />
             <NavLink to="/admin/produkty" onClick={closeNav}>
               Produkty
             </NavLink>
             <NavLink to="/admin/objednavky" onClick={closeNav}>
               Objednávky
             </NavLink>
+            <hr className="admin-divider" />
             <NavLink to="/admin/verzie" onClick={closeNav}>
               Verzie
             </NavLink>
