@@ -1,13 +1,23 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type FormEvent,
+} from "react";
 
 import {
-  addProductImage,
+  addProductPhoto,
   createProduct,
   deleteProduct,
   listProducts,
-  removeProductImage,
+  productPhotoRefs,
+  removeProductPhoto,
+  reorderProductImages,
   reorderProducts,
-  replaceProductImage,
+  resolvePhotoUrl,
   updateProduct,
   type ProductItem,
   type ProductVariant,
@@ -15,6 +25,64 @@ import {
 import { msg } from "../lib/errors";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
 import { COLOR_PALETTE } from "@/content/colorPalette";
+
+interface PhotoThumb {
+  key: string;
+  url: string;
+}
+
+interface PhotoPickerProps {
+  photos: PhotoThumb[];
+  onReorder: (from: number, to: number) => void;
+  onAddFiles: (files: File[]) => void;
+  onRemove: (key: string) => void;
+}
+
+/** Draggable photo strip: first thumb is always the main photo. */
+function PhotoPicker({ photos, onReorder, onAddFiles, onRemove }: PhotoPickerProps) {
+  const dragIndex = useRef<number | null>(null);
+
+  function onDragOver(e: DragEvent, index: number) {
+    e.preventDefault();
+    if (dragIndex.current === null || dragIndex.current === index) return;
+    onReorder(dragIndex.current, index);
+    dragIndex.current = index;
+  }
+
+  return (
+    <div className="admin-photo-picker">
+      {photos.map((photo, i) => (
+        <div
+          key={photo.key}
+          className="admin-photo-thumb"
+          draggable
+          onDragStart={() => (dragIndex.current = i)}
+          onDragOver={(e) => onDragOver(e, i)}
+          onDragEnd={() => (dragIndex.current = null)}
+        >
+          {i === 0 && <span className="admin-photo-thumb-main">Hlavná</span>}
+          <img src={photo.url} alt="" />
+          <button type="button" onClick={() => onRemove(photo.key)} aria-label="Odstrániť fotku">
+            ✕
+          </button>
+        </div>
+      ))}
+      <label className="admin-photo-add">
+        + Foto
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          onChange={(e) => {
+            onAddFiles(Array.from(e.target.files ?? []));
+            e.target.value = "";
+          }}
+        />
+      </label>
+    </div>
+  );
+}
 
 /** "S, M, L" -> ["S", "M", "L"] */
 function parseOptions(raw: string): string[] {
@@ -116,25 +184,39 @@ export default function ProductsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priceLabel, setPriceLabel] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [imageUrl, setImageUrl] = useState("");
-  const [additionalImageFiles, setAdditionalImageFiles] = useState<File[]>([]);
   const [variantGroups, setVariantGroups] = useState<ProductVariant[]>([]);
   const [stockCount, setStockCount] = useState("");
   const [inStock, setInStock] = useState(true);
   const [category, setCategory] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
-  useEffect(() => {
-    if (!imageFile) {
-      setAvatarPreview(imageUrl.trim() || null);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(imageFile);
-    setAvatarPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [imageFile, imageUrl]);
+  const newPhotos = useMemo(
+    () =>
+      photoFiles.map((file, i) => ({
+        key: String(i),
+        url: URL.createObjectURL(file),
+      })),
+    [photoFiles],
+  );
+
+  function onNewPhotosAdd(files: File[]) {
+    setPhotoFiles((cur) => [...cur, ...files.filter((f) => f.type.startsWith("image/"))]);
+  }
+
+  function onNewPhotosReorder(from: number, to: number) {
+    setPhotoFiles((cur) => {
+      const next = [...cur];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  }
+
+  function onNewPhotosRemove(key: string) {
+    setPhotoFiles((cur) => cur.filter((_, i) => String(i) !== key));
+  }
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -163,9 +245,8 @@ export default function ProductsPage() {
         name,
         description,
         priceLabel,
-        imageFile,
+        photoFiles,
         imageUrl,
-        additionalImageFiles,
         variants: variantGroups.filter((g) => g.label.trim() && g.options.length > 0),
         stockCount: stockCount.trim() ? Number(stockCount) : 0,
         inStock,
@@ -175,9 +256,8 @@ export default function ProductsPage() {
       setName("");
       setDescription("");
       setPriceLabel("");
-      setImageFile(null);
+      setPhotoFiles([]);
       setImageUrl("");
-      setAdditionalImageFiles([]);
       setVariantGroups([]);
       setStockCount("");
       setInStock(true);
@@ -241,33 +321,39 @@ export default function ProductsPage() {
     }
   }
 
-  async function onReplaceImage(item: ProductItem, file: File) {
+  async function onAddPhotos(item: ProductItem, files: File[]) {
     try {
-      const image = await replaceProductImage(item, file);
-      setItems((cur) => cur.map((i) => (i.id === item.id ? { ...i, image } : i)));
+      for (const file of files) {
+        await addProductPhoto(item, file);
+      }
+      await refresh();
     } catch (e) {
       setError(msg(e));
       await refresh();
     }
   }
 
-  async function onAddImage(item: ProductItem, file: File) {
+  async function onRemovePhoto(item: ProductItem, ref: string) {
     try {
-      const images = await addProductImage(item, file);
-      setItems((cur) => cur.map((i) => (i.id === item.id ? { ...i, images } : i)));
+      await removeProductPhoto(item, ref);
       await refresh();
     } catch (e) {
       setError(msg(e));
     }
   }
 
-  async function onRemoveImage(item: ProductItem, path: string) {
+  async function onReorderPhotos(item: ProductItem, order: string[]) {
+    const image_path = order[0] && !order[0].startsWith("http") ? order[0] : null;
+    const image_url = order[0] && order[0].startsWith("http") ? order[0] : null;
+    const images = order.slice(1);
+    setItems((cur) =>
+      cur.map((it) => (it.id === item.id ? { ...it, image_path, image_url, images } : it)),
+    );
     try {
-      const images = await removeProductImage(item, path);
-      setItems((cur) => cur.map((i) => (i.id === item.id ? { ...i, images } : i)));
-      await refresh();
+      await reorderProductImages(item, order);
     } catch (e) {
       setError(msg(e));
+      await refresh();
     }
   }
 
@@ -291,20 +377,19 @@ export default function ProductsPage() {
       <form className="admin-review-form" onSubmit={onAdd}>
         <h3>Pridať produkt</h3>
 
-        <div className="admin-review-form-row">
-          <label
-            className="admin-avatar-upload"
-            style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : undefined}
-          >
-            {!avatarPreview && <span>+ Foto</span>}
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
+        <PhotoPicker
+          photos={newPhotos}
+          onReorder={onNewPhotosReorder}
+          onAddFiles={onNewPhotosAdd}
+          onRemove={onNewPhotosRemove}
+        />
+        {photoFiles.length > 1 && (
+          <p className="admin-muted" style={{ fontSize: "0.8rem", margin: "-4px 0 0" }}>
+            Presuň fotku potiahnutím — prvá v poradí je hlavná.
+          </p>
+        )}
 
+        <div className="admin-review-form-row">
           <div className="admin-review-form-fields">
             <input
               type="text"
@@ -341,10 +426,10 @@ export default function ProductsPage() {
         <input
           type="url"
           className="admin-field admin-field-sm"
-          placeholder="alebo URL fotky"
+          placeholder="alebo URL hlavnej fotky (ak nenahrávaš žiadnu)"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          disabled={!!imageFile}
+          disabled={photoFiles.length > 0}
         />
 
         <select
@@ -398,43 +483,30 @@ export default function ProductsPage() {
           </label>
         </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          className="admin-field admin-field-sm"
-          onChange={(e) => setAdditionalImageFiles(Array.from(e.target.files ?? []))}
-        />
-        <p className="admin-muted" style={{ fontSize: "0.8rem", margin: "-4px 0 0" }}>
-          Ďalšie fotky pre carousel (voliteľné, môžeš vybrať viacero)
-        </p>
-
         <button type="submit" className="admin-btn" disabled={adding}>
           {adding ? "Pridávam…" : "Pridať"}
         </button>
       </form>
 
-      <ul className="admin-review-list">
+      <ul className="admin-review-list is-textonly">
         {items.map((item, i) => (
           <li key={item.id} className={item.published ? "" : "is-hidden"}>
-            <label
-              className="admin-avatar-upload"
-              style={item.image ? { backgroundImage: `url(${item.image})` } : undefined}
-              title="Zmeniť fotku"
-            >
-              {!item.image && <span>+ Foto</span>}
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) onReplaceImage(item, f);
-                  e.target.value = "";
-                }}
-              />
-            </label>
             <div className="admin-review-body">
+              <PhotoPicker
+                photos={productPhotoRefs(item).map((ref) => ({
+                  key: ref,
+                  url: resolvePhotoUrl(ref),
+                }))}
+                onReorder={(from, to) => {
+                  const refs = productPhotoRefs(item);
+                  const next = [...refs];
+                  const [moved] = next.splice(from, 1);
+                  next.splice(to, 0, moved);
+                  void onReorderPhotos(item, next);
+                }}
+                onAddFiles={(files) => void onAddPhotos(item, files)}
+                onRemove={(ref) => void onRemovePhoto(item, ref)}
+              />
               <input
                 type="text"
                 className="admin-field admin-field-sm"
@@ -544,40 +616,6 @@ export default function ProductsPage() {
                   </option>
                 ))}
               </select>
-
-              {/* Additional carousel images */}
-              <div className="admin-gallery-actions" style={{ flexWrap: "wrap" }}>
-                {item.resolvedImages.map((url, imgIdx) => (
-                  <div key={url} style={{ position: "relative", display: "inline-block" }}>
-                    <img
-                      src={url}
-                      alt=""
-                      style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6 }}
-                    />
-                    <button
-                      type="button"
-                      className="is-danger"
-                      style={{ position: "absolute", top: -6, right: -6, padding: "0 4px" }}
-                      onClick={() => onRemoveImage(item, item.images[imgIdx])}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-                <label className="admin-btn" style={{ cursor: "pointer" }}>
-                  + Foto
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) onAddImage(item, f);
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
-              </div>
 
               <div className="admin-gallery-actions">
                 <button type="button" onClick={() => move(i, -1)} disabled={i === 0}>

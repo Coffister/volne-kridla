@@ -37,17 +37,16 @@ export interface ProductItem extends ProductRow {
 const COLS =
   "id, sku, name, description, price_label, image_path, image_url, images, variants, stock_count, in_stock, category, sort_order, published, created_at";
 
-function resolveImagePath(pathOrUrl: string): string {
+export function resolvePhotoUrl(pathOrUrl: string): string {
   if (pathOrUrl.startsWith("http")) return pathOrUrl;
   return getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(pathOrUrl).data.publicUrl;
 }
 
 function resolve(row: ProductRow): ProductItem {
   const image = row.image_path
-    ? getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(row.image_path).data
-        .publicUrl
+    ? resolvePhotoUrl(row.image_path)
     : (row.image_url ?? "");
-  const resolvedImages = (row.images ?? []).map(resolveImagePath);
+  const resolvedImages = (row.images ?? []).map(resolvePhotoUrl);
   return { ...row, image, resolvedImages };
 }
 
@@ -66,9 +65,9 @@ export async function createProduct(input: {
   name: string;
   description: string;
   priceLabel: string;
-  imageFile?: File | null;
+  /** ordered photos — the first one becomes the product's main photo */
+  photoFiles?: File[];
   imageUrl?: string;
-  additionalImageFiles?: File[];
   variants?: ProductVariant[];
   stockCount?: number;
   inStock?: boolean;
@@ -76,28 +75,20 @@ export async function createProduct(input: {
 }): Promise<ProductItem> {
   const supabase = getSupabase();
 
-  let image_path: string | null = null;
-  const image_url: string | null = input.imageUrl?.trim() || null;
-
-  if (input.imageFile) {
-    const ext = (input.imageFile.name.split(".").pop() || "bin").toLowerCase();
-    image_path = `products/${crypto.randomUUID()}.${ext}`;
-    const { error: upErr } = await supabase.storage
-      .from(MEDIA_BUCKET)
-      .upload(image_path, input.imageFile, { cacheControl: "31536000" });
-    if (upErr) throw upErr;
-  }
-
-  const uploadedExtraPaths: string[] = [];
-  for (const file of input.additionalImageFiles ?? []) {
+  const uploadedPaths: string[] = [];
+  for (const file of input.photoFiles ?? []) {
     const ext = (file.name.split(".").pop() || "bin").toLowerCase();
     const path = `products/${crypto.randomUUID()}.${ext}`;
     const { error: upErr } = await supabase.storage
       .from(MEDIA_BUCKET)
       .upload(path, file, { cacheControl: "31536000" });
     if (upErr) throw upErr;
-    uploadedExtraPaths.push(path);
+    uploadedPaths.push(path);
   }
+
+  const image_path = uploadedPaths[0] ?? null;
+  const image_url = image_path ? null : input.imageUrl?.trim() || null;
+  const uploadedExtraPaths = uploadedPaths.slice(1);
 
   const { data: last } = await supabase
     .from("products")
@@ -162,31 +153,22 @@ export async function updateProduct(
   if (error) throw error;
 }
 
-export async function replaceProductImage(item: ProductItem, file: File): Promise<string> {
-  const supabase = getSupabase();
-  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
-  const path = `products/${crypto.randomUUID()}.${ext}`;
-  const { error: upErr } = await supabase.storage
-    .from(MEDIA_BUCKET)
-    .upload(path, file, { cacheControl: "31536000" });
-  if (upErr) throw upErr;
-
-  const { error } = await supabase
+/** Re-reads the product's photo order from the DB — avoids clobbering a
+ *  concurrent change when the caller's cached `item` might be stale
+ *  (e.g. adding several photos back-to-back). */
+async function currentPhotoRefs(id: string): Promise<string[]> {
+  const { data, error } = await getSupabase()
     .from("products")
-    .update({ image_path: path, image_url: null, updated_at: new Date().toISOString() })
-    .eq("id", item.id);
-  if (error) {
-    await supabase.storage.from(MEDIA_BUCKET).remove([path]);
-    throw error;
-  }
-
-  if (item.image_path) {
-    await supabase.storage.from(MEDIA_BUCKET).remove([item.image_path]);
-  }
-  return getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(path).data.publicUrl;
+    .select("image_path, image_url, images")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  const main = data.image_path ?? data.image_url;
+  return main ? [main, ...(data.images ?? [])] : [...(data.images ?? [])];
 }
 
-export async function addProductImage(item: ProductItem, file: File): Promise<string[]> {
+/** Uploads a photo and appends it to the product's photo set (after the current last one). */
+export async function addProductPhoto(item: ProductItem, file: File): Promise<string[]> {
   const supabase = getSupabase();
   const ext = (file.name.split(".").pop() || "bin").toLowerCase();
   const path = `products/${crypto.randomUUID()}.${ext}`;
@@ -195,18 +177,51 @@ export async function addProductImage(item: ProductItem, file: File): Promise<st
     .upload(path, file, { cacheControl: "31536000" });
   if (upErr) throw upErr;
 
-  const nextImages = [...(item.images ?? []), path];
-  await updateProduct(item.id, { images: nextImages });
-  return nextImages;
+  const order = [...(await currentPhotoRefs(item.id)), path];
+  await reorderProductImages(item, order);
+  return order;
 }
 
-export async function removeProductImage(item: ProductItem, path: string): Promise<string[]> {
-  const nextImages = (item.images ?? []).filter((p) => p !== path);
-  await updateProduct(item.id, { images: nextImages });
-  if (!path.startsWith("http")) {
-    await getSupabase().storage.from(MEDIA_BUCKET).remove([path]);
+/** Removes one photo (main or carousel) by its raw ref; whatever ends up first is the new main. */
+export async function removeProductPhoto(
+  item: ProductItem,
+  ref: string,
+): Promise<string[]> {
+  const order = (await currentPhotoRefs(item.id)).filter((r) => r !== ref);
+  await reorderProductImages(item, order);
+  if (!ref.startsWith("http")) {
+    await getSupabase().storage.from(MEDIA_BUCKET).remove([ref]);
   }
-  return nextImages;
+  return order;
+}
+
+/**
+ * Reorders a product's photos given the full set as raw refs (storage paths
+ * or URLs, same shape as image_path/image_url/images are stored in) — the
+ * first ref becomes the new main photo, the rest become the carousel.
+ */
+export async function reorderProductImages(
+  item: ProductItem,
+  order: string[],
+): Promise<Pick<ProductRow, "image_path" | "image_url" | "images">> {
+  const [first, ...rest] = order;
+  const patch = {
+    image_path: first && !first.startsWith("http") ? first : null,
+    image_url: first && first.startsWith("http") ? first : null,
+    images: rest,
+  };
+  const { error } = await getSupabase()
+    .from("products")
+    .update({ ...patch, updated_at: new Date().toISOString() })
+    .eq("id", item.id);
+  if (error) throw error;
+  return patch;
+}
+
+/** raw ref for a product's current photo set, in display order (main first) */
+export function productPhotoRefs(item: ProductItem): string[] {
+  const main = item.image_path ?? item.image_url;
+  return main ? [main, ...(item.images ?? [])] : [...(item.images ?? [])];
 }
 
 export async function deleteProduct(item: ProductItem): Promise<void> {

@@ -398,11 +398,46 @@ textarea {
 .admin-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   padding: 1.5rem 1.15rem;
   overflow-y: auto;
   background: var(--paper);
   border-right: 2px solid var(--line);
+}
+
+.admin-sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-sidebar-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.admin-nav-toggle {
+  display: none;
+}
+
+.admin-divider {
+  height: 0;
+  margin: 0;
+  border: none;
+  border-top: 2px solid var(--hair);
+}
+
+.admin-sidebar nav .admin-divider {
+  margin: 0.3rem 0;
+}
+
+.admin-brand {
+  font:
+    800 1.2rem / 1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .admin-sidebar nav {
@@ -645,10 +680,15 @@ textarea {
   border-radius: var(--r-lg);
   box-shadow: var(--pop);
   overflow: hidden;
+  cursor: grab;
 }
 
 .admin-gallery li.is-hidden {
   opacity: 0.55;
+}
+
+.admin-gallery-thumb {
+  position: relative;
 }
 
 .admin-gallery img {
@@ -658,6 +698,18 @@ textarea {
   object-fit: cover;
   background: var(--sky);
   border-bottom: 2px solid var(--line);
+}
+
+.admin-gallery-main {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.25rem 0.55rem;
+  font: 700 0.72rem / 1 var(--font-ui);
+  color: var(--ink);
+  background: #f5e6b3;
+  border: 2px solid var(--line);
+  border-radius: var(--r-sm);
 }
 
 .admin-gallery-body {
@@ -744,6 +796,79 @@ textarea {
 
 .admin-review-form .admin-btn {
   align-self: flex-start;
+}
+
+.admin-photo-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.admin-photo-thumb {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  cursor: grab;
+}
+
+.admin-photo-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--sky);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+}
+
+.admin-photo-thumb-main {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  z-index: 1;
+  padding: 0.15rem 0.4rem;
+  font: 700 0.62rem / 1 var(--font-ui);
+  color: var(--ink);
+  background: #f5e6b3;
+  border: 2px solid var(--line);
+  border-radius: var(--r-sm);
+}
+
+.admin-photo-thumb button {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.admin-photo-add {
+  display: grid;
+  place-items: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  font: 600 0.78rem / 1.2 var(--font-ui);
+  color: var(--muted);
+  background: var(--sky);
+  border: 2px dashed var(--line);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.admin-photo-add:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .admin-variant-group {
@@ -845,35 +970,62 @@ textarea {
     grid-template-rows: auto 1fr;
   }
   .admin-sidebar {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
     overflow-y: visible;
     border-right: 0;
     border-bottom: 2px solid var(--line);
   }
-  /* one scrollable row instead of wrapping — wrapped nav ate several lines
-     of vertical space above the fold on a real phone. min-width: 0 is load
-     bearing here: without it a flex item won't shrink below its content's
-     width, so this row would push the whole sidebar (and page) wider than
-     the viewport instead of scrolling internally. */
-  .admin-sidebar nav {
-    flex: 1;
-    min-width: 0;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+  .admin-nav-toggle {
+    position: relative;
+    display: block;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: var(--r-sm);
+    cursor: pointer;
   }
-  .admin-sidebar nav::-webkit-scrollbar {
+  .admin-nav-toggle span,
+  .admin-nav-toggle span::before,
+  .admin-nav-toggle span::after {
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    height: 2px;
+    background: var(--ink);
+    content: "";
+    transition: transform 0.12s ease;
+  }
+  .admin-nav-toggle span {
+    top: 50%;
+    transform: translateY(-1px);
+  }
+  .admin-nav-toggle span::before {
+    bottom: 0.55rem;
+  }
+  .admin-nav-toggle span::after {
+    top: 0.55rem;
+  }
+  .admin-sidebar.is-open .admin-nav-toggle span {
+    background: transparent;
+  }
+  .admin-sidebar.is-open .admin-nav-toggle span::before {
+    bottom: 0;
+    transform: rotate(45deg);
+  }
+  .admin-sidebar.is-open .admin-nav-toggle span::after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+  .admin-sidebar-body {
     display: none;
   }
-  .admin-sidebar nav a {
-    flex: 0 0 auto;
-    padding: 0.6rem 0.85rem;
-    white-space: nowrap;
+  .admin-sidebar.is-open .admin-sidebar-body {
+    display: flex;
+    margin-top: 1rem;
+  }
+  .admin-sidebar nav {
+    flex-direction: column;
   }
   .admin-user {
     flex-shrink: 0;
