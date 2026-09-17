@@ -406,13 +406,16 @@ export default function ProductsPage() {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <input
-              type="text"
-              className="admin-field admin-field-sm"
-              placeholder="Cena (napr. 25 €)"
-              value={priceLabel}
-              onChange={(e) => setPriceLabel(e.target.value)}
-            />
+            <div className="admin-field-suffixed">
+              <input
+                type="text"
+                className="admin-field admin-field-sm"
+                placeholder="Cena (napr. 25)"
+                value={priceLabel}
+                onChange={(e) => setPriceLabel(e.target.value)}
+              />
+              <span className="admin-field-suffix">€</span>
+            </div>
             <textarea
               className="admin-field admin-field-sm"
               placeholder="Popis produktu"
@@ -465,14 +468,17 @@ export default function ProductsPage() {
         />
 
         <div className="admin-review-form-row">
-          <input
-            type="number"
-            min={0}
-            className="admin-field admin-field-sm"
-            placeholder="Počet kusov skladom"
-            value={stockCount}
-            onChange={(e) => setStockCount(e.target.value)}
-          />
+          <div className="admin-field-suffixed">
+            <input
+              type="number"
+              min={0}
+              className="admin-field admin-field-sm"
+              placeholder="Počet kusov skladom"
+              value={stockCount}
+              onChange={(e) => setStockCount(e.target.value)}
+            />
+            <span className="admin-field-suffix">ks</span>
+          </div>
           <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <input
               type="checkbox"
@@ -526,16 +532,19 @@ export default function ProductsPage() {
                   if (v && v !== item.name) patch(item, { name: v });
                 }}
               />
-              <input
-                type="text"
-                className="admin-field admin-field-sm"
-                defaultValue={item.price_label}
-                placeholder="Cena"
-                onBlur={(e) => {
-                  const v = e.target.value.trim();
-                  if (v !== item.price_label) patch(item, { price_label: v });
-                }}
-              />
+              <div className="admin-field-suffixed">
+                <input
+                  type="text"
+                  className="admin-field admin-field-sm"
+                  defaultValue={item.price_label}
+                  placeholder="Cena"
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v !== item.price_label) patch(item, { price_label: v });
+                  }}
+                />
+                <span className="admin-field-suffix">€</span>
+              </div>
               <textarea
                 className="admin-field admin-field-sm"
                 defaultValue={item.description}
@@ -583,17 +592,20 @@ export default function ProductsPage() {
               />
 
               <div className="admin-review-form-row">
-                <input
-                  type="number"
-                  min={0}
-                  className="admin-field admin-field-sm"
-                  defaultValue={item.stock_count}
-                  placeholder="Kusov skladom"
-                  onBlur={(e) => {
-                    const v = Number(e.target.value) || 0;
-                    if (v !== item.stock_count) patch(item, { stock_count: v });
-                  }}
-                />
+                <div className="admin-field-suffixed">
+                  <input
+                    type="number"
+                    min={0}
+                    className="admin-field admin-field-sm"
+                    defaultValue={item.stock_count}
+                    placeholder="Kusov skladom"
+                    onBlur={(e) => {
+                      const v = Number(e.target.value) || 0;
+                      if (v !== item.stock_count) patch(item, { stock_count: v });
+                    }}
+                  />
+                  <span className="admin-field-suffix">ks</span>
+                </div>
                 <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <input
                     type="checkbox"
