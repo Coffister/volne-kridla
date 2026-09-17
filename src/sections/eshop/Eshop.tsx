@@ -16,13 +16,15 @@ import CheckoutPage from "./CheckoutPage";
 import { useCart } from "@/lib/CartContext";
 import styles from "./Eshop.module.css";
 
-const CATEGORY_TABS = [
-  { value: "", label: "Všetky produkty" },
-  ...PRODUCT_CATEGORIES,
-];
-
 export default function Eshop() {
   const allProducts = site.products;
+  const usedCategories = PRODUCT_CATEGORIES.filter((cat) =>
+    allProducts.some((p) => p.category === cat.value),
+  );
+  const categoryTabs = [
+    { value: "", label: "Všetky produkty" },
+    ...usedCategories,
+  ];
   const { addItem } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -140,7 +142,7 @@ export default function Eshop() {
             ) : (
               <>
                 <Stack direction="row" gap="sm" className={styles.tabs}>
-                  {CATEGORY_TABS.map((tab) => (
+                  {categoryTabs.map((tab) => (
                     <button
                       key={tab.value}
                       type="button"
