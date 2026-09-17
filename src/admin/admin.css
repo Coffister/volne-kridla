@@ -279,6 +279,27 @@ textarea {
   padding-bottom: 0.6rem;
 }
 
+/* plain field + trailing unit label (€, ks) — unlike .admin-field-affixed
+   this doesn't merge the two into one squircle, so it works for a
+   suffix-only field without fighting that wrapper's leading-affix layout */
+.admin-field-suffixed {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-field-suffixed .admin-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-field-suffix {
+  flex-shrink: 0;
+  font:
+    700 0.85rem / 1 var(--font-display);
+  color: var(--muted);
+}
+
 .admin-muted {
   color: var(--muted);
   font-size: 0.9rem;
