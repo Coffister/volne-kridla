@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
+import { colorHex } from "@/content/colorPalette";
 import { useCart } from "@/lib/CartContext";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
@@ -100,14 +101,46 @@ export default function ProductPage({ product }: ProductPageProps) {
                       <Text as="label" variant="caption">
                         {variant.label}
                       </Text>
-                      <Select
-                        options={variant.options}
-                        value={selectedVariants[variant.label] || ""}
-                        onChange={(value) =>
-                          handleVariantSelect(variant.label, value)
-                        }
-                        placeholder={`zvoľte ${variant.isColor ? "farbu" : "možnosť"}`}
-                      />
+                      {variant.isColor ? (
+                        <Stack
+                          direction="row"
+                          gap="xs"
+                          wrap="wrap"
+                          className={styles.swatches}
+                        >
+                          {variant.options.map((option) => {
+                            const isSelected =
+                              selectedVariants[variant.label] === option;
+                            return (
+                              <button
+                                key={option}
+                                type="button"
+                                title={option}
+                                aria-label={option}
+                                aria-pressed={isSelected}
+                                className={`${styles.swatch} ${
+                                  isSelected ? styles.swatchSelected : ""
+                                }`}
+                                style={{
+                                  backgroundColor: colorHex(option) ?? "#ccc",
+                                }}
+                                onClick={() =>
+                                  handleVariantSelect(variant.label, option)
+                                }
+                              />
+                            );
+                          })}
+                        </Stack>
+                      ) : (
+                        <Select
+                          options={variant.options}
+                          value={selectedVariants[variant.label] || ""}
+                          onChange={(value) =>
+                            handleVariantSelect(variant.label, value)
+                          }
+                          placeholder="zvoľte možnosť"
+                        />
+                      )}
                     </Stack>
                   ))}
                 </Stack>
