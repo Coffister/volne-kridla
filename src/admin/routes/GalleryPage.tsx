@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type DragEvent,
+} from "react";
 
 import {
   deleteImage,
@@ -51,11 +57,11 @@ export default function GalleryPage() {
     }
   }
 
-  async function move(index: number, dir: -1 | 1) {
+  async function moveTo(from: number, to: number) {
+    if (from === to) return;
     const next = [...items];
-    const target = index + dir;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
     setItems(next); // optimistic
     try {
       await reorder(next);
@@ -63,6 +69,23 @@ export default function GalleryPage() {
       setError(msg(e));
       await refresh();
     }
+  }
+
+  const dragIndex = useRef<number | null>(null);
+
+  function onDragStart(index: number) {
+    dragIndex.current = index;
+  }
+
+  function onDragOver(e: DragEvent, index: number) {
+    e.preventDefault();
+    if (dragIndex.current === null || dragIndex.current === index) return;
+    void moveTo(dragIndex.current, index);
+    dragIndex.current = index;
+  }
+
+  function onDragEnd() {
+    dragIndex.current = null;
   }
 
   async function onAltBlur(item: GalleryItem, value: string) {
@@ -129,8 +152,18 @@ export default function GalleryPage() {
 
       <ul className="admin-gallery">
         {items.map((item, i) => (
-          <li key={item.id} className={item.published ? "" : "is-hidden"}>
-            <img src={item.url} alt={item.alt} loading="lazy" />
+          <li
+            key={item.id}
+            className={item.published ? "" : "is-hidden"}
+            draggable
+            onDragStart={() => onDragStart(i)}
+            onDragOver={(e) => onDragOver(e, i)}
+            onDragEnd={onDragEnd}
+          >
+            <div className="admin-gallery-thumb">
+              {i === 0 && <span className="admin-gallery-main">Hlavná fotka</span>}
+              <img src={item.url} alt={item.alt} loading="lazy" />
+            </div>
             <div className="admin-gallery-body">
               <input
                 type="text"
@@ -139,16 +172,6 @@ export default function GalleryPage() {
                 onBlur={(e) => onAltBlur(item, e.target.value.trim())}
               />
               <div className="admin-gallery-actions">
-                <button type="button" onClick={() => move(i, -1)} disabled={i === 0}>
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move(i, 1)}
-                  disabled={i === items.length - 1}
-                >
-                  ↓
-                </button>
                 <button type="button" onClick={() => onToggle(item)}>
                   {item.published ? "Skryť" : "Zobraziť"}
                 </button>
@@ -165,6 +188,9 @@ export default function GalleryPage() {
         ))}
       </ul>
 
+      {!loading && items.length > 1 && (
+        <p className="admin-muted">Presuň fotku potiahnutím — prvá v poradí je hlavná.</p>
+      )}
       {!loading && items.length === 0 && (
         <p className="admin-muted">Zatiaľ žiadne fotky. Pridaj prvé cez tlačidlo hore.</p>
       )}
