@@ -98,12 +98,12 @@ export default function Eshop() {
           <Badge>Produkty pre teba a tvojho papagája</Badge>
         </Stack>
 
-        <Squircle radius="md" className={styles.toolbar}>
+        <Squircle radius="sm" className={styles.toolbar}>
           <Stack
             direction="row"
             align="center"
             justify="space-between"
-            gap="md"
+            gap="sm"
             wrap="wrap"
           >
             {isCheckout ? (
@@ -139,7 +139,7 @@ export default function Eshop() {
               </>
             ) : (
               <>
-                <Stack direction="row" gap="md" className={styles.tabs}>
+                <Stack direction="row" gap="sm" className={styles.tabs}>
                   {CATEGORY_TABS.map((tab) => (
                     <button
                       key={tab.value}
@@ -149,7 +149,7 @@ export default function Eshop() {
                     >
                       <Text
                         as="span"
-                        variant="body"
+                        variant="caption"
                         weight="bold"
                         style={{
                           color:
