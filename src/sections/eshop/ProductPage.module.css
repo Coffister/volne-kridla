@@ -109,7 +109,7 @@
 
 @media (max-width: 768px) {
   .product {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xs);
   }
 
   /* Stack sets flex-direction inline, so a plain media-query rule can't
@@ -123,5 +123,25 @@
   .productInfo {
     width: 100%;
     max-width: 100%;
+  }
+
+  /* Thumbnails overlay the left edge of the image on desktop; on a narrow
+     screen there's no room for that, so they become a row underneath it
+     instead (also Stack-direction override, see above). */
+  .thumbs {
+    position: static !important;
+    transform: none !important;
+    flex-direction: row !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xs);
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions > button {
+    width: 100%;
   }
 }
