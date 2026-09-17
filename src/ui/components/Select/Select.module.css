@@ -31,17 +31,22 @@
   transform: rotate(180deg);
 }
 
+/* Plain CSS radius/overflow instead of the Squircle primitive — Squircle's
+   SVG clip-path doesn't play well with a native scrollable container (it
+   breaks hit-testing on scrolled-into-view content and can let the last,
+   selected row render outside the clipped box), while border-radius +
+   overflow has well-defined, consistent scroll behavior. */
 .menu {
+  display: flex;
+  flex-direction: column;
   z-index: var(--z-tooltip);
   background: var(--color-surface-primary);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-xs);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   max-height: 240px;
   overflow-y: auto;
-}
-
-.menuInner {
-  display: flex;
-  flex-direction: column;
+  overflow-x: hidden;
   padding: var(--spacing-xs);
 }
 

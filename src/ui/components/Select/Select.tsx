@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { Squircle, Text } from "@/ui/primitives";
+import { Text } from "@/ui/primitives";
 import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
 
 import styles from "./Select.module.css";
@@ -27,14 +27,29 @@ export default function Select({
   className,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, left: 0, width: 0 });
+  const [menuPos, setMenuPos] = useState<{
+    top?: number;
+    bottom?: number;
+    left: number;
+    width: number;
+  }>({ top: 0, left: 0, width: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
-    setMenuPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    const spaceBelow = window.innerHeight - rect.bottom;
+    // Menu's own max-height (Select.module.css) — flip it above the trigger
+    // when there isn't enough room below, so it doesn't render off-screen.
+    const menuMaxHeight = 240;
+    const opensUpward = spaceBelow < menuMaxHeight + 4 && rect.top > spaceBelow;
+    setMenuPos({
+      top: opensUpward ? undefined : rect.bottom + 4,
+      bottom: opensUpward ? window.innerHeight - rect.top + 4 : undefined,
+      left: rect.left,
+      width: rect.width,
+    });
   }, [open]);
 
   useEffect(() => {
@@ -87,43 +102,37 @@ export default function Select({
 
       {open &&
         createPortal(
-          <Squircle
-            radius="xs"
-            borderWidth={2}
-            borderColor="var(--color-border-primary)"
+          <div
+            ref={menuRef}
+            role="listbox"
             className={styles.menu}
+            data-lenis-prevent
             style={{
               position: "fixed",
               top: menuPos.top,
+              bottom: menuPos.bottom,
               left: menuPos.left,
               width: menuPos.width,
             }}
           >
-            <div
-              ref={menuRef}
-              role="listbox"
-              className={styles.menuInner}
-              data-lenis-prevent
-            >
-              {options.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  role="option"
-                  aria-selected={option === value}
-                  className={`${styles.option} ${option === value ? styles.optionSelected : ""}`}
-                  onClick={() => {
-                    onChange(option);
-                    setOpen(false);
-                  }}
-                >
-                  <Text as="span" variant="caption">
-                    {option}
-                  </Text>
-                </button>
-              ))}
-            </div>
-          </Squircle>,
+            {options.map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="option"
+                aria-selected={option === value}
+                className={`${styles.option} ${option === value ? styles.optionSelected : ""}`}
+                onClick={() => {
+                  onChange(option);
+                  setOpen(false);
+                }}
+              >
+                <Text as="span" variant="caption">
+                  {option}
+                </Text>
+              </button>
+            ))}
+          </div>,
           document.body,
         )}
     </>
