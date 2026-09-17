@@ -99,7 +99,12 @@ export default function Select({
               width: menuPos.width,
             }}
           >
-            <div ref={menuRef} role="listbox" className={styles.menuInner}>
+            <div
+              ref={menuRef}
+              role="listbox"
+              className={styles.menuInner}
+              data-lenis-prevent
+            >
               {options.map((option) => (
                 <button
                   key={option}
