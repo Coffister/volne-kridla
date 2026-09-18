@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
+import CloseIcon from "@/ui/icons/CloseIcon";
 import { useCart } from "@/lib/CartContext";
 import { submitProductInquiry } from "@/lib/inquiries";
 import styles from "./CheckoutPage.module.css";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { items, clearCart } = useCart();
+  const { items, removeItem, clearCart } = useCart();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -122,6 +123,13 @@ export default function CheckoutPage() {
                       {item.product.priceLabel} × {item.quantity}ks
                     </Text>
                   </Box>
+                  <Button
+                    variant="secondary"
+                    size="square"
+                    icon={<CloseIcon />}
+                    onClick={() => removeItem(item.product.id, JSON.stringify(item.variants))}
+                    ariaLabel={`Odstrániť ${item.product.name} z košíka`}
+                  />
                 </Stack>
               ))}
             </Stack>
