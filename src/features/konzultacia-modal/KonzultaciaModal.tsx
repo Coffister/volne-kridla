@@ -125,20 +125,6 @@ export default function KonzultaciaModal() {
   );
   const [submitting, setSubmitting] = useState(false);
   const [gdprOpen, setGdprOpen] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
-  const linkCopiedTimer = useRef<number | undefined>(undefined);
-
-  async function copyShareLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-    } catch {
-      return;
-    }
-    setLinkCopied(true);
-    window.clearTimeout(linkCopiedTimer.current);
-    linkCopiedTimer.current = window.setTimeout(() => setLinkCopied(false), 2000);
-  }
-  useEffect(() => () => window.clearTimeout(linkCopiedTimer.current), []);
 
   const headingRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -685,25 +671,9 @@ export default function KonzultaciaModal() {
           data-centered={step === 4 ? "true" : undefined}
         >
           {step === 1 && (
-            <div className={styles.actionsLeft}>
-              <button
-                type="button"
-                className={styles.ghostBtn}
-                onClick={requestClose}
-              >
-                Zavrieť
-              </button>
-              {showPackages && packageId && (
-                <button
-                  type="button"
-                  className={styles.ghostBtn}
-                  onClick={copyShareLink}
-                >
-                  <ClipboardIcon size={16} />
-                  {linkCopied ? "Odkaz skopírovaný" : "Kopírovať odkaz pre klienta"}
-                </button>
-              )}
-            </div>
+            <button type="button" className={styles.ghostBtn} onClick={requestClose}>
+              Zavrieť
+            </button>
           )}
           {(step === 2 || step === 3) && (
             <button
