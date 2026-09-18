@@ -100,7 +100,14 @@ function Stepper({ step }: { step: Step }) {
 }
 
 export default function KonzultaciaModal() {
-  const { isOpen, track: requestedTrack, close } = useKonzultaciaModal();
+  const {
+    isOpen,
+    track: requestedTrack,
+    requestedType,
+    requestedPackage,
+    close,
+    setSelection,
+  } = useKonzultaciaModal();
 
   const [isClosing, setIsClosing] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
@@ -118,6 +125,20 @@ export default function KonzultaciaModal() {
   );
   const [submitting, setSubmitting] = useState(false);
   const [gdprOpen, setGdprOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const linkCopiedTimer = useRef<number | undefined>(undefined);
+
+  async function copyShareLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch {
+      return;
+    }
+    setLinkCopied(true);
+    window.clearTimeout(linkCopiedTimer.current);
+    linkCopiedTimer.current = window.setTimeout(() => setLinkCopied(false), 2000);
+  }
+  useEffect(() => () => window.clearTimeout(linkCopiedTimer.current), []);
 
   const headingRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -166,12 +187,21 @@ export default function KonzultaciaModal() {
 
     resetOnNextOpen.current = false;
     const initialPackages = requestedTrack ? PACKAGES[requestedTrack] : null;
+    const initialType =
+      requestedTrack === "konzultacia" &&
+      CONSULT_TYPES.some((t) => t.id === requestedType)
+        ? requestedType
+        : null;
+    const initialPackage =
+      initialPackages?.length === 1
+        ? initialPackages[0].id
+        : initialPackages?.some((p) => p.id === requestedPackage)
+          ? requestedPackage
+          : null;
     setStep(1);
     setTrack(requestedTrack);
-    setTypeId(null);
-    setPackageId(
-      initialPackages?.length === 1 ? initialPackages[0].id : null,
-    );
+    setTypeId(initialType);
+    setPackageId(initialPackage);
     setForm(EMPTY_FORM);
     setErrors({});
     setGdprOpen(false);
@@ -265,7 +295,20 @@ export default function KonzultaciaModal() {
     // konzultácia · Kurz voľného lietania")
     setTypeId(null);
     const nextPackages = PACKAGES[next];
-    setPackageId(nextPackages.length === 1 ? nextPackages[0].id : null);
+    const nextPackageId =
+      nextPackages.length === 1 ? nextPackages[0].id : null;
+    setPackageId(nextPackageId);
+    setSelection({ track: next, type: null, package: nextPackageId });
+  }
+
+  function changeType(next: string) {
+    setTypeId(next);
+    setSelection({ type: next });
+  }
+
+  function changePackage(next: string) {
+    setPackageId(next);
+    setSelection({ package: next });
   }
 
   function validateStep2(): boolean {
@@ -370,7 +413,7 @@ export default function KonzultaciaModal() {
                         name="type"
                         value={t.id}
                         checked={typeId === t.id}
-                        onChange={() => setTypeId(t.id)}
+                        onChange={() => changeType(t.id)}
                       />
                       {t.title}
                     </label>
@@ -409,7 +452,7 @@ export default function KonzultaciaModal() {
                           name="package"
                           value={p.id}
                           checked={packageId === p.id}
-                          onChange={() => setPackageId(p.id)}
+                          onChange={() => changePackage(p.id)}
                         />
                         {p.badge && (
                           <span className={styles.packageBadge}>{p.badge}</span>
@@ -642,9 +685,25 @@ export default function KonzultaciaModal() {
           data-centered={step === 4 ? "true" : undefined}
         >
           {step === 1 && (
-            <button type="button" className={styles.ghostBtn} onClick={requestClose}>
-              Zavrieť
-            </button>
+            <div className={styles.actionsLeft}>
+              <button
+                type="button"
+                className={styles.ghostBtn}
+                onClick={requestClose}
+              >
+                Zavrieť
+              </button>
+              {showPackages && packageId && (
+                <button
+                  type="button"
+                  className={styles.ghostBtn}
+                  onClick={copyShareLink}
+                >
+                  <ClipboardIcon size={16} />
+                  {linkCopied ? "Odkaz skopírovaný" : "Kopírovať odkaz pre klienta"}
+                </button>
+              )}
+            </div>
           )}
           {(step === 2 || step === 3) && (
             <button
