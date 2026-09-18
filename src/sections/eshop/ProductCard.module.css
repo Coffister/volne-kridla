@@ -3,7 +3,9 @@
   flex-direction: column;
   background: var(--color-surface-primary);
   padding: var(--spacing-sm);
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .card:hover {
@@ -109,10 +111,6 @@
 }
 
 @media (max-width: 480px) {
-  .card {
-    padding: var(--spacing-xs);
-  }
-
   .iconBtn {
     width: 40px;
     height: 40px;

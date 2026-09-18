@@ -19,6 +19,12 @@
   flex: 1 1 50%;
   width: 50%;
   max-width: 50%;
+  /* Without a definite height, a percentage-height chain down to the <img>
+     never resolves, so object-fit:cover has nothing to crop against — the
+     box just falls back to whatever aspect ratio the current image happens
+     to have, resizing the frame on every slide. Same ratio as the grid
+     card's image (ProductCard.module.css) for consistency. */
+  aspect-ratio: 389 / 372;
 }
 
 .image {
@@ -109,7 +115,7 @@
 
 @media (max-width: 768px) {
   .product {
-    padding: var(--spacing-md) var(--spacing-xs);
+    padding: var(--spacing-md) var(--spacing-sm);
   }
 
   /* Stack sets flex-direction inline, so a plain media-query rule can't

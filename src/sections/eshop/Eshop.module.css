@@ -115,3 +115,11 @@
     display: none;
   }
 }
+
+@media (max-width: 620px) {
+  /* Below this, minmax(...,300px) still only fits one column but caps it
+     at 300px, leaving dead space beside it — force it to fill the row. */
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
