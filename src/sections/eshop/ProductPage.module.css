@@ -19,17 +19,19 @@
   flex: 1 1 50%;
   width: 50%;
   max-width: 50%;
-  /* Without a definite height, a percentage-height chain down to the <img>
-     never resolves, so object-fit:cover has nothing to crop against — the
-     box just falls back to whatever aspect ratio the current image happens
-     to have, resizing the frame on every slide. Same ratio as the grid
-     card's image (ProductCard.module.css) for consistency. */
-  aspect-ratio: 389 / 372;
 }
 
 .image {
   width: 100%;
-  height: 100%;
+  /* Without a definite height, a percentage-height chain down to the <img>
+     never resolves, so object-fit:cover has nothing to crop against — the
+     frame just falls back to whatever aspect ratio the current image
+     happens to have, resizing on every slide. Same ratio as the grid
+     card's image (ProductCard.module.css) for consistency. This goes on
+     the frame itself, not imageWrap — imageWrap also holds the thumbs
+     row, and constraining ITS height instead just pushes the thumbs to
+     overflow past the box into whatever comes after it. */
+  aspect-ratio: 389 / 372;
 }
 
 .thumbs {

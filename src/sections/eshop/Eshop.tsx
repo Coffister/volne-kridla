@@ -171,39 +171,61 @@ export default function Eshop() {
                 </Stack>
               </Stack>
             ) : (
-              <>
-                <Stack direction="row" gap="sm" className={styles.tabs}>
-                  {categoryTabs.map((tab) => (
-                    <button
-                      key={tab.value}
-                      type="button"
-                      className={styles.tab}
-                      onClick={() => setActiveCategory(tab.value)}
-                    >
-                      <Text
-                        as="span"
-                        variant="caption"
-                        weight="bold"
-                        style={{
-                          color:
-                            activeCategory === tab.value
-                              ? "var(--color-accent-primary)"
-                              : "var(--color-text-primary)",
-                        }}
-                      >
-                        {tab.label}
-                      </Text>
-                    </button>
-                  ))}
-                </Stack>
+              <Stack
+                direction="column"
+                gap="sm"
+                className={styles.detailToolbar}
+              >
+                <Button
+                  variant="navbar"
+                  icon={<ShoppingCart size={20} weight="bold" />}
+                  fullWidth
+                  className={styles.mobileCartCta}
+                  onClick={() => navigate("/eshop/checkout")}
+                >
+                  Prejsť do košíka
+                </Button>
 
-                <Stack direction="row" align="center" gap="sm">
-                  <Button variant="navbar" icon={<SortIcon />}>
-                    Zoradiť
-                  </Button>
-                  <CartButton />
+                <Stack
+                  direction="row"
+                  align="center"
+                  justify="space-between"
+                  gap="sm"
+                  wrap="wrap"
+                >
+                  <Stack direction="row" gap="sm" className={styles.tabs}>
+                    {categoryTabs.map((tab) => (
+                      <button
+                        key={tab.value}
+                        type="button"
+                        className={styles.tab}
+                        onClick={() => setActiveCategory(tab.value)}
+                      >
+                        <Text
+                          as="span"
+                          variant="caption"
+                          weight="bold"
+                          style={{
+                            color:
+                              activeCategory === tab.value
+                                ? "var(--color-accent-primary)"
+                                : "var(--color-text-primary)",
+                          }}
+                        >
+                          {tab.label}
+                        </Text>
+                      </button>
+                    ))}
+                  </Stack>
+
+                  <Stack direction="row" align="center" gap="sm">
+                    <Button variant="navbar" icon={<SortIcon />}>
+                      Zoradiť
+                    </Button>
+                    <CartButton className={styles.desktopCartIcon} />
+                  </Stack>
                 </Stack>
-              </>
+              </Stack>
             )}
           </Stack>
         </Squircle>
