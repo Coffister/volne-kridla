@@ -7,6 +7,7 @@ import { submitProductInquiry } from "@/lib/inquiries";
 import Button from "@/ui/components/Button";
 import CloseIcon from "@/ui/icons/CloseIcon";
 import { Stack, Text } from "@/ui/primitives";
+import VariantPicker from "./VariantPicker";
 import styles from "./InquiryModal.module.css";
 
 interface InquiryModalProps {
@@ -21,14 +22,15 @@ interface InquiryModalProps {
 const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const PHONE_PATTERN = /^[0-9+()\s-]{6,50}$/;
 
-export default function InquiryModal({ product, variants = {}, onClose }: InquiryModalProps) {
+export default function InquiryModal({ product, variants: initialVariants = {}, onClose }: InquiryModalProps) {
+  const [variants, setVariants] = useState(initialVariants);
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState(`Mám záujem o produkt ${product.name}.`);
-  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; variants?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -73,8 +75,10 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
     if (!name.trim()) next.name = "Zadaj svoje meno.";
     if (!EMAIL_PATTERN.test(email.trim())) next.email = "Zadaj platný e-mail.";
     if (phone.trim() && !PHONE_PATTERN.test(phone.trim())) next.phone = "Telefón môže obsahovať len číslice, + ( ) - a medzery.";
+    const missing = (product.variants ?? []).find((v) => !variants[v.label]);
+    if (missing) next.variants = `Vyber možnosť: ${missing.label}.`;
     setErrors(next);
-    if (next.name || next.email || next.phone) return;
+    if (next.name || next.email || next.phone || next.variants) return;
 
     // honeypot: real visitors never see this field; bots that fill it get a fake success
     if (new FormData(e.currentTarget as HTMLFormElement).get("website")) return setDone(true);
@@ -98,10 +102,6 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
       setSubmitting(false);
     }
   };
-
-  const variantText = Object.entries(variants)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join(" • ");
 
   return createPortal(
     <div
@@ -150,13 +150,23 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
                   <Text as="p" variant="body" weight="bold">
                     {product.name}
                   </Text>
-                  {variantText && (
-                    <Text as="p" variant="caption">
-                      {variantText}
-                    </Text>
-                  )}
                 </div>
               </div>
+
+              {product.variants && product.variants.length > 0 && (
+                <div>
+                  <VariantPicker
+                    variants={product.variants}
+                    value={variants}
+                    onChange={(label, option) => setVariants((v) => ({ ...v, [label]: option }))}
+                  />
+                  {errors.variants && (
+                    <p className={styles.fieldError} role="alert">
+                      {errors.variants}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className={styles.field}>
                 <label htmlFor={`${titleId}-name`}>Meno *</label>

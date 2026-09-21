@@ -1,11 +1,10 @@
 import { useState } from "react";
-import type { Product, ProductVariant } from "@/content";
-import { colorHex } from "@/content/colorPalette";
+import type { Product } from "@/content";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Carousel from "@/ui/components/Carousel";
-import Select from "@/ui/components/Select";
 import dividerIcon from "@/assets/icons/dashed-divider.svg";
+import VariantPicker from "./VariantPicker";
 import styles from "./ProductPage.module.css";
 
 interface ProductPageProps {
@@ -28,6 +27,8 @@ export default function ProductPage({ product, onInterest }: ProductPageProps) {
   const handleVariantSelect = (label: string, value: string) => {
     setSelectedVariants((prev) => ({ ...prev, [label]: value }));
   };
+
+  const allChosen = (product.variants ?? []).every((v) => selectedVariants[v.label]);
 
   const images = [product.image, ...(product.images || [])]
     .filter(Boolean)
@@ -86,65 +87,11 @@ export default function ProductPage({ product, onInterest }: ProductPageProps) {
                 <img src={dividerIcon} alt="" className={styles.divider} />
               )}
               {product.variants && product.variants.length > 0 && (
-                <Stack direction="column" gap="xs" className={styles.variants}>
-                  {product.variants.map((variant: ProductVariant) => (
-                    <Stack key={variant.label} direction="column" gap="xs">
-                      <Text as="label" variant="caption">
-                        {variant.label}
-                      </Text>
-                      {variant.isColor ? (
-                        <Stack
-                          direction="row"
-                          align="center"
-                          gap="sm"
-                          wrap="wrap"
-                        >
-                          <Stack
-                            direction="row"
-                            gap="xs"
-                            wrap="wrap"
-                            className={styles.swatches}
-                          >
-                            {variant.options.map((option) => {
-                              const isSelected =
-                                selectedVariants[variant.label] === option;
-                              return (
-                                <button
-                                  key={option}
-                                  type="button"
-                                  title={option}
-                                  aria-label={option}
-                                  aria-pressed={isSelected}
-                                  className={`${styles.swatch} ${
-                                    isSelected ? styles.swatchSelected : ""
-                                  }`}
-                                  style={{
-                                    backgroundColor: colorHex(option) ?? "#ccc",
-                                  }}
-                                  onClick={() =>
-                                    handleVariantSelect(variant.label, option)
-                                  }
-                                />
-                              );
-                            })}
-                          </Stack>
-                          <Text as="span" variant="caption">
-                            {selectedVariants[variant.label] || "zvoľte farbu"}
-                          </Text>
-                        </Stack>
-                      ) : (
-                        <Select
-                          options={variant.options}
-                          value={selectedVariants[variant.label] || ""}
-                          onChange={(value) =>
-                            handleVariantSelect(variant.label, value)
-                          }
-                          placeholder="zvoľte možnosť"
-                        />
-                      )}
-                    </Stack>
-                  ))}
-                </Stack>
+                <VariantPicker
+                  variants={product.variants}
+                  value={selectedVariants}
+                  onChange={handleVariantSelect}
+                />
               )}
               <img src={dividerIcon} alt="" className={styles.divider} />
               <Stack direction="column" gap="xs" className={styles.pricing}>
@@ -173,10 +120,15 @@ export default function ProductPage({ product, onInterest }: ProductPageProps) {
                 <Button
                   variant="primary"
                   onClick={() => onInterest(product, selectedVariants)}
-                  disabled={product.inStock === false}
+                  disabled={product.inStock === false || !allChosen}
                 >
                   Mám záujem
                 </Button>
+                {!allChosen && (
+                  <Text as="p" variant="caption" className={styles.hint}>
+                    Vyber všetky možnosti produktu.
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </Box>

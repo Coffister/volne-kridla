@@ -1,6 +1,5 @@
 import type { Product } from "@/content";
 import { Squircle, Stack, Text, Image } from "@/ui/primitives";
-import Button from "@/ui/components/Button";
 import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductCard.module.css";
 
@@ -80,13 +79,14 @@ export default function ProductCard({
           >
             <img src={shareIcon} alt="" className={styles.icon} />
           </button>
-          <Button
-            variant="primary"
+          <button
+            type="button"
+            className={`${styles.iconBtn} ${styles.cta}`}
             onClick={() => onInterest(product)}
             disabled={product.inStock === false}
           >
             {product.inStock === false ? "Vypredané" : "Mám záujem"}
-          </Button>
+          </button>
         </Stack>
       </Stack>
     </Squircle>

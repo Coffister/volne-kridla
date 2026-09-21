@@ -113,6 +113,11 @@
   height: 1px;
 }
 
+.hint {
+  margin: 0 0 0 var(--spacing-sm);
+  opacity: 0.7;
+}
+
 .actions {
   display: flex;
   justify-content: flex-start;
