@@ -8,6 +8,7 @@
   padding: var(--spacing-sm);
   background: color-mix(in srgb, var(--color-border-primary) 88%, transparent);
   backdrop-filter: blur(6px);
+  animation: overlayIn 200ms ease-out both;
 }
 
 .dialog {
@@ -21,6 +22,7 @@
   background: var(--color-surface-primary);
   border: 4px solid var(--color-border-primary);
   border-radius: var(--radius-lg);
+  animation: dialogIn 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .close {
@@ -70,6 +72,7 @@
 }
 
 .input {
+  transition: border-color 200ms ease, box-shadow 200ms ease;
   padding: var(--spacing-xs) var(--spacing-sm);
   border: 2px solid var(--color-border-primary);
   border-radius: var(--radius-xs);
@@ -95,6 +98,7 @@ textarea.input {
 
 .fieldError,
 .submitError {
+  animation: errorIn 200ms ease-out both;
   margin: 0;
   color: #c62828;
   font-size: var(--font-size-caption);
@@ -113,6 +117,59 @@ textarea.input {
 }
 
 .success {
+  animation: dialogIn 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
   padding: var(--spacing-lg) var(--spacing-xs);
   text-align: center;
+}
+
+/* ponytail: enter-only; an exit animation needs a close timer like Lightbox.tsx, add if wanted */
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+@keyframes errorIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog,
+  .success,
+  .fieldError,
+  .submitError {
+    animation: none;
+  }
+
+  .input {
+    transition: none;
+  }
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* keeps "Odoslať záujem" reachable on short screens / with the mobile keyboard up */
+.submit {
+  position: sticky;
+  bottom: calc(-1 * var(--spacing-md));
+  padding-block: var(--spacing-xs) var(--spacing-md);
+  margin-bottom: calc(-1 * var(--spacing-md));
+  background: var(--color-surface-primary);
 }

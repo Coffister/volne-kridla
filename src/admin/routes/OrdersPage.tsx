@@ -79,7 +79,7 @@ export default function OrdersPage() {
             <div className="admin-review-body">
               <p style={{ margin: 0, fontWeight: 600 }}>{item.product_name}</p>
               <p style={{ margin: 0 }}>
-                {item.name} — <a href={`mailto:${item.email}`}>{item.email}</a>
+                {item.name} — <a href={`mailto:${encodeURIComponent(item.email)}`}>{item.email}</a>
                 {item.phone && ` — ${item.phone}`}
               </p>
               {item.message && <p style={{ margin: 0 }}>{item.message}</p>}

@@ -5,7 +5,6 @@ import { ArrowLeft, ShareNetwork } from "@phosphor-icons/react";
 import { Container, Section, Squircle, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import Button from "@/ui/components/Button";
-import SortIcon from "@/ui/icons/SortIcon";
 import { site, type Product } from "@/content";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
 
@@ -159,6 +158,7 @@ export default function Eshop() {
                         key={tab.value}
                         type="button"
                         className={styles.tab}
+                        aria-pressed={activeCategory === tab.value}
                         onClick={() => setActiveCategory(tab.value)}
                       >
                         <Text
@@ -178,11 +178,6 @@ export default function Eshop() {
                     ))}
                   </Stack>
 
-                  <Stack direction="row" align="center" gap="sm">
-                    <Button variant="navbar" icon={<SortIcon />}>
-                      Zoradiť
-                    </Button>
-                  </Stack>
                 </Stack>
               </Stack>
             )}
@@ -200,8 +195,12 @@ export default function Eshop() {
           </Text>
         ) : (
           <div className={styles.grid}>
-            {products.map((product) => (
-              <div key={product.id} className={styles.cardSlot}>
+            {products.map((product, i) => (
+              <div
+                key={product.id}
+                className={styles.cardSlot}
+                style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+              >
                 <ProductCard
                   product={product}
                   onViewDetails={openDetail}

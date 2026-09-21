@@ -150,7 +150,7 @@ export default function ProductPage({ product, onInterest }: ProductPageProps) {
               <Stack direction="column" gap="xs" className={styles.pricing}>
                 {/* CENA — product.priceLabel */}
                 {product.priceLabel && (
-                  <Text as="h2" variant="sectionTitle" className={styles.price}>
+                  <Text as="h2" variant="cardTitle" className={styles.price}>
                     {product.priceLabel.includes("€")
                       ? product.priceLabel
                       : `${product.priceLabel}€`}

@@ -16,7 +16,10 @@ interface InquiryModalProps {
   onClose: () => void;
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// same shape as the CHECK in supabase/migrations/0010 (no ? & etc. — the admin
+// opens it as a mailto: link)
+const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+const PHONE_PATTERN = /^[0-9+()\s-]{6,50}$/;
 
 export default function InquiryModal({ product, variants = {}, onClose }: InquiryModalProps) {
   const titleId = useId();
@@ -25,7 +28,7 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState(`Mám záujem o produkt ${product.name}.`);
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -69,8 +72,12 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
     const next: typeof errors = {};
     if (!name.trim()) next.name = "Zadaj svoje meno.";
     if (!EMAIL_PATTERN.test(email.trim())) next.email = "Zadaj platný e-mail.";
+    if (phone.trim() && !PHONE_PATTERN.test(phone.trim())) next.phone = "Telefón môže obsahovať len číslice, + ( ) - a medzery.";
     setErrors(next);
-    if (next.name || next.email) return;
+    if (next.name || next.email || next.phone) return;
+
+    // honeypot: real visitors never see this field; bots that fill it get a fake success
+    if (new FormData(e.currentTarget as HTMLFormElement).get("website")) return setDone(true);
 
     setSubmitting(true);
     setSubmitError(null);
@@ -119,9 +126,11 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
                 Ďakujeme za váš záujem.
               </Text>
             </div>
-            <Text as="p" variant="body">
-              Vašu správu sme prijali. Ozveme sa vám s ďalšími informáciami.
-            </Text>
+            <div role="status">
+              <Text as="p" variant="body">
+                Vašu správu sme prijali. Ozveme sa vám s ďalšími informáciami.
+              </Text>
+            </div>
             <Button variant="primary" onClick={onClose}>
               Zavrieť
             </Button>
@@ -200,8 +209,23 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
                   onChange={(e) => setPhone(e.target.value)}
                   autoComplete="tel"
                   maxLength={50}
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? `${titleId}-phone-err` : undefined}
                 />
+                {errors.phone && (
+                  <p id={`${titleId}-phone-err`} className={styles.fieldError} role="alert">
+                    {errors.phone}
+                  </p>
+                )}
               </div>
+
+              <input
+                name="website"
+                className={styles.honeypot}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
 
               <div className={styles.field}>
                 <label htmlFor={`${titleId}-msg`}>Správa</label>
@@ -227,9 +251,11 @@ export default function InquiryModal({ product, variants = {}, onClose }: Inquir
                 </p>
               )}
 
-              <Button type="submit" variant="primary" disabled={submitting} fullWidth>
-                {submitting ? "Odosielam…" : "Odoslať záujem"}
-              </Button>
+              <div className={styles.submit}>
+                <Button type="submit" variant="primary" disabled={submitting} fullWidth>
+                  {submitting ? "Odosielam…" : "Odoslať záujem"}
+                </Button>
+              </div>
             </Stack>
           </form>
         )}

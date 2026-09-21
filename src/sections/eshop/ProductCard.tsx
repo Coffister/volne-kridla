@@ -30,7 +30,10 @@ export default function ProductCard({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") onViewDetails(product);
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault(); // Space would scroll the page
+            onViewDetails(product);
+          }
         }}
       >
         <Squircle radius="md" className={styles.imageWrap}>
@@ -82,7 +85,7 @@ export default function ProductCard({
             onClick={() => onInterest(product)}
             disabled={product.inStock === false}
           >
-            Mám záujem
+            {product.inStock === false ? "Vypredané" : "Mám záujem"}
           </Button>
         </Stack>
       </Stack>
