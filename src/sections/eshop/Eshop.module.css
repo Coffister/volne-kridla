@@ -36,10 +36,6 @@
   width: 100%;
 }
 
-.mobileCartCta {
-  display: none;
-}
-
 .backButtonIcon {
   display: none;
 }
@@ -99,20 +95,12 @@
     padding: var(--spacing-sm);
   }
 
-  .mobileCartCta {
-    display: flex;
-  }
-
   .backButtonText {
     display: none;
   }
 
   .backButtonIcon {
     display: inline-flex;
-  }
-
-  .desktopCartIcon {
-    display: none;
   }
 }
 

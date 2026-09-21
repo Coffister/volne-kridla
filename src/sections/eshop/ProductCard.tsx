@@ -1,20 +1,20 @@
 import type { Product } from "@/content";
 import { Squircle, Stack, Text, Image } from "@/ui/primitives";
-import cartIcon from "@/assets/icons/cart-filled.png";
+import Button from "@/ui/components/Button";
 import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
   product: Product;
   onViewDetails: (product: Product) => void;
-  onAddToCart: (product: Product) => void;
+  onInterest: (product: Product) => void;
   onShare: (product: Product) => void;
 }
 
 export default function ProductCard({
   product,
   onViewDetails,
-  onAddToCart,
+  onInterest,
   onShare,
 }: ProductCardProps) {
   const priceLabel =
@@ -77,15 +77,13 @@ export default function ProductCard({
           >
             <img src={shareIcon} alt="" className={styles.icon} />
           </button>
-          <button
-            type="button"
-            className={styles.iconBtn}
-            onClick={() => onAddToCart(product)}
+          <Button
+            variant="primary"
+            onClick={() => onInterest(product)}
             disabled={product.inStock === false}
-            aria-label="Pridať do košíka"
           >
-            <img src={cartIcon} alt="" className={styles.icon} />
-          </button>
+            Mám záujem
+          </Button>
         </Stack>
       </Stack>
     </Squircle>

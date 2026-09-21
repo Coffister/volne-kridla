@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ShareNetwork, ShoppingCart } from "@phosphor-icons/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, ShareNetwork } from "@phosphor-icons/react";
 
 import { Container, Section, Squircle, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import Button from "@/ui/components/Button";
 import SortIcon from "@/ui/icons/SortIcon";
-import CartButton from "@/features/navigation/CartButton/CartButton";
 import { site, type Product } from "@/content";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
 
 import ProductCard from "./ProductCard";
 import ProductPage from "./ProductPage";
-import CheckoutPage from "./CheckoutPage";
-import { useCart } from "@/lib/CartContext";
+import InquiryModal from "./InquiryModal";
 import styles from "./Eshop.module.css";
 
 export default function Eshop() {
@@ -25,15 +23,15 @@ export default function Eshop() {
     { value: "", label: "Všetky produkty" },
     ...usedCategories,
   ];
-  const { addItem } = useCart();
   const navigate = useNavigate();
-  const location = useLocation();
   const { productId } = useParams<{ productId?: string }>();
-  const isCheckout = location.pathname === "/eshop/checkout";
 
   const [activeCategory, setActiveCategory] = useState("");
   const [detailProduct, setDetailProduct] = useState<Product | null>(null);
-  const [justAdded, setJustAdded] = useState<string | null>(null);
+  const [inquiry, setInquiry] = useState<{
+    product: Product;
+    variants: Record<string, string>;
+  } | null>(null);
   const [linkCopiedFor, setLinkCopiedFor] = useState<string | null>(null);
 
   const products = activeCategory
@@ -56,15 +54,6 @@ export default function Eshop() {
 
   const closeDetail = () => {
     navigate("/eshop");
-  };
-
-  const handleAddToCart = (product: Product) => {
-    addItem(product, {}, 1);
-    setJustAdded(product.id);
-    setTimeout(
-      () => setJustAdded((cur) => (cur === product.id ? null : cur)),
-      1200,
-    );
   };
 
   const handleShare = async (product: Product) => {
@@ -95,7 +84,7 @@ export default function Eshop() {
           className={styles.heading}
         >
           <Text as="h1" variant="sectionTitle" className={styles.title}>
-            E-shop
+            Produkty
           </Text>
           <Badge>Produkty pre teba a tvojho papagája</Badge>
         </Stack>
@@ -108,30 +97,12 @@ export default function Eshop() {
             gap="sm"
             wrap="wrap"
           >
-            {isCheckout ? (
-              <Button
-                variant="secondary"
-                icon={<ArrowLeft size={18} weight="bold" />}
-                onClick={closeDetail}
-              >
-                Späť na produkty
-              </Button>
-            ) : detailProduct ? (
+            {detailProduct ? (
               <Stack
                 direction="column"
                 gap="sm"
                 className={styles.detailToolbar}
               >
-                <Button
-                  variant="navbar"
-                  icon={<ShoppingCart size={20} weight="bold" />}
-                  fullWidth
-                  className={styles.mobileCartCta}
-                  onClick={() => navigate("/eshop/checkout")}
-                >
-                  Prejsť do košíka
-                </Button>
-
                 <Stack
                   direction="row"
                   align="center"
@@ -166,7 +137,6 @@ export default function Eshop() {
                         ? "Odkaz skopírovaný"
                         : "Zdieľať"}
                     </Button>
-                    <CartButton className={styles.desktopCartIcon} />
                   </Stack>
                 </Stack>
               </Stack>
@@ -176,16 +146,6 @@ export default function Eshop() {
                 gap="sm"
                 className={styles.detailToolbar}
               >
-                <Button
-                  variant="navbar"
-                  icon={<ShoppingCart size={20} weight="bold" />}
-                  fullWidth
-                  className={styles.mobileCartCta}
-                  onClick={() => navigate("/eshop/checkout")}
-                >
-                  Prejsť do košíka
-                </Button>
-
                 <Stack
                   direction="row"
                   align="center"
@@ -222,7 +182,6 @@ export default function Eshop() {
                     <Button variant="navbar" icon={<SortIcon />}>
                       Zoradiť
                     </Button>
-                    <CartButton className={styles.desktopCartIcon} />
                   </Stack>
                 </Stack>
               </Stack>
@@ -230,10 +189,11 @@ export default function Eshop() {
           </Stack>
         </Squircle>
 
-        {isCheckout ? (
-          <CheckoutPage />
-        ) : detailProduct ? (
-          <ProductPage product={detailProduct} />
+        {detailProduct ? (
+          <ProductPage
+            product={detailProduct}
+            onInterest={(product, variants) => setInquiry({ product, variants })}
+          />
         ) : products.length === 0 ? (
           <Text as="p" variant="body" className={styles.empty}>
             Produkty sa práve pripravujú — čoskoro tu nájdeš viac.
@@ -245,12 +205,9 @@ export default function Eshop() {
                 <ProductCard
                   product={product}
                   onViewDetails={openDetail}
-                  onAddToCart={handleAddToCart}
+                  onInterest={(product) => setInquiry({ product, variants: {} })}
                   onShare={handleShare}
                 />
-                {justAdded === product.id && (
-                  <div className={styles.addedToast}>Pridané do košíka ✓</div>
-                )}
                 {linkCopiedFor === product.id && (
                   <div className={styles.addedToast}>Odkaz skopírovaný ✓</div>
                 )}
@@ -259,6 +216,13 @@ export default function Eshop() {
           </div>
         )}
       </Container>
+      {inquiry && (
+        <InquiryModal
+          product={inquiry.product}
+          variants={inquiry.variants}
+          onClose={() => setInquiry(null)}
+        />
+      )}
     </Section>
   );
 }

@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { ShoppingCart } from "@phosphor-icons/react";
 import type { Product, ProductVariant } from "@/content";
 import { colorHex } from "@/content/colorPalette";
-import { useCart } from "@/lib/CartContext";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Carousel from "@/ui/components/Carousel";
@@ -12,30 +10,23 @@ import styles from "./ProductPage.module.css";
 
 interface ProductPageProps {
   product: Product;
+  onInterest: (product: Product, variants: Record<string, string>) => void;
 }
 
 // Intentionally bare — this is the container the product detail gets
 // hand-designed into. The placeholders below just wire up the data and
 // behavior that vary per product (image, description, price, stock,
-// variants, add-to-cart/share); restyle freely, keep the wiring.
+// variants, inquiry/share); restyle freely, keep the wiring.
 // Back/share live in Eshop's toolbar (it swaps categories+sort for
 // breadcrumbs when a product is open), not here.
-export default function ProductPage({ product }: ProductPageProps) {
-  const { addItem } = useCart();
+export default function ProductPage({ product, onInterest }: ProductPageProps) {
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >({});
-  const [addedToCart, setAddedToCart] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 
   const handleVariantSelect = (label: string, value: string) => {
     setSelectedVariants((prev) => ({ ...prev, [label]: value }));
-  };
-
-  const handleAddToCart = () => {
-    addItem(product, selectedVariants, 1);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1500);
   };
 
   const images = [product.image, ...(product.images || [])]
@@ -181,11 +172,10 @@ export default function ProductPage({ product }: ProductPageProps) {
               <Stack direction="row" gap="sm" className={styles.actions}>
                 <Button
                   variant="primary"
-                  icon={<ShoppingCart size={20} weight="bold" />}
-                  onClick={handleAddToCart}
+                  onClick={() => onInterest(product, selectedVariants)}
                   disabled={product.inStock === false}
                 >
-                  {addedToCart ? "Pridané" : "Pridať do košíka"}
+                  Mám záujem
                 </Button>
               </Stack>
             </Stack>

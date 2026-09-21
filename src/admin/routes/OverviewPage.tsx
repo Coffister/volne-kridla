@@ -20,7 +20,7 @@ const actions = [
   },
   {
     to: "/admin/objednavky",
-    title: "Objednávky",
+    title: "Dopyty",
     hint: "Pozrieť dopyty z e-shopu",
   },
   {

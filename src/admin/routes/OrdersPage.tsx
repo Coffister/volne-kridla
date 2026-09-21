@@ -57,7 +57,7 @@ export default function OrdersPage() {
     <section className="admin-page">
       <header className="admin-page-head">
         <div>
-          <h2>Objednávky</h2>
+          <h2>Dopyty</h2>
           <p className="admin-muted">
             {loading
               ? "Načítavam…"

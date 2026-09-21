@@ -14,13 +14,13 @@ export default function Eshop() {
           title: product.name,
           description:
             product.description ||
-            `${product.name} — ${product.priceLabel || "pozri detail"} na Voľné krídla e-shope.`,
+            `${product.name} — ${product.priceLabel || "pozri detail"} v katalógu Voľné krídla.`,
           path: `/eshop/produkt/${product.id}`,
           image: product.image || undefined,
         }
       : {
-          title: "E-shop",
-          description: "Produkty pre teba a tvojho papagája — objednaj si cez jednoduchý formulár.",
+          title: "Produkty",
+          description: "Produkty pre teba a tvojho papagája — ozvi sa nám cez formulár „Mám záujem“.",
           path: "/eshop",
         },
   );
