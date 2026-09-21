@@ -125,3 +125,9 @@
     height: 20px;
   }
 }
+
+/* keep "Mám záujem" on one line; the footer wraps instead if it runs out of room */
+.footer button span {
+  white-space: nowrap;
+  font-size: var(--font-size-caption) !important;
+}
