@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import type { Product } from "@/content";
 import { submitProductInquiry } from "@/lib/inquiries";
 import Button from "@/ui/components/Button";
+import Confetti from "@/features/konzultacia-modal/Confetti";
+import { CheckIcon } from "@/features/konzultacia-modal/icons";
 import CloseIcon from "@/ui/icons/CloseIcon";
 import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
 import { Squircle, Stack, Text } from "@/ui/primitives";
@@ -143,26 +145,27 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <button type="button" className={styles.close} onClick={requestClose} aria-label="Zavrieť">
+        <button type="button" className={styles.close} data-cursor="pointer" onClick={requestClose} aria-label="Zavrieť">
           <CloseIcon />
         </button>
 
         {done ? (
-          <Stack direction="column" align="center" gap="sm" className={styles.success}>
-            <div id={titleId}>
-              <Text as="h2" variant="cardTitle">
-                Ďakujeme za váš záujem.
-              </Text>
-            </div>
-            <div role="status">
-              <Text as="p" variant="body">
-                Vašu správu sme prijali. Ozveme sa vám s ďalšími informáciami.
-              </Text>
-            </div>
+          <section className={styles.success} role="status">
+            <Confetti />
+            <span className={styles.successBadge} aria-hidden>
+              <CheckIcon size={30} />
+            </span>
+            <h2 id={titleId} className={styles.successHeading}>
+              Mám to{name.trim() ? `, ${name.trim().split(" ")[0]}` : ""}!
+            </h2>
+            <p className={styles.successMeta}>{product.name}</p>
+            <p className={styles.successText}>
+              Ozvem sa do 24 hodín na <strong>{email.trim()}</strong>.
+            </p>
             <Button variant="primary" onClick={requestClose}>
               Zavrieť
             </Button>
-          </Stack>
+          </section>
         ) : (
           <form onSubmit={handleSubmit} noValidate>
             <Stack direction="column" gap="sm">
