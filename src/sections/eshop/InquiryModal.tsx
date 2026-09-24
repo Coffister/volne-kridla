@@ -8,6 +8,8 @@ import Button from "@/ui/components/Button";
 import CloseIcon from "@/ui/icons/CloseIcon";
 import { Stack, Text } from "@/ui/primitives";
 import VariantPicker from "./VariantPicker";
+import czFlag from "@/assets/icons/flags/cz.svg";
+import skFlag from "@/assets/icons/flags/sk.svg";
 import styles from "./InquiryModal.module.css";
 
 interface InquiryModalProps {
@@ -22,33 +24,8 @@ interface InquiryModalProps {
 const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const PHONE_PATTERN = /^[0-9()\s-]{6,40}$/;
 
-const COUNTRIES = {
-  "+421": { name: "Slovensko", flag: ["#fff", "#0b4ea2", "#ee1c25"] },
-  "+420": { name: "Česko", flag: ["#fff", "#d7141a", "#11457e"] },
-} as const;
-type Code = keyof typeof COUNTRIES;
-
-// plain stripes/wedge, enough at 20px (no coat of arms)
-function Flag({ code }: { code: Code }) {
-  const [a, b, c] = COUNTRIES[code].flag;
-  return (
-    <svg className={styles.flag} viewBox="0 0 30 20" aria-hidden="true">
-      {code === "+421" ? (
-        <>
-          <rect width="30" height="20" fill={a} />
-          <rect y="6.7" width="30" height="6.7" fill={b} />
-          <rect y="13.3" width="30" height="6.7" fill={c} />
-        </>
-      ) : (
-        <>
-          <rect width="30" height="10" fill={a} />
-          <rect y="10" width="30" height="10" fill={b} />
-          <path d="M0 0 15 10 0 20Z" fill={c} />
-        </>
-      )}
-    </svg>
-  );
-}
+const FLAGS = { "+421": skFlag, "+420": czFlag };
+type Code = keyof typeof FLAGS;
 
 export default function InquiryModal({ product, variants: initialVariants = {}, onClose }: InquiryModalProps) {
   const [variants, setVariants] = useState(initialVariants);
@@ -245,15 +222,15 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                   <label htmlFor={`${titleId}-phone`}>Telefón</label>
                   <div className={`${styles.input} ${styles.phone}`} aria-invalid={!!errors.phone}>
                     <span className={styles.code}>
-                      <Flag code={code} />
+                      <img src={FLAGS[code]} alt="" className={styles.flag} />
                       <select
                         value={code}
                         onChange={(e) => setCode(e.target.value as Code)}
                         aria-label="Predvoľba"
                       >
-                        {(Object.keys(COUNTRIES) as Code[]).map((c) => (
+                        {(Object.keys(FLAGS) as Code[]).map((c) => (
                           <option key={c} value={c}>
-                            {c} {COUNTRIES[c].name}
+                            {c}
                           </option>
                         ))}
                       </select>
