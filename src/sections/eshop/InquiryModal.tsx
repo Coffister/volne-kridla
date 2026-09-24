@@ -6,6 +6,7 @@ import type { Product } from "@/content";
 import { submitProductInquiry } from "@/lib/inquiries";
 import Button from "@/ui/components/Button";
 import CloseIcon from "@/ui/icons/CloseIcon";
+import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
 import { Stack, Text } from "@/ui/primitives";
 import VariantPicker from "./VariantPicker";
 import czFlag from "@/assets/icons/flags/cz.svg";
@@ -35,6 +36,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState<Code>("+421");
+  const [codeOpen, setCodeOpen] = useState(false);
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; variants?: string; consent?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -221,20 +223,45 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                 <div className={styles.field}>
                   <label htmlFor={`${titleId}-phone`}>Telefón</label>
                   <div className={`${styles.input} ${styles.phone}`} aria-invalid={!!errors.phone}>
-                    <span className={styles.code}>
-                      <img src={FLAGS[code]} alt="" className={styles.flag} />
-                      <select
-                        value={code}
-                        onChange={(e) => setCode(e.target.value as Code)}
+                    <div
+                      className={`${styles.code} ${codeOpen ? styles.codeOpen : ""}`}
+                      onBlur={(e) => e.currentTarget.contains(e.relatedTarget) || setCodeOpen(false)}
+                    >
+                      <button
+                        type="button"
+                        className={styles.codeBtn}
+                        onClick={() => setCodeOpen((o) => !o)}
+                        aria-haspopup="listbox"
+                        aria-expanded={codeOpen}
                         aria-label="Predvoľba"
                       >
-                        {(Object.keys(FLAGS) as Code[]).map((c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </span>
+                        <img src={FLAGS[code]} alt="" className={styles.flag} />
+                        {code}
+                        <span className={styles.chevron}>
+                          <ChevronDownIcon />
+                        </span>
+                      </button>
+                      {codeOpen && (
+                        <div role="listbox" className={styles.codeMenu}>
+                          {(Object.keys(FLAGS) as Code[]).map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              role="option"
+                              aria-selected={c === code}
+                              className={styles.codeOption}
+                              onClick={() => {
+                                setCode(c);
+                                setCodeOpen(false);
+                              }}
+                            >
+                              <img src={FLAGS[c]} alt="" className={styles.flag} />
+                              {c}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <input
                       id={`${titleId}-phone`}
                       type="tel"

@@ -132,26 +132,73 @@
 }
 
 .code {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding-inline: 0.5rem;
-  background: var(--color-surface-secondary);
-  border-radius: var(--radius-xs);
+  position: relative;
   font-weight: var(--font-weight-semibold);
 }
 
-.code select {
-  border: 0;
-  padding-block: 0.25rem;
-  font: inherit;
-  background: transparent;
+.codeBtn,
+.codeOption {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
 }
 
+.codeBtn {
+  padding: 0.35rem 0.75rem;
+  background: var(--color-surface-secondary);
+  border-radius: var(--radius-xs);
+}
+
+.codeBtn:focus-visible,
+.codeOption:focus-visible {
+  outline: 3px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.chevron {
+  display: inline-flex;
+  margin-left: 0.25rem;
+  transition: transform 0.15s ease;
+}
+
+.codeOpen .chevron {
+  transform: rotate(180deg);
+}
+
+/* opens as one beige block with the trigger */
+.codeOpen .codeBtn {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.codeMenu {
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 0;
+  min-width: 100%;
+  padding: 0.25rem 0.5rem 0.5rem;
+  background: var(--color-surface-secondary);
+  border-radius: 0 0 var(--radius-xs) var(--radius-xs);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.codeOption {
+  width: 100%;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-xs);
+}
+
+.codeOption[aria-selected="true"] {
+  color: #fff;
+  background: var(--color-accent-primary);
+}
+
 .flag {
-  width: 1.25rem;
-  height: auto;
+  width: 1.6rem;
   aspect-ratio: 4 / 3;
   flex: none;
   border-radius: 4px;
