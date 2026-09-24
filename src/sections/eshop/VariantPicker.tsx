@@ -8,11 +8,18 @@ interface VariantPickerProps {
   variants: ProductVariant[];
   value: Record<string, string>;
   onChange: (label: string, option: string) => void;
+  /** lay the variants out side by side (wraps when narrow) */
+  columns?: boolean;
 }
 
-export default function VariantPicker({ variants, value, onChange }: VariantPickerProps) {
+export default function VariantPicker({ variants, value, onChange, columns }: VariantPickerProps) {
   return (
-    <Stack direction="column" gap="xs" className={styles.variants}>
+    <Stack
+      direction="column"
+      gap={columns ? "sm" : "xs"}
+      className={styles.variants}
+      style={columns ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))" } : undefined}
+    >
       {variants.map((variant) => (
         <Stack key={variant.label} direction="column" gap="xs">
           <Text as="label" variant="caption">

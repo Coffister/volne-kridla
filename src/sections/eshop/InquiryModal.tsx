@@ -165,6 +165,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
               {product.variants && product.variants.length > 0 && (
                 <div>
                   <VariantPicker
+                    columns
                     variants={product.variants}
                     value={variants}
                     onChange={(label, option) => setVariants((v) => ({ ...v, [label]: option }))}
