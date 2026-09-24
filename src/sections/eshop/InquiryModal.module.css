@@ -118,6 +118,8 @@
 }
 
 .row {
+  position: relative;
+  z-index: 2; /* keeps the open country-code menu above the sticky submit button */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
   gap: var(--spacing-sm);
