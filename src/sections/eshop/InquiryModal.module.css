@@ -14,7 +14,7 @@
 .dialog {
   position: relative;
   width: 100%;
-  max-width: 32rem;
+  max-width: 51rem; /* screenshot is 822px wide */
   /* dvh keeps the submit button reachable above the mobile keyboard/toolbar */
   max-height: calc(100dvh - 2 * var(--spacing-sm));
   overflow-y: auto;
@@ -38,7 +38,8 @@
 }
 
 .close:focus-visible,
-.link:focus-visible {
+.link:focus-visible,
+.consent input:focus-visible {
   outline: 3px solid var(--color-accent-primary);
   outline-offset: 2px;
 }
@@ -91,9 +92,76 @@
   border-color: #c62828;
 }
 
-textarea.input {
-  resize: vertical;
-  min-height: 5rem;
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--spacing-sm);
+}
+
+/* phone: the wrapper wears the input border, the real <input> is bare */
+.phone {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding-block: 0;
+}
+
+.phone:focus-within {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.2);
+}
+
+.phone[aria-invalid="true"] {
+  border-color: #c62828;
+}
+
+.phone input {
+  flex: 1;
+  min-width: 0;
+  padding-block: var(--spacing-xs);
+  border: 0;
+  outline: 0;
+  font: inherit;
+  background: transparent;
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-inline: 0.5rem;
+  background: var(--color-surface-secondary);
+  border-radius: var(--radius-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.code select {
+  border: 0;
+  padding-block: 0.25rem;
+  font: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.flag {
+  width: 1.25rem;
+  height: 0.85rem;
+  flex: none;
+  outline: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.consent {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-caption);
+}
+
+.consent input {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  accent-color: var(--color-accent-primary);
 }
 
 .fieldError,
