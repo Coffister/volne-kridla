@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 
@@ -53,6 +53,13 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [closing, setClosing] = useState(false);
+
+  // play the exit animation, then let the parent unmount us
+  const requestClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 180);
+  }, [onClose]);
 
   // Escape closes, Tab stays inside the dialog, scroll is locked, and focus
   // goes back to whatever opened the modal.
@@ -64,7 +71,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
     focusable()[0]?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") return onClose();
+      if (e.key === "Escape") return requestClose();
       if (e.key !== "Tab") return;
       const els = focusable();
       const first = els[0];
@@ -86,7 +93,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
       document.body.style.overflow = overflow;
       trigger?.focus();
     };
-  }, [onClose]);
+  }, [requestClose]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -126,7 +133,8 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
   return createPortal(
     <div
       className={styles.overlay}
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+      data-closing={closing || undefined}
+      onMouseDown={(e) => e.target === e.currentTarget && requestClose()}
     >
       <div
         ref={dialogRef}
@@ -135,7 +143,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <button type="button" className={styles.close} onClick={onClose} aria-label="Zavrieť">
+        <button type="button" className={styles.close} onClick={requestClose} aria-label="Zavrieť">
           <CloseIcon />
         </button>
 
@@ -151,7 +159,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                 Vašu správu sme prijali. Ozveme sa vám s ďalšími informáciami.
               </Text>
             </div>
-            <Button variant="primary" onClick={onClose}>
+            <Button variant="primary" onClick={requestClose}>
               Zavrieť
             </Button>
           </Stack>
@@ -317,9 +325,12 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                     aria-required="true"
                     aria-invalid={!!errors.consent}
                   />
-                  <Link to="/ochrana-osobnych-udajov" target="_blank" className={styles.link}>
-                    Informácie o spracovaní osobných údajov
-                  </Link>
+                  <span>
+                    Súhlasím so{" "}
+                    <Link to="/ochrana-osobnych-udajov" target="_blank" className={styles.link}>
+                      spracovaním osobných údajov
+                    </Link>
+                  </span>
                 </label>
                 {errors.consent && (
                   <p className={styles.fieldError} role="alert">
