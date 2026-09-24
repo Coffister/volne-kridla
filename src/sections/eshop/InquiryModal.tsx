@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import { submitProductInquiry } from "@/lib/inquiries";
 import Button from "@/ui/components/Button";
 import CloseIcon from "@/ui/icons/CloseIcon";
 import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
-import { Stack, Text } from "@/ui/primitives";
+import { Squircle, Stack, Text } from "@/ui/primitives";
 import VariantPicker from "./VariantPicker";
 import czFlag from "@/assets/icons/flags/cz.svg";
 import skFlag from "@/assets/icons/flags/sk.svg";
@@ -27,6 +27,17 @@ const PHONE_PATTERN = /^[0-9()\s-]{6,40}$/;
 
 const FLAGS = { "+421": skFlag, "+420": czFlag };
 type Code = keyof typeof FLAGS;
+
+// squircle-clipped box; the border is an SVG stroke in currentColor so CSS can recolor it
+function Control({ invalid, className = "", children }: { invalid?: boolean; className?: string; children: ReactNode }) {
+  return (
+    <Squircle radius="sm" borderWidth={2} borderColor="currentColor" className={`${styles.control} ${className}`}>
+      <div data-invalid={invalid || undefined} className={styles.controlInner}>
+        {children}
+      </div>
+    </Squircle>
+  );
+}
 
 export default function InquiryModal({ product, variants: initialVariants = {}, onClose }: InquiryModalProps) {
   const [variants, setVariants] = useState(initialVariants);
@@ -180,9 +191,10 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
 
               <div className={styles.field}>
                 <label htmlFor={`${titleId}-name`}>Meno *</label>
-                <input
+                <Control invalid={!!errors.name}>
+<input
                   id={`${titleId}-name`}
-                  className={styles.input}
+                  className={styles.bare}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoComplete="name"
@@ -191,6 +203,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? `${titleId}-name-err` : undefined}
                 />
+</Control>
                 {errors.name && (
                   <p id={`${titleId}-name-err`} className={styles.fieldError} role="alert">
                     {errors.name}
@@ -201,10 +214,11 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
               <div className={styles.row}>
                 <div className={styles.field}>
                   <label htmlFor={`${titleId}-email`}>E-mail *</label>
-                  <input
+                  <Control invalid={!!errors.email}>
+<input
                     id={`${titleId}-email`}
                     type="email"
-                    className={styles.input}
+                    className={styles.bare}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="váš@email.com"
@@ -214,6 +228,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? `${titleId}-email-err` : undefined}
                   />
+</Control>
                   {errors.email && (
                     <p id={`${titleId}-email-err`} className={styles.fieldError} role="alert">
                       {errors.email}
@@ -223,14 +238,14 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
 
                 <div className={styles.field}>
                   <label htmlFor={`${titleId}-phone`}>Telefón</label>
-                  <div className={`${styles.input} ${styles.phone}`} aria-invalid={!!errors.phone}>
-                    <div
-                      className={`${styles.code} ${codeOpen ? styles.codeOpen : ""}`}
-                      onBlur={(e) => e.currentTarget.contains(e.relatedTarget) || setCodeOpen(false)}
-                    >
+                  <div
+                    className={styles.phoneWrap}
+                    onBlur={(e) => e.currentTarget.contains(e.relatedTarget) || setCodeOpen(false)}
+                  >
+                    <Control invalid={!!errors.phone} className={styles.phone}>
                       <button
                         type="button"
-                        className={styles.codeBtn}
+                        className={`${styles.codeBtn} ${codeOpen ? styles.codeOpen : ""}`}
                         onClick={() => setCodeOpen((o) => !o)}
                         aria-haspopup="listbox"
                         aria-expanded={codeOpen}
@@ -242,38 +257,40 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                           <ChevronDownIcon />
                         </span>
                       </button>
-                      {codeOpen && (
-                        <div role="listbox" className={styles.codeMenu}>
-                          {(Object.keys(FLAGS) as Code[]).map((c) => (
-                            <button
-                              key={c}
-                              type="button"
-                              role="option"
-                              aria-selected={c === code}
-                              className={styles.codeOption}
-                              onClick={() => {
-                                setCode(c);
-                                setCodeOpen(false);
-                              }}
-                            >
-                              <img src={FLAGS[c]} alt="" className={styles.flag} />
-                              {c}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      id={`${titleId}-phone`}
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="9xx xxx xxx"
-                      autoComplete="tel-national"
-                      maxLength={40}
-                      aria-invalid={!!errors.phone}
-                      aria-describedby={errors.phone ? `${titleId}-phone-err` : undefined}
-                    />
+                      <input
+                        id={`${titleId}-phone`}
+                        type="tel"
+                        className={styles.bare}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        onFocus={() => setCodeOpen(false)}
+                        placeholder="9xx xxx xxx"
+                        autoComplete="tel-national"
+                        maxLength={40}
+                        aria-invalid={!!errors.phone}
+                        aria-describedby={errors.phone ? `${titleId}-phone-err` : undefined}
+                      />
+                    </Control>
+                    {codeOpen && (
+                      <div role="listbox" className={styles.codeMenu}>
+                        {(Object.keys(FLAGS) as Code[]).map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            role="option"
+                            aria-selected={c === code}
+                            className={styles.codeOption}
+                            onClick={() => {
+                              setCode(c);
+                              setCodeOpen(false);
+                            }}
+                          >
+                            <img src={FLAGS[c]} alt="" className={styles.flag} />
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   {errors.phone && (
                     <p id={`${titleId}-phone-err`} className={styles.fieldError} role="alert">

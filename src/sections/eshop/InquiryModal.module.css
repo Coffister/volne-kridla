@@ -12,6 +12,7 @@
 }
 
 .dialog {
+  --control-h: 3rem;
   position: relative;
   width: 100%;
   max-width: 51rem; /* screenshot is 822px wide */
@@ -78,24 +79,41 @@
   color: var(--color-text-primary);
 }
 
-.input {
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 2px solid var(--color-border-primary);
-  border-radius: var(--radius-xs);
-  font: inherit;
-  font-weight: normal;
+/* every text control shares one height; the border is drawn by <Squircle> in currentColor */
+.control {
+  box-sizing: border-box;
+  min-height: var(--control-h);
+  color: var(--color-border-primary);
   background: #fff;
 }
 
-.input:focus-visible {
-  outline: none;
-  border-color: var(--color-accent-primary);
-  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.2);
+.control:focus-within {
+  color: var(--color-accent-primary);
 }
 
-.input[aria-invalid="true"] {
-  border-color: #c62828;
+.control:has([data-invalid]) {
+  color: #c62828;
+}
+
+.controlInner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: var(--control-h);
+  color: var(--color-text-primary);
+}
+
+.bare {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  padding: 0 var(--spacing-sm);
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-weight: normal;
+  color: inherit;
+  background: transparent;
 }
 
 .row {
@@ -104,36 +122,13 @@
   gap: var(--spacing-sm);
 }
 
-/* phone: the wrapper wears the input border, the real <input> is bare */
-.phone {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: 0.25rem; /* inset so the code pill has room around it */
+/* phone: pill inset 6px (2px border + 4px gap) from the border */
+.phone .controlInner {
+  padding-left: 0.375rem;
 }
 
-.phone:focus-within {
-  border-color: var(--color-accent-primary);
-  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.2);
-}
-
-.phone[aria-invalid="true"] {
-  border-color: #c62828;
-}
-
-.phone input {
-  flex: 1;
-  min-width: 0;
-  padding-block: var(--spacing-xs);
-  border: 0;
-  outline: 0;
-  font: inherit;
-  background: transparent;
-}
-
-.code {
+.phoneWrap {
   position: relative;
-  font-weight: var(--font-weight-semibold);
 }
 
 .codeBtn,
@@ -143,11 +138,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 8.5rem;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
 }
 
 .codeBtn {
-  padding: 0.35rem 0.75rem;
+  flex: none;
+  height: calc(var(--control-h) - 12px);
+  padding-inline: 0.75rem;
   background: var(--color-surface-secondary);
   border-radius: var(--radius-xs);
 }
@@ -169,7 +168,7 @@
 }
 
 /* opens as one beige block with the trigger */
-.codeOpen .codeBtn {
+.codeBtn.codeOpen {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -177,13 +176,14 @@
 .codeMenu {
   position: absolute;
   z-index: 1;
-  top: 100%;
-  min-width: 8.5rem;
-  left: 0;
+  top: calc(var(--control-h) - 6px);
+  left: 6px;
+  width: 8.5rem;
   padding: 0.25rem 0.5rem 0.5rem;
   background: var(--color-surface-secondary);
   border-radius: 0 0 var(--radius-xs) var(--radius-xs);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  font-weight: var(--font-weight-semibold);
 }
 
 .codeOption {
@@ -274,7 +274,7 @@
     animation: none;
   }
 
-  .input {
+  .control {
     transition: none;
   }
 }
