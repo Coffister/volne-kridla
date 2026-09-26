@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Link } from "react-router-dom";
 
 import type { Product } from "@/content";
 import { submitProductInquiry } from "@/lib/inquiries";
@@ -27,6 +26,17 @@ interface InquiryModalProps {
 const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const PHONE_PATTERN = /^[0-9()\s-]{6,40}$/;
 
+// split so the middle phrase can be rendered as an accent-colored link that
+// reveals GDPR_TEXT inline, instead of navigating away to a separate page
+// and losing whatever the visitor already filled in (same pattern as
+// KonzultaciaModal's consent checkbox).
+const CONSENT_PREFIX = "Súhlasím so ";
+const CONSENT_LINK_TEXT = "spracovaním osobných údajov";
+const CONSENT_SUFFIX = " za účelom kontaktovania ohľadom záujmu o produkt.";
+
+const GDPR_TEXT =
+  "Odoslaním formulára beriete na vedomie, že poskytnuté osobné údaje (meno, e-mail, telefón a vybrané možnosti produktu) budú spracované výlučne za účelom kontaktovania a vybavenia vášho záujmu o produkt. Údaje nie sú poskytované tretím stranám a sú uchovávané len po dobu nevyhnutnú na vybavenie dopytu a súvisiacu komunikáciu. Máte právo na prístup k svojim údajom, ich úpravu alebo vymazanie.";
+
 const FLAGS = { "+421": skFlag, "+420": czFlag };
 type Code = keyof typeof FLAGS;
 
@@ -51,6 +61,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
   const [code, setCode] = useState<Code>("+421");
   const [codeOpen, setCodeOpen] = useState(false);
   const [consent, setConsent] = useState(false);
+  const [gdprOpen, setGdprOpen] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; variants?: string; consent?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -332,10 +343,19 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                     aria-invalid={!!errors.consent}
                   />
                   <span>
-                    Súhlasím so{" "}
-                    <Link to="/ochrana-osobnych-udajov" target="_blank" className={styles.link}>
-                      spracovaním osobných údajov
-                    </Link>
+                    {CONSENT_PREFIX}
+                    <button
+                      type="button"
+                      className={styles.consentLink}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setGdprOpen((o) => !o);
+                      }}
+                    >
+                      {CONSENT_LINK_TEXT}
+                    </button>
+                    {CONSENT_SUFFIX}
                   </span>
                 </label>
                 {errors.consent && (
@@ -343,6 +363,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                     {errors.consent}
                   </p>
                 )}
+                {gdprOpen && <p className={styles.gdprText}>{GDPR_TEXT}</p>}
               </div>
 
               {submitError && (

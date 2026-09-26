@@ -65,7 +65,7 @@
 }
 
 .close:focus-visible,
-.link:focus-visible,
+.consentLink:focus-visible,
 .consent input:focus-visible {
   outline: 3px solid var(--color-accent-primary);
   outline-offset: 2px;
@@ -265,9 +265,27 @@
   border-radius: var(--radius-xs);
 }
 
-.link {
+.consentLink {
+  padding: 0;
+  margin: 0;
+  font: inherit;
   color: var(--color-accent-primary);
+  font-weight: var(--font-weight-semibold);
+  background: none;
+  border: 0;
   text-decoration: underline;
+  cursor: pointer;
+}
+
+.gdprText {
+  margin: 0.4rem 0 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-caption);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-xs);
 }
 
 .success {
