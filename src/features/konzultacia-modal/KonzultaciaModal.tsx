@@ -4,8 +4,10 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { Squircle } from "@/ui/primitives";
 
 import {
   CONSENT_PREFIX,
@@ -83,6 +85,19 @@ const EMAIL_CHECK_DELAY_MS = 3000;
 // same icon as that step's own section heading, so the stepper previews
 // what's coming next
 const STEP_ICONS = [FeatherIcon, ClipboardIcon, IdCardIcon, CheckCircleIcon];
+
+// same squircle-clipped control as the product inquiry modal's phone field
+// (src/sections/eshop/InquiryModal.tsx) — kept in sync for UI consistency
+// between the two modals' phone inputs.
+function Control({ invalid, className = "", children }: { invalid?: boolean; className?: string; children: ReactNode }) {
+  return (
+    <Squircle radius="sm" borderWidth={2} borderColor="currentColor" className={`${styles.control} ${className}`}>
+      <div data-invalid={invalid || undefined} className={styles.controlInner}>
+        {children}
+      </div>
+    </Squircle>
+  );
+}
 
 function Stepper({ step }: { step: Step }) {
   return (
@@ -624,10 +639,7 @@ export default function KonzultaciaModal() {
                     setPhoneCodeOpen(false)
                   }
                 >
-                  <div
-                    className={styles.phoneBox}
-                    data-invalid={!!errors.phone || undefined}
-                  >
+                  <Control invalid={!!errors.phone} className={styles.phone}>
                     <button
                       type="button"
                       className={`${styles.codeBtn} ${phoneCodeOpen ? styles.codeOpen : ""}`}
@@ -645,7 +657,7 @@ export default function KonzultaciaModal() {
                     <input
                       id="k-phone"
                       type="tel"
-                      className={styles.phoneInput}
+                      className={styles.bare}
                       autoComplete="tel-national"
                       value={form.phone}
                       onChange={(e) => set("phone", e.target.value)}
@@ -653,7 +665,7 @@ export default function KonzultaciaModal() {
                       placeholder="9xx xxx xxx"
                       aria-invalid={!!errors.phone}
                     />
-                  </div>
+                  </Control>
                   {phoneCodeOpen && (
                     <div role="listbox" className={styles.codeMenu}>
                       {(Object.keys(PHONE_FLAGS) as PhoneCode[]).map((c) => (
