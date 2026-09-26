@@ -439,17 +439,28 @@
   color: var(--color-text-primary);
 }
 
-.bare {
+/* higher specificity than the generic ".field input" rule above, which
+   would otherwise still draw its own border/radius/padding on this input
+   and visually split it from the country-code button next to it */
+.field .bare {
   flex: 1;
   min-width: 0;
   align-self: stretch;
+  width: auto;
   padding: 0 var(--spacing-sm);
   border: 0;
+  border-radius: 0;
   outline: 0;
   font: inherit;
   font-weight: normal;
   color: inherit;
   background: transparent;
+}
+
+.field .bare:focus-visible {
+  outline: none;
+  border: 0;
+  box-shadow: none;
 }
 
 /* phone: pill inset 6px (2px border + 4px gap) from the border */
