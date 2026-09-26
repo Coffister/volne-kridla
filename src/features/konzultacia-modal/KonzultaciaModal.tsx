@@ -33,6 +33,7 @@ import {
   CheckIcon,
 } from "./icons";
 import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
+import CloseIcon from "@/ui/icons/CloseIcon";
 import skFlag from "@/assets/icons/flags/sk.svg";
 import czFlag from "@/assets/icons/flags/cz.svg";
 import styles from "./KonzultaciaModal.module.css";
@@ -372,7 +373,11 @@ export default function KonzultaciaModal() {
         role="dialog"
         aria-modal="true"
       >
+      <button type="button" className={styles.close} onClick={requestClose} aria-label="Zavrieť">
+        <CloseIcon />
+      </button>
       <div ref={cardInnerRef} className={styles.cardInner}>
+      <div className={styles.cardScroll}>
         {step < 4 && <Stepper step={step} />}
 
         {step === 1 && (
@@ -736,6 +741,7 @@ export default function KonzultaciaModal() {
             </p>
           </section>
         )}
+      </div>
 
         <div
           className={styles.actions}

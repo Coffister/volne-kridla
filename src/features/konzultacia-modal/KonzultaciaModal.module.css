@@ -64,11 +64,14 @@
 }
 
 .card {
+  --control-h: 3rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 34rem;
   max-height: calc(100dvh - 2 * var(--spacing-md));
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   /* Plain CSS border-radius + border instead of the Squircle primitive:
      Squircle clips the background via an SVG clip-path and draws the
      border as a separately-antialiased SVG stroke on top, which (since it
@@ -86,11 +89,51 @@
   transition: height 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* same corner X as the product inquiry modal (InquiryModal.module.css) */
+.close {
+  all: unset;
+  position: absolute;
+  z-index: 2;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: #fff;
+  background: var(--color-accent-primary);
+  border: 4px solid var(--color-border-primary);
+  border-radius: 50%;
+}
+
+.close:focus-visible {
+  outline: 3px solid var(--color-accent-secondary);
+  outline-offset: 2px;
+}
+
+/* .cardInner is the ResizeObserver's measurement target — it stays a plain
+   flex column (no scrolling of its own) so its natural height always
+   reflects the true full content size; .cardScroll is the part that
+   actually scrolls once .card's max-height clamps that natural size, and
+   .actions (Ďalej/Odoslať) stays outside it so it's never scrolled away. */
 .cardInner {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cardScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
   padding: clamp(1.35rem, 3vw, 2rem);
+  /* clears the corner close button (spacing-sm top offset + 2.75rem size) */
+  padding-top: 4rem;
 }
 
 /* ---- stepper ---- */
@@ -368,13 +411,16 @@
 .field textarea,
 .field select {
   width: 100%;
-  padding: 0.55rem 0.7rem;
+  min-height: var(--control-h);
+  box-sizing: border-box;
+  padding: 0.55rem 0.9rem;
   font-family: var(--font-family-body);
   font-size: 0.9rem;
   color: var(--color-text-primary);
   background: #fff;
   border: 2px solid var(--color-border-primary);
-  border-radius: 10px;
+  /* same radius as InquiryModal's Squircle-based Control (radius="sm") */
+  border-radius: var(--radius-sm);
   transition:
     border-color 0.14s ease,
     box-shadow 0.14s ease;
@@ -391,8 +437,8 @@
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
     linear-gradient(135deg, currentColor 50%, transparent 50%);
   background-position:
-    calc(100% - 18px) 0.95rem,
-    calc(100% - 13px) 0.95rem;
+    calc(100% - 18px) center,
+    calc(100% - 13px) center;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
   padding-right: 2.25rem;
@@ -410,7 +456,6 @@
    field (src/sections/eshop/InquiryModal.module.css), kept in sync for UI
    consistency between the two modals ---- */
 .phoneWrap {
-  --control-h: 3rem;
   position: relative;
 }
 
@@ -679,13 +724,15 @@
   color: var(--color-text-primary);
 }
 
-/* ---- footer actions ---- */
+/* ---- footer actions: outside .cardScroll, so it never scrolls away ---- */
 .actions {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-top: 0.2rem;
+  padding: 0.75rem clamp(1.35rem, 3vw, 2rem) clamp(1.35rem, 3vw, 2rem);
+  background: var(--color-surface-primary);
 }
 
 .actions[data-centered="true"] {
