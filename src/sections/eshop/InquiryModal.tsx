@@ -149,6 +149,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
           <CloseIcon />
         </button>
 
+        <div className={styles.dialogBody}>
         {done ? (
           <section className={styles.success} role="status">
             <Confetti />
@@ -356,6 +357,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
             </Stack>
           </form>
         )}
+        </div>
       </div>
     </div>,
     document.body,
