@@ -30,7 +30,13 @@ import {
   CheckCircleIcon,
   CheckIcon,
 } from "./icons";
+import ChevronDownIcon from "@/ui/icons/ChevronDownIcon";
+import skFlag from "@/assets/icons/flags/sk.svg";
+import czFlag from "@/assets/icons/flags/cz.svg";
 import styles from "./KonzultaciaModal.module.css";
+
+const PHONE_FLAGS = { "+421": skFlag, "+420": czFlag };
+type PhoneCode = keyof typeof PHONE_FLAGS;
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -120,6 +126,8 @@ export default function KonzultaciaModal() {
   const [typeId, setTypeId] = useState<string | null>(null);
   const [packageId, setPackageId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [phoneCode, setPhoneCode] = useState<PhoneCode>("+421");
+  const [phoneCodeOpen, setPhoneCodeOpen] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>(
     {},
   );
@@ -329,6 +337,7 @@ export default function KonzultaciaModal() {
       spôsob: selectedType?.title,
       balík: selectedPackage?.title,
       ...form,
+      phone: form.phone.trim() && `${phoneCode} ${form.phone.trim()}`,
     });
     await new Promise((r) => setTimeout(r, 900));
     setSubmitting(false);
@@ -608,14 +617,64 @@ export default function KonzultaciaModal() {
               </div>
               <div className={styles.field}>
                 <label htmlFor="k-phone">Telefón</label>
-                <input
-                  id="k-phone"
-                  type="tel"
-                  autoComplete="tel"
-                  value={form.phone}
-                  onChange={(e) => set("phone", e.target.value)}
-                  aria-invalid={!!errors.phone}
-                />
+                <div
+                  className={styles.phoneWrap}
+                  onBlur={(e) =>
+                    e.currentTarget.contains(e.relatedTarget as Node) ||
+                    setPhoneCodeOpen(false)
+                  }
+                >
+                  <div
+                    className={styles.phoneBox}
+                    data-invalid={!!errors.phone || undefined}
+                  >
+                    <button
+                      type="button"
+                      className={`${styles.codeBtn} ${phoneCodeOpen ? styles.codeOpen : ""}`}
+                      onClick={() => setPhoneCodeOpen((o) => !o)}
+                      aria-haspopup="listbox"
+                      aria-expanded={phoneCodeOpen}
+                      aria-label="Predvoľba"
+                    >
+                      <img src={PHONE_FLAGS[phoneCode]} alt="" className={styles.flag} />
+                      {phoneCode}
+                      <span className={styles.chevron}>
+                        <ChevronDownIcon />
+                      </span>
+                    </button>
+                    <input
+                      id="k-phone"
+                      type="tel"
+                      className={styles.phoneInput}
+                      autoComplete="tel-national"
+                      value={form.phone}
+                      onChange={(e) => set("phone", e.target.value)}
+                      onFocus={() => setPhoneCodeOpen(false)}
+                      placeholder="9xx xxx xxx"
+                      aria-invalid={!!errors.phone}
+                    />
+                  </div>
+                  {phoneCodeOpen && (
+                    <div role="listbox" className={styles.codeMenu}>
+                      {(Object.keys(PHONE_FLAGS) as PhoneCode[]).map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          role="option"
+                          aria-selected={c === phoneCode}
+                          className={styles.codeOption}
+                          onClick={() => {
+                            setPhoneCode(c);
+                            setPhoneCodeOpen(false);
+                          }}
+                        >
+                          <img src={PHONE_FLAGS[c]} alt="" className={styles.flag} />
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {errors.phone && <p className={styles.error}>{errors.phone}</p>}
               </div>
             </div>

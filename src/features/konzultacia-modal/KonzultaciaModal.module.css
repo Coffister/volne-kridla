@@ -406,6 +406,117 @@
   box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
 }
 
+/* ---- phone field: country-code dropdown + number, same box as other inputs ---- */
+.phoneWrap {
+  position: relative;
+}
+
+.phoneBox {
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 10px;
+  overflow: hidden;
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.phoneBox:focus-within {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.phoneBox[data-invalid] {
+  border-color: #c4341a;
+}
+
+.field .phoneInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.field .phoneInput:focus-visible {
+  outline: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.codeBtn,
+.codeOption {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.codeBtn {
+  flex: none;
+  padding: 0.55rem 0.6rem;
+  background: var(--color-surface-secondary);
+  border-right: 2px solid var(--color-border-primary);
+}
+
+.chevron {
+  display: inline-flex;
+  transition: transform 0.15s ease;
+}
+
+.codeOpen .chevron {
+  transform: rotate(180deg);
+}
+
+.codeMenu {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  width: fit-content;
+  padding: 0.3rem;
+  background: var(--color-surface-secondary);
+  border: 2px solid var(--color-border-primary);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.codeOption {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  transition: background-color 0.14s ease;
+}
+
+.codeOption:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.codeOption[aria-selected="true"] {
+  color: #fff;
+  background: var(--color-accent-primary);
+}
+
+.flag {
+  width: 1.4rem;
+  aspect-ratio: 4 / 3;
+  flex: none;
+  border-radius: 3px;
+}
+
 .error {
   margin: 0;
   font-family: var(--font-family-body);
