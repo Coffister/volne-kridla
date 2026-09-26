@@ -124,6 +124,14 @@
   min-height: 0;
 }
 
+/* holds the Stepper — its own non-scrolling slot (always rendered, even
+   empty on step 4) so the corner close button always has somewhere fixed
+   to clear regardless of step */
+.stepperHeader {
+  flex: none;
+  padding: 4rem clamp(1.35rem, 3vw, 2rem) 0;
+}
+
 .cardScroll {
   flex: 1;
   min-height: 0;
@@ -132,8 +140,6 @@
   flex-direction: column;
   gap: 1.1rem;
   padding: clamp(1.35rem, 3vw, 2rem);
-  /* clears the corner close button (spacing-sm top offset + 2.75rem size) */
-  padding-top: 4rem;
 }
 
 /* ---- stepper ---- */
@@ -825,8 +831,11 @@
 }
 
 @media (max-width: 620px) {
+  .overlay {
+    padding: var(--spacing-xs);
+  }
   .card {
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
   }
   .fieldRow {
     grid-template-columns: 1fr;

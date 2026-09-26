@@ -377,9 +377,10 @@ export default function KonzultaciaModal() {
         <CloseIcon />
       </button>
       <div ref={cardInnerRef} className={styles.cardInner}>
-      <div className={styles.cardScroll}>
+      <div className={styles.stepperHeader}>
         {step < 4 && <Stepper step={step} />}
-
+      </div>
+      <div className={styles.cardScroll}>
         {step === 1 && (
           <section key="step-1" className={styles.stepPane}>
             <h1 className={styles.heading}>
