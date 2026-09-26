@@ -149,8 +149,8 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
           <CloseIcon />
         </button>
 
-        <div className={styles.dialogBody}>
         {done ? (
+          <div className={styles.dialogBody}>
           <section className={styles.success} role="status">
             <Confetti />
             <span className={styles.successBadge} aria-hidden>
@@ -167,8 +167,10 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
               Zavrieť
             </Button>
           </section>
+          </div>
         ) : (
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} noValidate className={styles.form}>
+            <div className={styles.dialogBody}>
             <Stack direction="column" gap="sm">
               <div id={titleId}>
                 <Text as="h2" variant="cardTitle">
@@ -348,16 +350,16 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                   {submitError}
                 </p>
               )}
-
-              <div className={styles.submit}>
-                <Button type="submit" variant="primary" disabled={submitting} fullWidth>
-                  {submitting ? "Odosielam…" : "Odoslať záujem"}
-                </Button>
-              </div>
             </Stack>
+            </div>
+
+            <div className={styles.footer}>
+              <Button type="submit" variant="primary" disabled={submitting} fullWidth>
+                {submitting ? "Odosielam…" : "Odoslať záujem"}
+              </Button>
+            </div>
           </form>
         )}
-        </div>
       </div>
     </div>,
     document.body,
