@@ -1,20 +1,19 @@
 import type { Product } from "@/content";
 import { Squircle, Stack, Text, Image } from "@/ui/primitives";
-import cartIcon from "@/assets/icons/cart-filled.png";
 import shareIcon from "@/assets/icons/share-filled.png";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
   product: Product;
   onViewDetails: (product: Product) => void;
-  onAddToCart: (product: Product) => void;
+  onInterest: (product: Product) => void;
   onShare: (product: Product) => void;
 }
 
 export default function ProductCard({
   product,
   onViewDetails,
-  onAddToCart,
+  onInterest,
   onShare,
 }: ProductCardProps) {
   const priceLabel =
@@ -30,7 +29,10 @@ export default function ProductCard({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") onViewDetails(product);
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault(); // Space would scroll the page
+            onViewDetails(product);
+          }
         }}
       >
         <Squircle radius="md" className={styles.imageWrap}>
@@ -79,12 +81,11 @@ export default function ProductCard({
           </button>
           <button
             type="button"
-            className={styles.iconBtn}
-            onClick={() => onAddToCart(product)}
+            className={`${styles.iconBtn} ${styles.cta}`}
+            onClick={() => onInterest(product)}
             disabled={product.inStock === false}
-            aria-label="Pridať do košíka"
           >
-            <img src={cartIcon} alt="" className={styles.icon} />
+            {product.inStock === false ? "Vypredané" : "Mám záujem"}
           </button>
         </Stack>
       </Stack>

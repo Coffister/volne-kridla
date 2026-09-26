@@ -1,42 +1,34 @@
 import { useState } from "react";
-import { ShoppingCart } from "@phosphor-icons/react";
-import type { Product, ProductVariant } from "@/content";
-import { colorHex } from "@/content/colorPalette";
-import { useCart } from "@/lib/CartContext";
+import type { Product } from "@/content";
 import { Box, Squircle, Stack, Text } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Carousel from "@/ui/components/Carousel";
-import Select from "@/ui/components/Select";
 import dividerIcon from "@/assets/icons/dashed-divider.svg";
+import VariantPicker from "./VariantPicker";
 import styles from "./ProductPage.module.css";
 
 interface ProductPageProps {
   product: Product;
+  onInterest: (product: Product, variants: Record<string, string>) => void;
 }
 
 // Intentionally bare — this is the container the product detail gets
 // hand-designed into. The placeholders below just wire up the data and
 // behavior that vary per product (image, description, price, stock,
-// variants, add-to-cart/share); restyle freely, keep the wiring.
+// variants, inquiry/share); restyle freely, keep the wiring.
 // Back/share live in Eshop's toolbar (it swaps categories+sort for
 // breadcrumbs when a product is open), not here.
-export default function ProductPage({ product }: ProductPageProps) {
-  const { addItem } = useCart();
+export default function ProductPage({ product, onInterest }: ProductPageProps) {
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >({});
-  const [addedToCart, setAddedToCart] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
 
   const handleVariantSelect = (label: string, value: string) => {
     setSelectedVariants((prev) => ({ ...prev, [label]: value }));
   };
 
-  const handleAddToCart = () => {
-    addItem(product, selectedVariants, 1);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 1500);
-  };
+  const allChosen = (product.variants ?? []).every((v) => selectedVariants[v.label]);
 
   const images = [product.image, ...(product.images || [])]
     .filter(Boolean)
@@ -95,71 +87,17 @@ export default function ProductPage({ product }: ProductPageProps) {
                 <img src={dividerIcon} alt="" className={styles.divider} />
               )}
               {product.variants && product.variants.length > 0 && (
-                <Stack direction="column" gap="xs" className={styles.variants}>
-                  {product.variants.map((variant: ProductVariant) => (
-                    <Stack key={variant.label} direction="column" gap="xs">
-                      <Text as="label" variant="caption">
-                        {variant.label}
-                      </Text>
-                      {variant.isColor ? (
-                        <Stack
-                          direction="row"
-                          align="center"
-                          gap="sm"
-                          wrap="wrap"
-                        >
-                          <Stack
-                            direction="row"
-                            gap="xs"
-                            wrap="wrap"
-                            className={styles.swatches}
-                          >
-                            {variant.options.map((option) => {
-                              const isSelected =
-                                selectedVariants[variant.label] === option;
-                              return (
-                                <button
-                                  key={option}
-                                  type="button"
-                                  title={option}
-                                  aria-label={option}
-                                  aria-pressed={isSelected}
-                                  className={`${styles.swatch} ${
-                                    isSelected ? styles.swatchSelected : ""
-                                  }`}
-                                  style={{
-                                    backgroundColor: colorHex(option) ?? "#ccc",
-                                  }}
-                                  onClick={() =>
-                                    handleVariantSelect(variant.label, option)
-                                  }
-                                />
-                              );
-                            })}
-                          </Stack>
-                          <Text as="span" variant="caption">
-                            {selectedVariants[variant.label] || "zvoľte farbu"}
-                          </Text>
-                        </Stack>
-                      ) : (
-                        <Select
-                          options={variant.options}
-                          value={selectedVariants[variant.label] || ""}
-                          onChange={(value) =>
-                            handleVariantSelect(variant.label, value)
-                          }
-                          placeholder="zvoľte možnosť"
-                        />
-                      )}
-                    </Stack>
-                  ))}
-                </Stack>
+                <VariantPicker
+                  variants={product.variants}
+                  value={selectedVariants}
+                  onChange={handleVariantSelect}
+                />
               )}
               <img src={dividerIcon} alt="" className={styles.divider} />
               <Stack direction="column" gap="xs" className={styles.pricing}>
                 {/* CENA — product.priceLabel */}
                 {product.priceLabel && (
-                  <Text as="h2" variant="sectionTitle" className={styles.price}>
+                  <Text as="h2" variant="cardTitle" className={styles.price}>
                     {product.priceLabel.includes("€")
                       ? product.priceLabel
                       : `${product.priceLabel}€`}
@@ -181,12 +119,16 @@ export default function ProductPage({ product }: ProductPageProps) {
               <Stack direction="row" gap="sm" className={styles.actions}>
                 <Button
                   variant="primary"
-                  icon={<ShoppingCart size={20} weight="bold" />}
-                  onClick={handleAddToCart}
-                  disabled={product.inStock === false}
+                  onClick={() => onInterest(product, selectedVariants)}
+                  disabled={product.inStock === false || !allChosen}
                 >
-                  {addedToCart ? "Pridané" : "Pridať do košíka"}
+                  Mám záujem
                 </Button>
+                {!allChosen && (
+                  <Text as="p" variant="caption" className={styles.hint}>
+                    Vyber všetky možnosti produktu.
+                  </Text>
+                )}
               </Stack>
             </Stack>
           </Box>

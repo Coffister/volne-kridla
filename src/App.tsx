@@ -16,7 +16,7 @@ import Eshop from "./pages/Eshop";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
-import { CartProvider } from "./lib/CartContext";
+import Placeholder from "./pages/Placeholder";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
 // modal opened from any route via "?konzultacia=1&vetva=...". Old/shared
@@ -36,7 +36,7 @@ const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 function SiteApp() {
   return (
-    <CartProvider>
+    <>
       <Cursor />
       <KonzultaciaModal />
       <Routes>
@@ -51,10 +51,15 @@ function SiteApp() {
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/eshop/produkt/:productId" element={<Eshop />} />
-          <Route path="/eshop/checkout" element={<Eshop />} />
+          <Route path="/eshop/checkout" element={<Navigate to="/eshop" replace />} />
+          {/* legal text must be supplied by the client — Placeholder is a stub */}
+          <Route
+            path="/ochrana-osobnych-udajov"
+            element={<Placeholder title="Ochrana osobných údajov" />}
+          />
         </Route>
       </Routes>
-    </CartProvider>
+    </>
   );
 }
 

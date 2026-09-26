@@ -15,3 +15,10 @@ body {
         --spacing-2xl: 40px;
     }
 }
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--color-accent-secondary);
+  outline-offset: 3px;
+}

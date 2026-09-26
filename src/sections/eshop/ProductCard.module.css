@@ -56,6 +56,8 @@
 .footer {
   margin-top: auto;
   padding-top: var(--spacing-xs);
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
 }
 
 .priceInfo {
@@ -64,7 +66,7 @@
 
 .price {
   font-family: var(--font-family-display) !important;
-  font-size: var(--font-size-card-title) !important;
+  font-size: clamp(22px, 2vw, 28px) !important;
   font-weight: var(--font-weight-extrabold) !important;
   color: var(--color-accent-primary);
   line-height: var(--line-height-snug);
@@ -122,4 +124,15 @@
     width: 20px;
     height: 20px;
   }
+}
+
+/* text CTA in the same white, 3px-border, 5px-shadow style as the share icon button */
+.cta {
+  width: auto;
+  padding: 0 var(--spacing-sm);
+  white-space: nowrap;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }
