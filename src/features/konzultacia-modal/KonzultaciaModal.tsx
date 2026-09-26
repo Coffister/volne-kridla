@@ -746,12 +746,8 @@ export default function KonzultaciaModal() {
         <div
           className={styles.actions}
           data-centered={step === 4 ? "true" : undefined}
+          data-align={step === 1 ? "end" : undefined}
         >
-          {step === 1 && (
-            <button type="button" className={styles.ghostBtn} onClick={requestClose}>
-              Zavrieť
-            </button>
-          )}
           {(step === 2 || step === 3) && (
             <button
               type="button"

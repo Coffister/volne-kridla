@@ -739,6 +739,13 @@
   justify-content: center;
 }
 
+/* step 1 has no "Späť"/"Zavrieť" companion button anymore (the corner
+   close button covers that) — keep its sole "Pokračovať" on the right,
+   matching where the primary action sits on every other step */
+.actions[data-align="end"] {
+  justify-content: flex-end;
+}
+
 .primaryBtn {
   padding: 0.6rem 1.5rem;
   font-family: var(--font-family-body);
