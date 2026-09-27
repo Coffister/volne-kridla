@@ -342,6 +342,15 @@ export default function KonzultaciaModal() {
     setSelection({ type: next });
   }
 
+  // picking Online/Osobná reveals the package section right below — bring it
+  // into view instead of leaving the visitor to notice and scroll manually
+  const packagesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (track === "konzultacia" && typeId !== null) {
+      packagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [track, typeId]);
+
   function changePackage(next: string) {
     setPackageId(next);
     setSelection({ package: next });
@@ -466,7 +475,7 @@ export default function KonzultaciaModal() {
             )}
 
             {showPackages && (
-              <div key="package-reveal" className={styles.reveal}>
+              <div key="package-reveal" className={styles.reveal} ref={packagesRef}>
                 <h2 className={styles.subheading}>
                   <PackageIcon />
                   Vyberám si balíček
