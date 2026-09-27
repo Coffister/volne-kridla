@@ -156,24 +156,50 @@ export default function KonzultaciaModal() {
   }, [step]);
 
   // animate the card's height to match its content instead of snapping —
-  // measure the natural height of the (unconstrained) inner wrapper and let
-  // CSS transition .card's height to it. A ResizeObserver (rather than
-  // reacting to just `step`) catches every reason the content can change
-  // height — track/type/package selection, validation errors appearing,
-  // the GDPR text toggle — not only a step change.
-  const cardInnerRef = useRef<HTMLDivElement>(null);
+  // measure the natural height of the (unconstrained) step content and add
+  // the stepper/actions bars around it, then let CSS transition .card's
+  // height to that sum. A ResizeObserver (rather than reacting to just
+  // `step`) catches every reason the content can change height —
+  // track/type/package selection, validation errors appearing, the GDPR
+  // text toggle — not only a step change.
+  //
+  // .stepContent (not .cardInner) is what gets measured: .cardScroll wraps
+  // it with `min-height: 0` so it can shrink and scroll once .card hits its
+  // max-height cap, but that same `min-height: 0` also makes .cardScroll
+  // report ~0 as ITS OWN natural/unconstrained height to anything measuring
+  // it or an ancestor of it — .stepContent sits one level further in, isn't
+  // itself a flex/scroll container, and so always reports its true content
+  // height regardless of how .cardScroll is currently being squeezed.
+  const stepperHeaderRef = useRef<HTMLDivElement>(null);
+  const stepContentRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState<number | undefined>(undefined);
   useLayoutEffect(() => {
     if (!isOpen && !isClosing) return;
-    const el = cardInnerRef.current;
-    if (!el) return;
+    const content = stepContentRef.current;
+    const stepperEl = stepperHeaderRef.current;
+    const actionsEl = actionsRef.current;
+    if (!content || !stepperEl || !actionsEl) return;
 
-    const update = () =>
-      setCardHeight(el.getBoundingClientRect().height + CARD_BORDER_WIDTH * 2);
+    const update = () => {
+      const scrollEl = content.parentElement;
+      const scrollPadding = scrollEl
+        ? parseFloat(getComputedStyle(scrollEl).paddingTop) +
+          parseFloat(getComputedStyle(scrollEl).paddingBottom)
+        : 0;
+      const height =
+        stepperEl.getBoundingClientRect().height +
+        content.getBoundingClientRect().height +
+        scrollPadding +
+        actionsEl.getBoundingClientRect().height;
+      setCardHeight(height + CARD_BORDER_WIDTH * 2);
+    };
     update();
 
     const observer = new ResizeObserver(update);
-    observer.observe(el);
+    observer.observe(content);
+    observer.observe(stepperEl);
+    observer.observe(actionsEl);
     return () => observer.disconnect();
   }, [isOpen, isClosing]);
 
@@ -376,11 +402,12 @@ export default function KonzultaciaModal() {
       <button type="button" className={styles.close} onClick={requestClose} aria-label="Zavrieť">
         <CloseIcon />
       </button>
-      <div ref={cardInnerRef} className={styles.cardInner}>
-      <div className={styles.stepperHeader}>
+      <div className={styles.cardInner}>
+      <div ref={stepperHeaderRef} className={styles.stepperHeader}>
         {step < 4 && <Stepper step={step} />}
       </div>
       <div className={styles.cardScroll}>
+      <div ref={stepContentRef}>
         {step === 1 && (
           <section key="step-1" className={styles.stepPane}>
             <h1 className={styles.heading}>
@@ -743,8 +770,10 @@ export default function KonzultaciaModal() {
           </section>
         )}
       </div>
+      </div>
 
         <div
+          ref={actionsRef}
           className={styles.actions}
           data-centered={step === 4 ? "true" : undefined}
           data-align={step === 1 ? "end" : undefined}
