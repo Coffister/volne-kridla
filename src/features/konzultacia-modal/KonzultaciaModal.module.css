@@ -502,8 +502,13 @@
   border: 0;
   border-radius: 0;
   outline: 0;
-  font: inherit;
-  font-weight: normal;
+  /* unlike InquiryModal's .dialog, .card never sets its own font-family, so
+     "font: inherit" here inherited nothing useful and fell back to the
+     browser's default form-control font — set it explicitly instead,
+     matching the ".field input" rule's own typography */
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-regular);
   color: inherit;
   background: transparent;
 }

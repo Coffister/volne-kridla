@@ -292,6 +292,17 @@ export default function KonzultaciaModal() {
     return () => window.clearTimeout(timer);
   }, [isOpen, form.email]);
 
+  // picking Online/Osobná reveals the package section right below — bring it
+  // into view instead of leaving the visitor to notice and scroll manually.
+  // Must stay above the early return below — every hook in this component
+  // has to run on every render, "open" or not.
+  const packagesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (track === "konzultacia" && typeId !== null) {
+      packagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [track, typeId]);
+
   if (!isOpen && !isClosing) return null;
 
   const packages = track ? PACKAGES[track] : [];
@@ -341,15 +352,6 @@ export default function KonzultaciaModal() {
     setTypeId(next);
     setSelection({ type: next });
   }
-
-  // picking Online/Osobná reveals the package section right below — bring it
-  // into view instead of leaving the visitor to notice and scroll manually
-  const packagesRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (track === "konzultacia" && typeId !== null) {
-      packagesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [track, typeId]);
 
   function changePackage(next: string) {
     setPackageId(next);
