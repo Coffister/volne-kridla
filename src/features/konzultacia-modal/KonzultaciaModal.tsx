@@ -39,6 +39,12 @@ import czFlag from "@/assets/icons/flags/cz.svg";
 import styles from "./KonzultaciaModal.module.css";
 
 const PHONE_FLAGS = { "+421": skFlag, "+420": czFlag };
+
+// form.phone itself stores plain digits only (what actually gets sent) —
+// this just adds the "912 345 678" spacing back for display in the input
+function formatPhoneDisplay(digits: string): string {
+  return digits.match(/.{1,3}/g)?.join(" ") ?? "";
+}
 type PhoneCode = keyof typeof PHONE_FLAGS;
 
 type Step = 1 | 2 | 3 | 4;
@@ -703,8 +709,10 @@ export default function KonzultaciaModal() {
                       type="tel"
                       className={styles.bare}
                       autoComplete="tel-national"
-                      value={form.phone}
-                      onChange={(e) => set("phone", e.target.value)}
+                      value={formatPhoneDisplay(form.phone)}
+                      onChange={(e) =>
+                        set("phone", e.target.value.replace(/\D/g, "").slice(0, 9))
+                      }
                       onFocus={() => setPhoneCodeOpen(false)}
                       placeholder="9xx xxx xxx"
                       aria-invalid={!!errors.phone}
