@@ -402,7 +402,11 @@
 
 .fieldRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* plain "1fr 1fr" tracks default to an "auto" minimum (their content's
+     min-content size) — the phone field's country-code button pushed that
+     column wider than 50%, shrinking email's column to compensate. Force
+     both to a true 0-based minimum so they actually split evenly. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.7rem;
 }
 
