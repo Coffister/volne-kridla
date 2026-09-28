@@ -16,10 +16,18 @@ export default function Footer() {
           <Text as="span" variant="caption" weight="bold" className={styles.text}>
             © Voľné Krídla | 2025
           </Text>
-          <Link to="/ochrana-osobnych-udajov" className={styles.text}>
+          <Link
+            to="/ochrana-osobnych-udajov"
+            className={`${styles.text} ${styles.hideOnMobile}`}
+          >
             <Text as="span" variant="caption" weight="bold">Ochrana osobných údajov</Text>
           </Link>
-          <Text as="span" variant="caption" weight="bold" className={styles.text}>
+          <Text
+            as="span"
+            variant="caption"
+            weight="bold"
+            className={`${styles.text} ${styles.hideOnMobile}`}
+          >
             Webstránku vytvoril Coffister
           </Text>
         </Stack>
