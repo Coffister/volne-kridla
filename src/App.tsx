@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import VolneKridla from "./pages/VolneKridla";
 import OMne from "./pages/OMne";
 import Fotogaleria from "./pages/Fotogaleria";
+import PreSkoly from "./pages/PreSkoly";
 import Eshop from "./pages/Eshop";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
@@ -49,6 +50,7 @@ function SiteApp() {
           <Route path="/volne-kridla" element={<VolneKridla />} />
           <Route path="/o-mne" element={<OMne />} />
           <Route path="/fotogaleria" element={<Fotogaleria />} />
+          <Route path="/pre-skoly" element={<PreSkoly />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/eshop/produkt/:productId" element={<Eshop />} />
           <Route path="/eshop/checkout" element={<Eshop />} />

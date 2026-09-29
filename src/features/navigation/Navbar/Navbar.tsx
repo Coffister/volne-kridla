@@ -35,6 +35,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Target Tréning", id: "target" },
   { label: "Najčastejšie otázky", id: "otazky" },
   { label: "Fotogaléria", to: "/fotogaleria" },
+  { label: "Pre školy", to: "/pre-skoly" },
 ];
 
 const isSectionItem = (
@@ -223,6 +224,7 @@ export default function Navbar() {
             </Box>
 
             <Link to="/fotogaleria">Fotogaléria</Link>
+            <Link to="/pre-skoly">Pre školy</Link>
           </Stack>
 
           <Button
