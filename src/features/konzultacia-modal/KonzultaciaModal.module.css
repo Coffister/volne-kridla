@@ -615,6 +615,17 @@
   color: #c4341a;
 }
 
+.submitError {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  font-family: var(--font-family-body);
+  font-size: 0.82rem;
+  color: #c4341a;
+  background: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 10px;
+}
+
 /* ---- recap chip ---- */
 .recap {
   display: flex;

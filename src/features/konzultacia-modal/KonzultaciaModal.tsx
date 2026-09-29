@@ -8,6 +8,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Squircle } from "@/ui/primitives";
+import { submitConsultationInquiry } from "@/lib/inquiries";
 
 import {
   CONSENT_PREFIX,
@@ -154,6 +155,7 @@ export default function KonzultaciaModal() {
     {},
   );
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [gdprOpen, setGdprOpen] = useState(false);
 
   const headingRef = useRef<HTMLSpanElement>(null);
@@ -391,16 +393,29 @@ export default function KonzultaciaModal() {
     e.preventDefault();
     if (!validateStep3()) return;
     setSubmitting(true);
-    console.log("dopyt", {
-      vetva: trackLabel,
-      spôsob: selectedType?.title,
-      balík: selectedPackage?.title,
-      ...form,
-      phone: form.phone.trim() && `${phoneCode} ${form.phone.trim()}`,
-    });
-    await new Promise((r) => setTimeout(r, 900));
-    setSubmitting(false);
-    setStep(4);
+    setSubmitError(null);
+    try {
+      await submitConsultationInquiry({
+        trackLabel: trackLabel ?? "",
+        typeLabel: selectedType?.title ?? "",
+        packageLabel: selectedPackage?.title ?? "",
+        parrotName: form.parrotName,
+        species: form.species,
+        age: form.age,
+        topic: form.topic,
+        details: form.details,
+        name: form.name,
+        email: form.email,
+        phone: form.phone.trim() ? `${phoneCode} ${form.phone.trim()}` : "",
+        note: form.note,
+        consent: form.consent,
+      });
+      setStep(4);
+    } catch {
+      setSubmitError("Dopyt sa nepodarilo odoslať. Skús to prosím znova.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return createPortal(
@@ -768,6 +783,7 @@ export default function KonzultaciaModal() {
             </label>
             {errors.consent && <p className={styles.error}>{errors.consent}</p>}
             {gdprOpen && <p className={styles.gdprText}>{GDPR_TEXT}</p>}
+            {submitError && <p className={styles.submitError}>{submitError}</p>}
           </form>
         )}
 
