@@ -104,7 +104,16 @@ export default function Squircle({
         const cornerRadius = resolveCornerRadius(radius);
 
         const updatePath = () => {
-            const { width, height } = el.getBoundingClientRect();
+            // offsetWidth/offsetHeight (layout size) rather than
+            // getBoundingClientRect (post-transform, visual size): a squircle
+            // that mounts while an ancestor is mid-way through a CSS
+            // scale(...) entrance animation (e.g. a modal's "dialogIn" open
+            // transition) would otherwise permanently bake that scaled-down
+            // snapshot into its clip-path — transforms don't trigger
+            // ResizeObserver, so it never gets remeasured until something
+            // that actually changes layout (e.g. a window resize) forces it.
+            const width = el.offsetWidth;
+            const height = el.offsetHeight;
 
             const path =
                 width > 0 && height > 0
