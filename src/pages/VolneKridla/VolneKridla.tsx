@@ -4,6 +4,7 @@ import VolneKridlaChat from "@/sections/volne-kridla-chat";
 import VolneKridlaFaq from "@/sections/volne-kridla-faq";
 import VolneKridlaTarget from "@/sections/volne-kridla-target";
 import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { visibility } from "@/content/visibility";
 
 export default function VolneKridla() {
   useDocumentMeta({
@@ -19,7 +20,7 @@ export default function VolneKridla() {
       <VolneKridlaTraining />
       <VolneKridlaChat />
       <VolneKridlaFaq />
-      <VolneKridlaTarget />
+      {visibility.showTargetTraining && <VolneKridlaTarget />}
     </>
   );
 }
