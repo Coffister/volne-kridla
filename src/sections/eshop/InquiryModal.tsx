@@ -24,7 +24,12 @@ interface InquiryModalProps {
 // same shape as the CHECK in supabase/migrations/0010 (no ? & etc. — the admin
 // opens it as a mailto: link)
 const EMAIL_PATTERN = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-const PHONE_PATTERN = /^[0-9()\s-]{6,40}$/;
+
+// phone state itself stores plain digits only (what actually gets sent) —
+// this just adds the "912 345 678" spacing back for display in the input
+function formatPhoneDisplay(digits: string): string {
+  return digits.match(/.{1,3}/g)?.join(" ") ?? "";
+}
 
 // split so the middle phrase can be rendered as an accent-colored link that
 // reveals GDPR_TEXT inline, instead of navigating away to a separate page
@@ -113,7 +118,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
     const next: typeof errors = {};
     if (!name.trim()) next.name = "Zadaj svoje meno.";
     if (!EMAIL_PATTERN.test(email.trim())) next.email = "Zadaj platný e-mail.";
-    if (phone.trim() && !PHONE_PATTERN.test(phone.trim())) next.phone = "Zadaj telefón bez predvoľby, len číslice a medzery.";
+    if (phone && phone.length < 6) next.phone = "Zadaj platné telefónne číslo.";
     const missing = (product.variants ?? []).find((v) => !variants[v.label]);
     if (missing) next.variants = `Vyber možnosť: ${missing.label}.`;
     if (!consent) next.consent = "Pre odoslanie je potrebný súhlas so spracovaním údajov.";
@@ -131,7 +136,7 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
         productName: product.name,
         name,
         email,
-        phone: phone.trim() && `${code} ${phone.trim()}`,
+        phone: phone && `${code} ${phone}`,
         variants,
       });
       setDone(true);
@@ -285,12 +290,11 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
                         id={`${titleId}-phone`}
                         type="tel"
                         className={styles.bare}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        value={formatPhoneDisplay(phone)}
+                        onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
                         onFocus={() => setCodeOpen(false)}
                         placeholder="9xx xxx xxx"
                         autoComplete="tel-national"
-                        maxLength={40}
                         aria-invalid={!!errors.phone}
                         aria-describedby={errors.phone ? `${titleId}-phone-err` : undefined}
                       />
