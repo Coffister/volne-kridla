@@ -871,7 +871,12 @@
     border-radius: var(--radius-xl);
   }
   .fieldRow {
-    grid-template-columns: 1fr;
+    /* same minmax(0, ...) reasoning as the desktop rule above — a plain
+       "1fr" track still sizes to its content's min-content width, and
+       since email/phone share this one column, the phone control's
+       intrinsic width (flag + code + placeholder) was stretching email
+       past the card edge, causing horizontal overflow on narrow screens */
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
   .actions {
