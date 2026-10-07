@@ -132,7 +132,6 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
         name,
         email,
         phone: phone.trim() && `${code} ${phone.trim()}`,
-        message: `Mám záujem o produkt ${product.name}.`,
         variants,
       });
       setDone(true);

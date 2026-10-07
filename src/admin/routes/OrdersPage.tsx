@@ -128,7 +128,6 @@ export default function OrdersPage() {
                 {item.name} — <a href={`mailto:${encodeURIComponent(item.email)}`}>{item.email}</a>
                 {item.phone && ` — ${item.phone}`}
               </p>
-              {item.message && <p style={{ margin: 0 }}>{item.message}</p>}
               <p className="admin-muted" style={{ margin: 0 }}>
                 {new Date(item.created_at).toLocaleString("sk-SK")}
               </p>

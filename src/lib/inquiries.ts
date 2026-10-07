@@ -23,7 +23,6 @@ export async function submitProductInquiry(input: {
   name: string;
   email: string;
   phone?: string;
-  message?: string;
   variants?: Record<string, string>;
 }): Promise<void> {
   const { error } = await getSupabase().from("product_inquiries").insert({
@@ -32,7 +31,6 @@ export async function submitProductInquiry(input: {
     name: input.name.trim(),
     email: input.email.trim(),
     phone: input.phone?.trim() || "",
-    message: input.message?.trim() || "",
     variants: input.variants ?? {},
   });
   if (error) throw error;
@@ -42,7 +40,6 @@ export async function submitProductInquiry(input: {
     name: input.name.trim(),
     email: input.email.trim(),
     phone: input.phone?.trim() || "",
-    message: input.message?.trim() || "",
     variants: input.variants ?? {},
   });
 }

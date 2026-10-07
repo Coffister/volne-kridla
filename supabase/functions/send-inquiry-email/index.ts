@@ -47,7 +47,6 @@ interface ProductInquiryPayload {
   name: string;
   email: string;
   phone?: string;
-  message?: string;
   variants?: Record<string, string>;
 }
 
@@ -91,9 +90,6 @@ function buildInternalNotification(payload: Payload): { subject: string; html: s
         ].join("\n"),
       ),
       ...(variantLines.length ? [divider(), section(h2("📦", "Varianty") + variantLines.join("\n"))] : []),
-      ...(payload.message
-        ? [divider(), section(h2("📎", "Správa") + lastP(escapeHtml(payload.message)))]
-        : []),
     ].join("\n");
 
     return {
