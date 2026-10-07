@@ -41,13 +41,6 @@ function escapeHtml(value: unknown): string {
     .replace(/"/g, "&quot;");
 }
 
-/** One label/value row in the internal notification's summary table; skipped when value is empty. */
-function row(label: string, value: unknown): string {
-  const v = String(value ?? "").trim();
-  if (!v) return "";
-  return `<tr><td style="padding:4px 12px 4px 0;color:#666;white-space:nowrap;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:4px 0;">${escapeHtml(v).replace(/\n/g, "<br>")}</td></tr>`;
-}
-
 interface ProductInquiryPayload {
   kind: "product";
   productName: string;
@@ -80,42 +73,61 @@ interface ConsultationInquiryPayload {
 type Payload = ProductInquiryPayload | ConsultationInquiryPayload;
 
 function buildInternalNotification(payload: Payload): { subject: string; html: string } {
+  const mailto = payload.email ? `<a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a>` : "–";
+  const tel = payload.phone ? `<a href="tel:${escapeHtml(payload.phone.replace(/\s+/g, ""))}">${escapeHtml(payload.phone)}</a>` : "–";
+
   if (payload.kind === "product") {
-    const variantRows = Object.entries(payload.variants ?? {})
-      .map(([k, v]) => row(k, v))
-      .join("");
+    const variantLines = Object.entries(payload.variants ?? {})
+      .filter(([, v]) => v)
+      .map(([k, v]) => p(`- ${escapeHtml(k)}: ${escapeHtml(v)}`));
+
+    const bodySections = [
+      section(
+        [
+          p(`Produkt: ${escapeHtml(payload.productName)}`),
+          p(`Meno: ${escapeHtml(payload.name)}`),
+          p(`E-mail: ${mailto}`),
+          lastP(`Telefón: ${tel}`),
+        ].join("\n"),
+      ),
+      ...(variantLines.length ? [divider(), section(h2("📦", "Varianty") + variantLines.join("\n"))] : []),
+      ...(payload.message
+        ? [divider(), section(h2("📎", "Správa") + lastP(escapeHtml(payload.message)))]
+        : []),
+    ].join("\n");
+
     return {
       subject: `Nový záujem o produkt: ${payload.productName}`,
-      html: `
-        <h2 style="margin:0 0 12px;">Nový záujem o produkt</h2>
-        <table style="border-collapse:collapse;font:14px/1.4 sans-serif;">
-          ${row("Produkt", payload.productName)}
-          ${row("Meno", payload.name)}
-          ${row("E-mail", payload.email)}
-          ${row("Telefón", payload.phone)}
-          ${variantRows}
-          ${row("Správa", payload.message)}
-        </table>
-      `,
+      html: emailShell("🛒 Nový záujem o produkt", bodySections, false),
     };
   }
 
+  const infoLines = [
+    p(
+      `Typ: ${escapeHtml([payload.trackLabel, payload.typeLabel, payload.packageLabel].filter(Boolean).join(" · "))}`,
+    ),
+    p(`Meno: ${escapeHtml(payload.name)}`),
+    p(`E-mail: ${mailto}`),
+    lastP(`Telefón: ${tel}`),
+  ].join("\n");
+
+  const parrotLines = [
+    p(`Papagáj: ${escapeHtml(payload.parrotName)}`),
+    p(`Druh: ${escapeHtml(payload.species)}`),
+    lastP(`Vek: ${escapeHtml(payload.age)}`),
+  ].join("\n");
+
+  const bodySections = [
+    section(h2("👤", "Kontakt") + infoLines),
+    divider(),
+    section(h2("🦜", "Papagáj") + parrotLines),
+    divider(),
+    section(h2("📎", "Téma a detaily") + p(escapeHtml(payload.topic)) + lastP(escapeHtml(payload.details))),
+  ].join("\n");
+
   return {
     subject: `Nový dopyt na konzultáciu od ${payload.name}`,
-    html: `
-      <h2 style="margin:0 0 12px;">Nový dopyt na konzultáciu</h2>
-      <table style="border-collapse:collapse;font:14px/1.4 sans-serif;">
-        ${row("Typ", [payload.trackLabel, payload.typeLabel, payload.packageLabel].filter(Boolean).join(" · "))}
-        ${row("Meno", payload.name)}
-        ${row("E-mail", payload.email)}
-        ${row("Telefón", payload.phone)}
-        ${row("Papagáj", payload.parrotName)}
-        ${row("Druh", payload.species)}
-        ${row("Vek", payload.age)}
-        ${row("Téma", payload.topic)}
-        ${row("Detaily", payload.details)}
-      </table>
-    `,
+    html: emailShell("🦜 Nový dopyt na konzultáciu", bodySections, false),
   };
 }
 
@@ -124,7 +136,7 @@ function buildInternalNotification(payload: Payload): { subject: string; html: s
 // original WordPress plugin's HTML template.
 // ---------------------------------------------------------------------------
 
-const BANNER_URL = "https://volnekridla.sk/wp-content/uploads/2026/02/bannervk.webp";
+const BANNER_URL = "https://nxyuprgjfqmxdptmvhmt.supabase.co/storage/v1/object/public/media/email/banner.webp";
 
 function p(text: string): string {
   return `<p style="margin:0 0 12px 0;font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.4;color:#333333;font-weight:400;letter-spacing:-0.2px;">${text}</p>`;
@@ -157,7 +169,7 @@ function divider(): string {
     </tr>`;
 }
 
-function emailShell(fullName: string, bodySections: string): string {
+function emailShell(heading: string, bodySections: string, signOff = true): string {
   return `<!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -179,15 +191,19 @@ function emailShell(fullName: string, bodySections: string): string {
                 </tr>
                 <tr>
                   <td align="left" style="padding:16px 32px;">
-                    <h1 style="margin:0;font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:32px;line-height:1.4;color:#333333;font-weight:700;letter-spacing:-0.2px;">Ahoj, ${escapeHtml(fullName)}</h1>
+                    <h1 style="margin:0;font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:32px;line-height:1.4;color:#333333;font-weight:700;letter-spacing:-0.2px;">${heading}</h1>
                   </td>
                 </tr>
                 ${bodySections}
-                <tr>
+                ${
+                  signOff
+                    ? `<tr>
                   <td align="left" style="padding:16px 32px;">
                     <p style="margin:0 0 12px 0;font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:20px;line-height:1.4;color:#333333;font-weight:700;letter-spacing:-0.2px;">Za Voľné krídla, Franka</p>
                   </td>
-                </tr>
+                </tr>`
+                    : ""
+                }
               </table>
             </td>
           </tr>
@@ -248,7 +264,7 @@ function buildSummaryEmail(payload: ConsultationInquiryPayload): { subject: stri
 
   return {
     subject: "Potvrdenie formulára - Voľné krídla",
-    html: emailShell(payload.name, bodySections),
+    html: emailShell(`Ahoj, ${escapeHtml(payload.name)}`, bodySections),
   };
 }
 
@@ -359,7 +375,7 @@ function buildNextStepsEmail(payload: ConsultationInquiryPayload): { subject: st
 
   return {
     subject: `${payload.typeLabel || "Konzultácia"} ${payload.packageLabel ? `– ${payload.packageLabel}` : ""} - Voľné krídla`.trim(),
-    html: emailShell(payload.name, bodySections),
+    html: emailShell(`Ahoj, ${escapeHtml(payload.name)}`, bodySections),
   };
 }
 
