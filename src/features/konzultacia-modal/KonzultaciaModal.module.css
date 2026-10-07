@@ -429,7 +429,14 @@
   color: var(--color-text-primary);
   background: #fff;
   border: 2px solid var(--color-border-primary);
-  /* same radius as InquiryModal's Squircle-based Control (radius="sm") */
+  /* same radius as InquiryModal's Squircle-based Control (radius="sm") —
+     without resetting appearance, iOS Safari draws its own native
+     pill-shaped chrome on plain <input>s, ignoring this border-radius
+     entirely (InquiryModal never hits this because it wraps every field,
+     including name/email, in the same Squircle Control as the phone
+     field, whose visible border is an SVG overlay, not native chrome) */
+  appearance: none;
+  -webkit-appearance: none;
   border-radius: var(--radius-sm);
   transition:
     border-color 0.14s ease,
