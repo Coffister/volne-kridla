@@ -396,9 +396,13 @@ export default function KonzultaciaModal() {
     setSubmitError(null);
     try {
       await submitConsultationInquiry({
+        trackId: track ?? "",
         trackLabel: trackLabel ?? "",
+        typeId,
         typeLabel: selectedType?.title ?? "",
+        packageId,
         packageLabel: selectedPackage?.title ?? "",
+        packagePrice: selectedPackage?.price ?? "",
         parrotName: form.parrotName,
         species: form.species,
         age: form.age,

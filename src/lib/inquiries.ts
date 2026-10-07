@@ -51,9 +51,13 @@ export async function submitProductInquiry(input: {
  * no auth required (RLS on consultation_inquiries allows insert-only for
  * anon). */
 export async function submitConsultationInquiry(input: {
+  trackId: string;
   trackLabel: string;
+  typeId: string | null;
   typeLabel: string;
+  packageId: string | null;
   packageLabel: string;
+  packagePrice: string;
   parrotName: string;
   species: string;
   age: string;
@@ -83,9 +87,13 @@ export async function submitConsultationInquiry(input: {
   if (error) throw error;
 
   void notifyByEmail("consultation", {
+    trackId: input.trackId,
     trackLabel: input.trackLabel,
+    typeId: input.typeId,
     typeLabel: input.typeLabel,
+    packageId: input.packageId,
     packageLabel: input.packageLabel,
+    packagePrice: input.packagePrice,
     parrotName: input.parrotName,
     species: input.species,
     age: input.age,
