@@ -12,20 +12,17 @@ export default function MobileCta() {
   const { open: openKonzultacia } = useKonzultaciaModal();
 
   return (
-    <>
-      {/* in-flow spacer so the fixed bar never covers the end of the footer */}
-      <div className={styles.spacer} aria-hidden />
-      <div className={styles.bar}>
-        <Button
-          variant="navbar"
-          weight="bold"
-          fullWidth
-          className={styles.button}
-          onClick={() => openKonzultacia()}
-        >
-          Začať lietať
-        </Button>
-      </div>
-    </>
+    // the footer reserves room for this bar at the bottom (Footer.module.css)
+    <div className={styles.bar}>
+      <Button
+        variant="navbar"
+        weight="bold"
+        fullWidth
+        className={styles.button}
+        onClick={() => openKonzultacia()}
+      >
+        Začať lietať
+      </Button>
+    </div>
   );
 }

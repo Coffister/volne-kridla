@@ -1,6 +1,6 @@
 /* hidden above the breakpoint where the navbar still shows its own CTA —
-   keep in sync with the 1080px query in Navbar.module.css */
-.spacer,
+   keep in sync with the 1080px query in Navbar.module.css (and the footer's
+   bottom padding in Footer.module.css, which reserves room for this bar) */
 .bar {
   display: none;
 }
@@ -15,12 +15,6 @@
     bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     /* same layer as the navbar: above page content, below modals/lightbox */
     z-index: var(--z-navbar);
-  }
-
-  /* bar height (~56px) + its 8px offset + a little air above the footer end */
-  .spacer {
-    display: block;
-    height: calc(80px + env(safe-area-inset-bottom, 0px));
   }
 
   .button {

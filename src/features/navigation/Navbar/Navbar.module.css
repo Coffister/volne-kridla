@@ -299,7 +299,8 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
 
-    padding: 6px 8px 4px;
+    /* generous bottom so the last link doesn't sit on the box's edge */
+    padding: 6px 8px 24px;
   }
 
   .mobileMenuList::-webkit-scrollbar {
