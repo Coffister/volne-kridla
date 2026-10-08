@@ -21,7 +21,8 @@ function photoCount(n: number) {
   return `${n} ${n === 1 ? "fotka" : n >= 2 && n <= 4 ? "fotky" : "fotiek"}`;
 }
 
-// albums always come first, newest event on top; loose photos follow
+// albums come first, newest event on top; loose photos continue right
+// after them in the same column rhythm, with no divider
 const albums = site.albums;
 
 export default function Fotogaleria() {
@@ -60,16 +61,7 @@ export default function Fotogaleria() {
           </ul>
         )}
 
-        {loosePhotos.length > 0 && (
-          <>
-            {albums.length > 0 && (
-              <Text as="h2" variant="cardTitle" className={styles.subheading}>
-                Ďalšie fotky
-              </Text>
-            )}
-            <PhotoGrid photos={loosePhotos} />
-          </>
-        )}
+        {loosePhotos.length > 0 && <PhotoGrid photos={loosePhotos} />}
       </Container>
     </Section>
   );

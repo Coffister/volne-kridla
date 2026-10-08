@@ -65,11 +65,15 @@
 
 /* ------------------------------------------------------------ albums -- */
 
+/* Same columns and gap as the photo masonry below, so folders and photos
+   read as one continuous grid. Folders stay a separate row-first block:
+   inside the masonry they would stack down the first column instead of
+   leading across the top. */
 .albums {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-    gap: var(--spacing-md);
-    margin: 0 0 var(--spacing-2xl);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0 0 16px;
     padding: 0;
     list-style: none;
 }
@@ -103,10 +107,14 @@
     display: block;
     aspect-ratio: 4 / 3;
     background: var(--color-surface-secondary);
+    overflow: hidden;
     border-bottom: 3px solid var(--color-border-primary);
 }
 
+/* absolutely positioned so a tall photo can't stretch the 4:3 box */
 .albumCover img {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
@@ -115,6 +123,7 @@
 
 .albumCount {
     position: absolute;
+    z-index: 1;
     right: 12px;
     bottom: 12px;
     padding: 4px 10px;
@@ -137,12 +146,6 @@
 
 .albumDate {
     color: var(--color-text-muted);
-}
-
-.subheading {
-    margin: 0 0 var(--spacing-md);
-    color: var(--color-text-secondary);
-    text-align: center;
 }
 
 .back {
@@ -179,10 +182,16 @@
     .grid {
         column-count: 2;
     }
+    .albums {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 560px) {
     .grid {
         column-count: 1;
+    }
+    .albums {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
