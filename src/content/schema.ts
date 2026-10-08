@@ -9,6 +9,23 @@ export interface GalleryImage {
   alt: string;
   width?: number;
   height?: number;
+  /** smaller copy for grids; absent on photos uploaded before thumbnails existed */
+  thumb?: string;
+  /** album the photo belongs to; absent = shown loose on /fotogaleria */
+  albumId?: string;
+}
+
+export interface GalleryAlbum {
+  id: string;
+  /** URL segment: /fotogaleria/<slug> */
+  slug: string;
+  title: string;
+  description: string;
+  /** ISO date (YYYY-MM-DD) of the event, if set */
+  date?: string;
+  /** grid-sized URL of the cover photo */
+  cover: string;
+  count: number;
 }
 
 export interface CarouselSlide {
@@ -72,6 +89,8 @@ export interface SiteContent {
   publishedAt: string | null;
   blocks: ContentBlocks;
   gallery: GalleryImage[];
+  /** newest event first; photos reference them via GalleryImage.albumId */
+  albums: GalleryAlbum[];
   heroCarousel: CarouselSlide[];
   reviews: Review[];
   faq: FaqContent;
@@ -82,6 +101,7 @@ export const EMPTY_SITE: SiteContent = {
   publishedAt: null,
   blocks: {},
   gallery: [],
+  albums: [],
   heroCarousel: [],
   reviews: [],
   faq: { tipy: [], otazky: [] },

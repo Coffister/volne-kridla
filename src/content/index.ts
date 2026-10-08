@@ -20,4 +20,4 @@ export function block(key: string, fallbackText = ""): string {
   return site.blocks[key] ?? fallbackText;
 }
 
-export type { SiteContent, GalleryImage, CarouselSlide, Product, ProductVariant } from "./schema";
+export type { SiteContent, GalleryImage, GalleryAlbum, CarouselSlide, Product, ProductVariant } from "./schema";

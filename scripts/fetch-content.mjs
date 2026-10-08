@@ -49,15 +49,30 @@ function publicUrl(path) {
   return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
 }
 
-try {
-  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes] = await Promise.all([
-    supabase.from("site_content").select("data").eq("id", 1).single(),
+const GALLERY_COLUMNS = "id, storage_path, alt, width, height, sort_order, published";
+
+// album_id / thumb_path arrive with migration 0012. If the code ships before
+// the migration is applied, fall back to the old columns rather than failing
+// the whole snapshot (which would publish stale content everywhere).
+async function fetchGallery() {
+  const query = (columns) =>
     supabase
       .from("gallery_images")
-      .select("id, storage_path, alt, width, height, sort_order, published")
+      .select(columns)
       .eq("published", true)
       .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: true }),
+      .order("created_at", { ascending: true });
+
+  const res = await query(`${GALLERY_COLUMNS}, album_id, thumb_path`);
+  if (!res.error) return res;
+  console.warn("[fetch-content] gallery album columns missing — run migration 0012.");
+  return query(GALLERY_COLUMNS);
+}
+
+try {
+  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes, albumsRes] = await Promise.all([
+    supabase.from("site_content").select("data").eq("id", 1).single(),
+    fetchGallery(),
     supabase
       .from("reviews")
       .select("id, author, body, image_path, image_url, sort_order, published")
@@ -76,6 +91,12 @@ try {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
+    supabase
+      .from("gallery_albums")
+      .select("id, slug, title, description, event_date, cover_image_id, created_at")
+      .eq("published", true)
+      .order("event_date", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false }),
   ]);
 
   if (contentRes.error) throw contentRes.error;
@@ -86,17 +107,46 @@ try {
   const productRows = productsRes.error ? [] : (productsRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
-  const gallery = (galleryRes.data ?? []).map((row) => ({
+  // gallery_albums may not exist yet (migration 0012 not applied) — no albums
+  const albumRows = albumsRes.error ? [] : (albumsRes.data ?? []);
+  const publishedAlbums = new Set(albumRows.map((a) => a.id));
+
+  const allImages = (galleryRes.data ?? []).map((row) => ({
     id: row.id,
     src: publicUrl(row.storage_path),
     alt: row.alt ?? "",
     width: row.width ?? undefined,
     height: row.height ?? undefined,
+    ...(row.thumb_path ? { thumb: publicUrl(row.thumb_path) } : {}),
+    ...(row.album_id ? { albumId: row.album_id } : {}),
   }));
+
+  // Photos in a hidden album stay out of the gallery, but remain resolvable
+  // for the hero carousel, which may reference any published photo.
+  const gallery = allImages.filter(
+    (g) => !g.albumId || publishedAlbums.has(g.albumId),
+  );
+
+  const albums = albumRows
+    .map((a) => {
+      const photos = gallery.filter((g) => g.albumId === a.id);
+      const cover = photos.find((g) => g.id === a.cover_image_id) ?? photos[0];
+      return {
+        id: a.id,
+        slug: a.slug,
+        title: a.title ?? "",
+        description: a.description ?? "",
+        ...(a.event_date ? { date: a.event_date } : {}),
+        cover: cover ? (cover.thumb ?? cover.src) : "",
+        count: photos.length,
+      };
+    })
+    // an empty album would be a dead end on the public page
+    .filter((a) => a.count > 0);
 
   // heroCarousel is stored in the content document as an ordered list of
   // gallery_images ids; resolve them against the media library.
-  const byId = new Map(gallery.map((g) => [g.id, g]));
+  const byId = new Map(allImages.map((g) => [g.id, g]));
   const heroCarousel = Array.isArray(data.heroCarousel)
     ? data.heroCarousel
         .map((ref) => byId.get(typeof ref === "string" ? ref : ref?.id))
@@ -157,6 +207,7 @@ try {
     publishedAt: new Date().toISOString(),
     blocks: data.blocks ?? {},
     gallery,
+    albums,
     heroCarousel,
     reviews,
     faq,
@@ -167,7 +218,7 @@ try {
   await writeFile(OUT, JSON.stringify(out, null, 2) + "\n", "utf8");
 
   console.log(
-    `[fetch-content] wrote ${OUT} — ${gallery.length} images, ` +
+    `[fetch-content] wrote ${OUT} — ${gallery.length} images, ${albums.length} albums, ` +
       `${reviews.length} reviews, ${faqRows.length} faq items, ` +
       `${products.length} products, ${Object.keys(out.blocks).length} text blocks.`,
   );
