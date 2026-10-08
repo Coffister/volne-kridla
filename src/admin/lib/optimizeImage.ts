@@ -7,6 +7,7 @@
 // and use JPEG instead.
 
 const FULL_EDGE = 2000;
+// scripts/fetch-content.mjs relies on this value to describe thumbnail widths
 const THUMB_EDGE = 800;
 const QUALITY = 0.82;
 
@@ -36,13 +37,35 @@ async function encode(
   const width = Math.round(source.width * scale);
   const height = Math.round(source.height * scale);
 
+  // Halve in steps until within 2× of the target. One big drawImage jump
+  // (e.g. 4000px → 800px) samples too few source pixels in Safari and leaves
+  // the result jagged and soft; successive halvings average them properly.
+  let step: CanvasImageSource = source;
+  let w = source.width;
+  let h = source.height;
+  const scratch: HTMLCanvasElement[] = [];
+  while (w / 2 >= width && h / 2 >= height) {
+    w = Math.round(w / 2);
+    h = Math.round(h / 2);
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const cx = c.getContext("2d");
+    if (!cx) break;
+    cx.imageSmoothingQuality = "high";
+    cx.drawImage(step, 0, 0, w, h);
+    scratch.push(c);
+    step = c;
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(source, 0, 0, width, height);
+  ctx.drawImage(step, 0, 0, width, height);
+  for (const c of scratch) c.width = c.height = 0;
 
   const blob = await toBlob(canvas, type, QUALITY);
   // free the backing store right away — iOS caps total canvas memory and a

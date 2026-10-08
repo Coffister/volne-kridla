@@ -6,7 +6,7 @@ import Badge from "@/ui/components/Badge";
 import { galleryImages as fallbackGalleryImages } from "@/pages/Fotogaleria/images";
 import { site } from "@/content";
 
-import PhotoGrid from "./PhotoGrid";
+import PhotoGrid, { GRID_SIZES } from "./PhotoGrid";
 import { formatEventDate } from "./formatDate";
 import styles from "./Fotogaleria.module.css";
 
@@ -42,7 +42,16 @@ export default function Fotogaleria() {
               <li key={album.id}>
                 <Link to={`/fotogaleria/${album.slug}`} className={styles.album}>
                   <span className={styles.albumCover}>
-                    {album.cover && <img src={album.cover} alt="" loading="lazy" decoding="async" />}
+                    {album.cover && (
+                      <img
+                        src={album.cover}
+                        srcSet={album.coverSrcSet}
+                        sizes={GRID_SIZES}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
                     <span className={styles.albumCount}>{photoCount(album.count)}</span>
                   </span>
                   <span className={styles.albumMeta}>
