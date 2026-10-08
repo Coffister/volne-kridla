@@ -5,6 +5,16 @@ import { getSupabase } from "@/lib/supabase";
  * Resolves when the rebuild has been queued (not when it finishes).
  */
 export async function requestPublish(): Promise<void> {
+  // The deploy hook always rebuilds production from main. Firing it from a
+  // branch preview would publish the database to a site running older code,
+  // so refuse up front with an explanation instead of a cryptic hook error.
+  if (import.meta.env.VITE_VERCEL_ENV === "preview") {
+    throw new Error(
+      "Toto je náhľadová (preview) verzia — publikovanie tu nefunguje. " +
+        "Zmeny sú uložené; na náhľade sa ukážu po novom builde tejto vetvy.",
+    );
+  }
+
   const { data } = await getSupabase().auth.getSession();
   const token = data.session?.access_token;
   if (!token) throw new Error("Nie si prihlásený.");
