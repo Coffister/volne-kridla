@@ -11,6 +11,8 @@ export interface GalleryImage {
   height?: number;
   /** smaller copy for grids; absent on photos uploaded before thumbnails existed */
   thumb?: string;
+  /** "<thumb> <w>w, <src> <w>w" so the browser picks a sharp enough file */
+  srcSet?: string;
   /** album the photo belongs to; absent = shown loose on /fotogaleria */
   albumId?: string;
 }
@@ -25,6 +27,7 @@ export interface GalleryAlbum {
   date?: string;
   /** grid-sized URL of the cover photo */
   cover: string;
+  coverSrcSet?: string;
   count: number;
 }
 

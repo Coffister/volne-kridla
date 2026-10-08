@@ -49,6 +49,19 @@ function publicUrl(path) {
   return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
 }
 
+// Must match THUMB_EDGE in src/admin/lib/optimizeImage.ts: thumbnails are
+// scaled so their LONG edge is this many px.
+const THUMB_EDGE = 800;
+
+// The thumbnail alone is too small for a full-width column on a high-DPI
+// phone (a portrait thumb is only ~530px wide), and the browser stretching it
+// is what made grid photos look blurry. Describing both files lets the browser
+// pick the thumbnail where it's sharp enough and the full photo otherwise.
+function srcSet(thumb, full, width, height) {
+  const thumbWidth = Math.round(width * Math.min(1, THUMB_EDGE / Math.max(width, height)));
+  return `${thumb} ${thumbWidth}w, ${full} ${width}w`;
+}
+
 const GALLERY_COLUMNS = "id, storage_path, alt, width, height, sort_order, published";
 
 // album_id / thumb_path arrive with migration 0013. If the code ships before
@@ -113,15 +126,22 @@ try {
   const albumRows = albumsRes.error ? [] : (albumsRes.data ?? []);
   const publishedAlbums = new Set(albumRows.map((a) => a.id));
 
-  const allImages = (galleryRes.data ?? []).map((row) => ({
-    id: row.id,
-    src: publicUrl(row.storage_path),
-    alt: row.alt ?? "",
-    width: row.width ?? undefined,
-    height: row.height ?? undefined,
-    ...(row.thumb_path ? { thumb: publicUrl(row.thumb_path) } : {}),
-    ...(row.album_id ? { albumId: row.album_id } : {}),
-  }));
+  const allImages = (galleryRes.data ?? []).map((row) => {
+    const src = publicUrl(row.storage_path);
+    const thumb = row.thumb_path ? publicUrl(row.thumb_path) : null;
+    return {
+      id: row.id,
+      src,
+      alt: row.alt ?? "",
+      width: row.width ?? undefined,
+      height: row.height ?? undefined,
+      ...(thumb ? { thumb } : {}),
+      ...(thumb && row.width && row.height
+        ? { srcSet: srcSet(thumb, src, row.width, row.height) }
+        : {}),
+      ...(row.album_id ? { albumId: row.album_id } : {}),
+    };
+  });
 
   // Photos in a hidden album stay out of the gallery, but remain resolvable
   // for the hero carousel, which may reference any published photo.
@@ -140,6 +160,7 @@ try {
         description: a.description ?? "",
         ...(a.event_date ? { date: a.event_date } : {}),
         cover: cover ? (cover.thumb ?? cover.src) : "",
+        ...(cover?.srcSet ? { coverSrcSet: cover.srcSet } : {}),
         count: photos.length,
       };
     })
