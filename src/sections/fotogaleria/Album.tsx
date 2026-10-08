@@ -21,6 +21,7 @@ export default function Album({ album }: { album: GalleryAlbum }) {
         <div className={styles.back}>
           <Button
             variant="primary"
+            className={styles.backButton}
             icon={<ArrowLeft size={18} weight="bold" />}
             onClick={() => navigate("/fotogaleria")}
           >

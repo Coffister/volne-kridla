@@ -186,4 +186,9 @@
     .albums {
         grid-template-columns: minmax(0, 1fr);
     }
+    /* same breakpoint as the single-column grid: the button spans the
+       column like the photos below it */
+    .backButton {
+        width: 100%;
+    }
 }
