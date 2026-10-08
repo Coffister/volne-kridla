@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "@phosphor-icons/react";
 
 import { Container, Section, Stack, Text } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
+import Button from "@/ui/components/Button";
 import type { GalleryAlbum } from "@/content";
 import { site } from "@/content";
 
@@ -10,14 +12,21 @@ import { formatEventDate } from "./formatDate";
 import styles from "./Fotogaleria.module.css";
 
 export default function Album({ album }: { album: GalleryAlbum }) {
+  const navigate = useNavigate();
   const photos = site.gallery.filter((g) => g.albumId === album.id);
 
   return (
     <Section id="fotogaleria-album" className={styles.section}>
       <Container>
-        <Link to="/fotogaleria" className={styles.back}>
-          ← Všetky albumy
-        </Link>
+        <div className={styles.back}>
+          <Button
+            variant="primary"
+            icon={<ArrowLeft size={18} weight="bold" />}
+            onClick={() => navigate("/fotogaleria")}
+          >
+            Späť do fotogalérie
+          </Button>
+        </div>
 
         <Stack direction="column" align="center" gap="sm" className={styles.heading}>
           <Text as="h1" variant="sectionTitle" className={styles.albumHeading}>
