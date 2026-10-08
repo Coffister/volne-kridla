@@ -50,7 +50,7 @@ function publicUrl(path) {
 }
 
 try {
-  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes] = await Promise.all([
+  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes, sectionsRes] = await Promise.all([
     supabase.from("site_content").select("data").eq("id", 1).single(),
     supabase
       .from("gallery_images")
@@ -76,6 +76,7 @@ try {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
+    supabase.from("site_sections").select("key, visible"),
   ]);
 
   if (contentRes.error) throw contentRes.error;
@@ -84,6 +85,7 @@ try {
   const reviewRows = reviewsRes.error ? [] : (reviewsRes.data ?? []);
   const faqRows = faqRes.error ? [] : (faqRes.data ?? []);
   const productRows = productsRes.error ? [] : (productsRes.data ?? []);
+  const sectionRows = sectionsRes.error ? [] : (sectionsRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
   const gallery = (galleryRes.data ?? []).map((row) => ({
@@ -120,6 +122,11 @@ try {
     otazky: faqRows
       .filter((row) => row.group_key === "otazky")
       .map((row) => ({ question: row.question, answer: row.answer })),
+  };
+
+  // missing row = hidden (see 0012_site_sections.sql)
+  const sections = {
+    tipy: sectionRows.find((row) => row.key === "tipy")?.visible ?? false,
   };
 
   const products = productRows.map((row) => {
@@ -160,6 +167,7 @@ try {
     heroCarousel,
     reviews,
     faq,
+    sections,
     products,
   };
 
