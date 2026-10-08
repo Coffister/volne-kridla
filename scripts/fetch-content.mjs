@@ -51,7 +51,7 @@ function publicUrl(path) {
 
 const GALLERY_COLUMNS = "id, storage_path, alt, width, height, sort_order, published";
 
-// album_id / thumb_path arrive with migration 0012. If the code ships before
+// album_id / thumb_path arrive with migration 0013. If the code ships before
 // the migration is applied, fall back to the old columns rather than failing
 // the whole snapshot (which would publish stale content everywhere).
 async function fetchGallery() {
@@ -65,12 +65,12 @@ async function fetchGallery() {
 
   const res = await query(`${GALLERY_COLUMNS}, album_id, thumb_path`);
   if (!res.error) return res;
-  console.warn("[fetch-content] gallery album columns missing — run migration 0012.");
+  console.warn("[fetch-content] gallery album columns missing — run migration 0013.");
   return query(GALLERY_COLUMNS);
 }
 
 try {
-  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes, albumsRes] = await Promise.all([
+  const [contentRes, galleryRes, reviewsRes, faqRes, productsRes, albumsRes, sectionsRes] = await Promise.all([
     supabase.from("site_content").select("data").eq("id", 1).single(),
     fetchGallery(),
     supabase
@@ -97,6 +97,7 @@ try {
       .eq("published", true)
       .order("event_date", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false }),
+    supabase.from("site_sections").select("key, visible"),
   ]);
 
   if (contentRes.error) throw contentRes.error;
@@ -105,9 +106,10 @@ try {
   const reviewRows = reviewsRes.error ? [] : (reviewsRes.data ?? []);
   const faqRows = faqRes.error ? [] : (faqRes.data ?? []);
   const productRows = productsRes.error ? [] : (productsRes.data ?? []);
+  const sectionRows = sectionsRes.error ? [] : (sectionsRes.data ?? []);
 
   const data = contentRes.data?.data ?? {};
-  // gallery_albums may not exist yet (migration 0012 not applied) — no albums
+  // gallery_albums may not exist yet (migration 0013 not applied) — no albums
   const albumRows = albumsRes.error ? [] : (albumsRes.data ?? []);
   const publishedAlbums = new Set(albumRows.map((a) => a.id));
 
@@ -172,6 +174,11 @@ try {
       .map((row) => ({ question: row.question, answer: row.answer })),
   };
 
+  // missing row = hidden (see 0012_site_sections.sql)
+  const sections = {
+    tipy: sectionRows.find((row) => row.key === "tipy")?.visible ?? false,
+  };
+
   const products = productRows.map((row) => {
     const baseProduct = {
       id: row.id,
@@ -211,6 +218,7 @@ try {
     heroCarousel,
     reviews,
     faq,
+    sections,
     products,
   };
 

@@ -6,5 +6,6 @@
   "heroCarousel": [],
   "reviews": [],
   "faq": { "tipy": [], "otazky": [] },
+  "sections": { "tipy": false },
   "products": []
 }

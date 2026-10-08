@@ -77,6 +77,11 @@ export interface FaqContent {
   otazky: FaqEntry[];
 }
 
+/** Whole-section visibility toggled in the admin (site_sections table). */
+export interface SectionVisibility {
+  tipy: boolean;
+}
+
 /**
  * Editable rich text / plain text blocks, addressed by a stable dotted key,
  * e.g. "home.hero.title". Kept as a flat map so new editable spots don't need
@@ -94,6 +99,7 @@ export interface SiteContent {
   heroCarousel: CarouselSlide[];
   reviews: Review[];
   faq: FaqContent;
+  sections: SectionVisibility;
   products: Product[];
 }
 
@@ -105,5 +111,6 @@ export const EMPTY_SITE: SiteContent = {
   heroCarousel: [],
   reviews: [],
   faq: { tipy: [], otazky: [] },
+  sections: { tipy: false },
   products: [],
 };

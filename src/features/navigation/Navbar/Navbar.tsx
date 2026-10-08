@@ -10,6 +10,7 @@ import CloseIcon from "@/ui/icons/CloseIcon";
 import logo from "@/assets/logos/volnekridla-logo.svg";
 import { getLenis } from "@/lib/scroll";
 import { useKonzultaciaModal } from "@/features/konzultacia-modal";
+import { visibility } from "@/content/visibility";
 
 import styles from "./Navbar.module.css";
 
@@ -31,8 +32,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "O mne", to: "/o-mne" },
   { label: "Produkty", to: "/eshop" },
   { label: "O voľnom lietaní", id: VK_HERO_ID, offset: 0 },
-  { label: "Tipy a triky", id: "tipy" },
-  { label: "Target Tréning", id: "target" },
+  ...(visibility.showTipsAndTricks ? [{ label: "Tipy a triky", id: "tipy" }] : []),
+  ...(visibility.showTargetTraining ? [{ label: "Target Tréning", id: "target" }] : []),
   { label: "Najčastejšie otázky", id: "otazky" },
   { label: "Fotogaléria", to: "/fotogaleria" },
 ];
@@ -41,7 +42,7 @@ const isSectionItem = (
   item: NavItem,
 ): item is Extract<NavItem, { id: string }> => "id" in item;
 
-// on desktop the four Voľné krídla sections stay tucked into the dropdown
+// on desktop the Voľné krídla sections stay tucked into the dropdown
 const VK_SECTIONS = NAV_ITEMS.filter(isSectionItem);
 
 // clearance below the floating navbar

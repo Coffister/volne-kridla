@@ -7,6 +7,7 @@ import { Box, Container, Section, Stack } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import { site } from "@/content";
 import JsonLd from "@/lib/JsonLd";
+import { visibility } from "@/content/visibility";
 
 import styles from "./VolneKridlaFaq.module.css";
 
@@ -82,11 +83,18 @@ function FaqGroup({ id, badge, items }: FaqGroupProps) {
 
 export default function VolneKridlaFaq() {
   return (
-    <Section id="faq">
+    // with only one group the content no longer fills the 100dvh minimum, and
+    // Section would center it in empty space — let the padding define it instead
+    <Section
+      id="faq"
+      style={visibility.showTipsAndTricks ? undefined : { minHeight: "auto" }}
+    >
       <JsonLd data={FAQ_JSON_LD} />
       <Container>
         <div className={styles.groups}>
-          <FaqGroup id="tipy" badge="Tipy, triky a zaujímavosti" items={tips} />
+          {visibility.showTipsAndTricks && (
+            <FaqGroup id="tipy" badge="Tipy, triky a zaujímavosti" items={tips} />
+          )}
           <FaqGroup id="otazky" badge="Najčastejšie otázky" items={qna} />
         </div>
       </Container>
