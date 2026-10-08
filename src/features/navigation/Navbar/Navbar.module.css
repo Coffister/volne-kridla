@@ -63,6 +63,15 @@
   flex-shrink: 0;
 }
 
+/* fills the slot so the link has a real hit box (the logo inside is
+   absolutely positioned and would otherwise leave the <a> zero-sized) */
+.logoLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .logo {
   width: 100px;
   height: auto;
@@ -315,23 +324,6 @@
     cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .mobileMenuCta {
-    display: block;
-    flex-shrink: 0;
-    padding: 10px 16px 16px;
-  }
-
-  .mobileMenuCta button {
-    border: 4px solid var(--color-border-primary);
-    box-shadow: 0 5px 0 0 var(--color-border-primary);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .mobileMenuCta button:active {
-    transform: translateY(4px);
-    box-shadow: 0 1px 0 0 var(--color-border-primary);
   }
 }
 

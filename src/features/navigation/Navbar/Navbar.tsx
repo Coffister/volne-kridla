@@ -26,7 +26,8 @@ type NavItem =
 // single source of truth for nav order. The mobile menu renders this list
 // verbatim as a flat set of links (no dropdown — nobody was opening it).
 // The consultation modal isn't linked from here at all — reach it via the
-// "Začať lietať" CTA (or a shared "?konzultacia=1" link).
+// "Začať lietať" CTA (on mobile the fixed bottom bar, see MobileCta) or a
+// shared "?konzultacia=1" link.
 const NAV_ITEMS: NavItem[] = [
   { label: "Domov", to: "/" },
   { label: "O mne", to: "/o-mne" },
@@ -182,11 +183,18 @@ export default function Navbar() {
           className={styles.inner}
         >
           <Box className={styles.logoSlot}>
-            <Image
-              src={logo}
-              alt="Volnekridla"
-              className={styles.logo}
-            />
+            <Link
+              to="/"
+              aria-label="Voľné krídla – domov"
+              className={styles.logoLink}
+              onClick={closeMenu}
+            >
+              <Image
+                src={logo}
+                alt="Volnekridla"
+                className={styles.logo}
+              />
+            </Link>
           </Box>
 
           <Stack direction="row" align="center" gap="xs" className={styles.list}>
@@ -274,19 +282,6 @@ export default function Navbar() {
               )}
             </nav>
 
-            <div className={styles.mobileMenuCta}>
-              <Button
-                variant="navbar"
-                weight="medium"
-                fullWidth
-                onClick={() => {
-                  closeMenu();
-                  openKonzultacia();
-                }}
-              >
-                Začať lietať
-              </Button>
-            </div>
           </div>
         </div>
       </div>
