@@ -190,5 +190,15 @@
        column like the photos below it */
     .backButton {
         width: 100%;
+        border-width: 3px;
+        box-shadow: 0 5px 0 0 var(--color-border-primary);
+    }
+    /* full width already gives it presence — slim it down vertically */
+    .backButton > span {
+        padding: 10px 16px;
+    }
+    /* Text applies its font-size inline, hence !important */
+    .backButton > span > span:last-child {
+        font-size: 0.95rem !important;
     }
 }
