@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import MainLayout from "@/layouts/MainLayout";
 import Navbar from "@/features/navigation/Navbar";
+import MobileCta from "@/features/navigation/MobileCta";
 import PageTransition from "@/features/navigation/PageTransition";
 import Footer from "@/sections/footer";
 import JsonLd from "@/lib/JsonLd";
@@ -34,6 +35,7 @@ export default function SiteLayout() {
       <Navbar />
       <PageTransition />
       <Footer />
+      <MobileCta />
     </MainLayout>
   );
 }

@@ -15,6 +15,17 @@
     color: var(--color-text-primary);
 }
 
+/* Mobile: the "Začať lietať" bar (features/navigation/MobileCta) is fixed
+   over the bottom of the screen. Extending the footer's own background under
+   it keeps the copyright line visible above the bar while the footer stays
+   the very bottom of the page — nothing shows beneath it. Keep the 1080px
+   breakpoint and the height in sync with MobileCta.module.css. */
+@media (max-width: 1080px) {
+    .footer {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
 /* mobile: just the copyright line, no stacked links/credit beneath it */
 @media (max-width: 640px) {
     .inner {
