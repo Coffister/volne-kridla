@@ -123,6 +123,7 @@
 /* ghost / secondary — cream sticker */
 .admin-ghost,
 .admin-user button,
+.admin-user-link,
 .admin-gallery-actions button {
   --lift: 0;
   display: inline-flex;
@@ -145,17 +146,20 @@
 }
 
 .admin-user button:hover,
+.admin-user-link:hover,
 .admin-gallery-actions button:hover {
   --lift: -1px;
   background: #fff;
 }
 
 .admin-user button:active,
+.admin-user-link:active,
 .admin-gallery-actions button:active {
   --lift: 2px;
 }
 
 .admin-user button:focus-visible,
+.admin-user-link:focus-visible,
 .admin-gallery-actions button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -425,18 +429,15 @@ textarea {
   border-right: 2px solid var(--line);
 }
 
+/* only holds the mobile menu toggle — hidden on desktop */
 .admin-sidebar-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  display: none;
 }
 
 .admin-sidebar-body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-top: 1.5rem;
 }
 
 .admin-nav-toggle {
@@ -452,13 +453,6 @@ textarea {
 
 .admin-sidebar nav .admin-divider {
   margin: 0.3rem 0;
-}
-
-.admin-brand {
-  font:
-    800 1.2rem / 1 var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .admin-sidebar nav {
@@ -498,6 +492,10 @@ textarea {
   outline-offset: 2px;
 }
 
+.admin-user-link {
+  text-decoration: none;
+}
+
 .admin-user {
   margin-top: auto;
   display: flex;
@@ -526,39 +524,94 @@ textarea {
   border-radius: 999px;
 }
 
-.admin-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.9rem 2.5rem;
-  background: var(--paper);
-  border-bottom: 2px solid var(--line);
-}
-
 .admin-view {
   flex: 1;
   padding: 2.5rem;
 }
 
+/* "Publikovať zmeny" floats at the bottom of the scrolling column (sticky,
+   last child of .admin-main). Being in the flow, it also reserves its own
+   space at the end, so the last item on a page is never covered. */
 .admin-publish {
+  position: sticky;
+  bottom: 0.75rem;
+  z-index: 5;
+  align-self: center;
+  justify-content: center;
+  width: min(24rem, calc(100% - 2rem));
+  min-height: 3.1rem;
+  margin: 0 auto 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* the gallery's own bottom bar ("Vybraté: N → Presunúť") takes that spot
+   while selecting — publishing mid-selection isn't a thing anyway */
+.admin-shell:has(.admin-selection-bar) .admin-publish {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- toasts -- */
+
+/* pinned over the top of the content column (the sidebar stays clear) */
+.admin-toasts {
+  position: fixed;
+  top: 0.75rem;
+  left: calc(16rem + 1rem);
+  right: 1rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.admin-toast {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.admin-publish-note {
-  font-size: 0.8rem;
+  max-width: 36rem;
+  padding: 0.65rem 0.65rem 0.65rem 1rem;
+  font: 600 0.9rem / 1.35 var(--font-ui);
   color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--pop);
+  pointer-events: auto;
+  animation: admin-toast-in 0.18s ease-out;
 }
 
-.admin-publish-note.is-muted {
-  color: var(--muted);
+.admin-toast.is-success {
+  background: #e6f4e2;
 }
 
-.admin-publish-note.is-error {
+.admin-toast.is-error {
   color: var(--danger);
+  background: #fdeae6;
+  border-color: var(--danger);
+}
+
+.admin-toast button {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  font: 700 1.1rem / 1 var(--font-ui);
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+
+.admin-toast button:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
+@keyframes admin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
 }
 
 /* ----------------------------------------------------------------- pages -- */
@@ -846,8 +899,35 @@ textarea {
 
 .admin-gallery-toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.9rem;
+}
+
+/* upload button + selection tools + folder chips, pinned to the top of the
+   scrolling column. Bleeds to the column edges so photos scroll under a
+   solid background instead of peeking out at the sides. */
+.admin-gallery-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0 -2.5rem 1rem;
+  padding: 0.75rem 2.5rem;
+  background: var(--sky);
+  border-bottom: 2px solid var(--line);
+}
+
+.admin-gallery-sticky-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-gallery-sticky .admin-albums {
+  margin-bottom: 0;
 }
 
 .admin-gallery-body select {
@@ -1217,19 +1297,26 @@ textarea {
   .admin-user span {
     display: none;
   }
-  .admin-user button {
+  .admin-user button,
+  .admin-user-link {
     min-height: 2.5rem;
-  }
-  .admin-topbar {
-    padding: 0.65rem 1rem;
   }
   .admin-view {
     padding: 1.15rem;
   }
+  /* phone: 8px off the bottom edge, like the site's "Začať lietať" bar */
   .admin-publish {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    bottom: 8px;
+    width: calc(100% - 1.5rem);
+    margin-bottom: 8px;
+  }
+  .admin-sidebar-head {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .admin-toasts {
+    left: 0.75rem;
+    right: 0.75rem;
   }
   .admin-page-head {
     flex-direction: column;
@@ -1249,6 +1336,15 @@ textarea {
     margin-inline: -1.15rem;
     padding: 0.2rem 1.15rem 0.4rem;
     scrollbar-width: none;
+  }
+  .admin-gallery-sticky {
+    gap: 0.5rem;
+    margin-inline: -1.15rem;
+    padding: 0.6rem 1.15rem 0.4rem;
+  }
+  .admin-gallery-sticky-row .admin-btn {
+    flex: 1;
+    justify-content: center;
   }
   .admin-album-fields {
     grid-template-columns: minmax(0, 1fr);
@@ -1311,14 +1407,19 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .admin-toast {
+    animation: none;
+  }
   .admin-btn,
   .admin-user button,
+  .admin-user-link,
   .admin-gallery-actions button {
     transition: none;
   }
   .admin-btn:hover,
   .admin-btn:active,
   .admin-user button:hover,
+  .admin-user-link:hover,
   .admin-user button:active,
   .admin-gallery-actions button:hover,
   .admin-gallery-actions button:active {
