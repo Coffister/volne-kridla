@@ -54,6 +54,11 @@ export default function AdminLayout() {
           <hr className="admin-divider" />
           <div className="admin-user">
             <span>{session?.user.email}</span>
+            {/* plain <a>, not a router Link: leaving the admin should load the
+                public site fresh instead of keeping the admin bundle around */}
+            <a href="/" className="admin-user-link">
+              Späť na web
+            </a>
             <button type="button" onClick={() => signOut()}>
               Odhlásiť sa
             </button>
@@ -61,12 +66,13 @@ export default function AdminLayout() {
         </div>
       </aside>
       <main className="admin-main">
-        <header className="admin-topbar">
-          <PublishButton />
-        </header>
         <div className="admin-view">
           <Outlet />
         </div>
+        {/* last child of the scrolling column, sticky to its bottom edge: it
+            floats over content while scrolling and, at the very end, sits in
+            its own space so it never covers the last item */}
+        <PublishButton />
       </main>
     </div>
   );

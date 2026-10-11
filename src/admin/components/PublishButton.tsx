@@ -27,14 +27,6 @@ export default function PublishButton() {
 
   return (
     <div className="admin-publish">
-      <button
-        type="button"
-        className="admin-btn"
-        onClick={onClick}
-        disabled={state.kind === "busy"}
-      >
-        {state.kind === "busy" ? "Spúšťam…" : "Publikovať zmeny"}
-      </button>
       {state.kind === "done" && (
         <span className="admin-publish-note">
           Spustené — web sa prebuduje o ~1–2 min.
@@ -43,11 +35,19 @@ export default function PublishButton() {
       {state.kind === "error" && (
         <span className="admin-publish-note is-error">{state.message}</span>
       )}
-      {state.kind === "idle" && (
+      {(state.kind === "idle" || state.kind === "busy") && (
         <span className="admin-publish-note is-muted">
           Zmeny sa na webe zobrazia až po publikovaní.
         </span>
       )}
+      <button
+        type="button"
+        className="admin-btn"
+        onClick={onClick}
+        disabled={state.kind === "busy"}
+      >
+        {state.kind === "busy" ? "Spúšťam…" : "Publikovať zmeny"}
+      </button>
     </div>
   );
 }
