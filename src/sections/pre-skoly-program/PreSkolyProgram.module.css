@@ -35,26 +35,12 @@
 }
 
 .grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-sm);
 }
 
-.grid > li {
-    display: flex;
-}
-
-/* 7 tiles: the last one spans two cells so no row is left ragged (4+4, 2+2+2+2) */
-.grid > li:last-child {
-    grid-column: span 2;
-}
-
-.topic {
-    flex: 1;
+.theme {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -63,21 +49,56 @@
     padding: var(--spacing-md);
 }
 
-.topicIcon {
+.themeIcon {
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
 
     background: var(--color-accent-secondary);
     color: var(--color-text-inverse);
 }
 
-.topicText {
+.themeNumber {
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-card-title);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-primary);
+    line-height: 1;
+}
+
+.themeTitle {
+    margin-top: var(--spacing-xs);
+    color: var(--color-accent-secondary);
+    letter-spacing: -1px;
+}
+
+.themeText {
+    flex: 1;
     color: var(--color-text-primary);
-    font-weight: var(--font-weight-medium) !important;
-    line-height: 1.35 !important;
+    line-height: 1.55 !important;
+}
+
+.points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.point {
+    padding: 4px 12px;
+    border-radius: var(--radius-md);
+
+    background: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-semibold);
 }
 
 .note {
@@ -111,7 +132,7 @@
 
 @media (max-width: 1100px) {
     .grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
     }
 }
 
@@ -123,14 +144,6 @@
 }
 
 @media (max-width: 640px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .grid > li:last-child {
-        grid-column: auto;
-    }
-
     .card {
         padding: var(--spacing-sm);
     }
@@ -139,16 +152,8 @@
         letter-spacing: -2px;
     }
 
-    .topic {
-        flex-direction: row;
-        align-items: center;
+    .theme {
         padding: var(--spacing-sm);
-    }
-
-    .topicIcon {
-        flex-shrink: 0;
-        width: 44px;
-        height: 44px;
     }
 
     .note {

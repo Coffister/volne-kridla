@@ -1,28 +1,32 @@
 import type { Icon } from "@phosphor-icons/react";
-import {
-  Heart,
-  ChatCircleDots,
-  Question,
-  Handshake,
-  Bird,
-  HouseLine,
-  Feather,
-  Sparkle,
-} from "@phosphor-icons/react";
+import { HouseLine, ChatCircleDots, Handshake, Sparkle } from "@phosphor-icons/react";
 
 import { Box, Container, Stack, Text, Section, Squircle } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 
 import styles from "./PreSkolyProgram.module.css";
 
-const topics: { icon: Icon; text: string }[] = [
-  { icon: Heart, text: "čo papagáj potrebuje, aby bol spokojný" },
-  { icon: ChatCircleDots, text: "ako komunikuje a čo nám hovorí rečou tela" },
-  { icon: Question, text: "prečo hryzie, kričí alebo ničí veci" },
-  { icon: Handshake, text: "ako funguje dôvera a tréning" },
-  { icon: Bird, text: "prečo potrebuje pohyb, lietanie a zamestnanie" },
-  { icon: HouseLine, text: "ako mu vytvoriť bezpečné a podnetné prostredie" },
-  { icon: Feather, text: "čo znamená dať papagájovi skutočnú slobodu" },
+// the original 7 talking points, grouped into 3 themes — each point survives
+// as a small tag under its theme so nothing from the brief is lost
+const themes: { icon: Icon; title: string; text: string; points: string[] }[] = [
+  {
+    icon: HouseLine,
+    title: "Čo papagáj potrebuje",
+    text: "Papagáj nie je stvorený na sedenie v klietke. V prírode denne nalieta kilometre, hľadá potravu a rieši problémy. Ukážeme si, ako mu aj doma dopriať pohyb, zamestnanie a bezpečné, podnetné prostredie, v ktorom je naozaj spokojný.",
+    points: ["spokojnosť", "pohyb a lietanie", "zamestnanie", "bezpečné prostredie"],
+  },
+  {
+    icon: ChatCircleDots,
+    title: "Ako sa s nami rozpráva",
+    text: "Papagáj hovorí celým telom: perím, zreničkami, postojom aj hlasom. Naučíme sa tieto signály čítať a pochopíme, prečo niekedy hryzie, kričí alebo ničí veci. Väčšinou nám tým chce niečo povedať.",
+    points: ["reč tela", "hryzenie", "krik", "ničenie vecí"],
+  },
+  {
+    icon: Handshake,
+    title: "Dôvera, tréning a sloboda",
+    text: "Vzťah s papagájom nestojí na príkazoch, ale na dôvere. Vysvetlíme, ako funguje tréning založený na rešpekte a čo v skutočnosti znamená dať papagájovi slobodu. Nielen lietať, ale aj vedieť, kam sa vrátiť.",
+    points: ["dôvera", "tréning", "skutočná sloboda"],
+  },
 ];
 
 export default function PreSkolyProgram() {
@@ -46,20 +50,35 @@ export default function PreSkolyProgram() {
             </Text>
           </Box>
 
-          <ul className={styles.grid}>
-            {topics.map(({ icon: TopicIcon, text }) => (
-              <li key={text}>
-                <Squircle radius={18} className={styles.topic}>
-                  <span className={styles.topicIcon} aria-hidden>
-                    <TopicIcon size={26} weight="bold" />
+          <div className={styles.grid}>
+            {themes.map(({ icon: ThemeIcon, title, text, points }, index) => (
+              <Squircle key={title} radius={26} className={styles.theme}>
+                <Stack direction="row" align="center" justify="space-between">
+                  <span className={styles.themeIcon} aria-hidden>
+                    <ThemeIcon size={30} weight="bold" />
                   </span>
-                  <Text as="span" variant="body" className={styles.topicText}>
-                    {text}
-                  </Text>
-                </Squircle>
-              </li>
+                  <span className={styles.themeNumber} aria-hidden>
+                    0{index + 1}
+                  </span>
+                </Stack>
+
+                <Text as="h3" variant="cardTitle" className={styles.themeTitle}>
+                  {title}
+                </Text>
+                <Text as="p" variant="caption" className={styles.themeText}>
+                  {text}
+                </Text>
+
+                <ul className={styles.points}>
+                  {points.map((point) => (
+                    <li key={point} className={styles.point}>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </Squircle>
             ))}
-          </ul>
+          </div>
 
           <Squircle radius={26} className={styles.note}>
             <span className={styles.noteIcon} aria-hidden>
