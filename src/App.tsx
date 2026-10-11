@@ -14,6 +14,7 @@ import OMne from "./pages/OMne";
 import Fotogaleria from "./pages/Fotogaleria";
 import FotogaleriaAlbum from "./pages/FotogaleriaAlbum";
 import Eshop from "./pages/Eshop";
+import PreSkoly from "./pages/PreSkoly";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
@@ -49,6 +50,7 @@ function SiteApp() {
           <Route path="/" element={<Home />} />
           <Route path="/volne-kridla" element={<VolneKridla />} />
           <Route path="/o-mne" element={<OMne />} />
+          <Route path="/pre-skoly" element={<PreSkoly />} />
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/fotogaleria/:slug" element={<FotogaleriaAlbum />} />
           <Route path="/eshop" element={<Eshop />} />

@@ -1,0 +1,109 @@
+.section {
+    min-height: auto;
+    padding-block: var(--spacing-2xl) var(--spacing-section);
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--spacing-md);
+
+    background: var(--color-accent-secondary);
+    padding: var(--spacing-sm);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
+}
+
+.eyebrow {
+    color: var(--color-surface-secondary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.title {
+    color: var(--color-text-inverse);
+    letter-spacing: -3px;
+    line-height: 0.92 !important;
+}
+
+.text {
+    color: var(--color-text-inverse);
+    max-width: 44ch;
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+
+    background: var(--color-surface-primary);
+    padding: var(--spacing-md);
+}
+
+.panelTitle {
+    color: var(--color-accent-secondary);
+    letter-spacing: -1px;
+}
+
+.checkItem {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+
+    background: var(--color-surface-secondary);
+    padding: 10px var(--spacing-sm);
+}
+
+.checkIcon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    background: var(--color-accent-primary);
+    color: var(--color-text-inverse);
+}
+
+.checkLabel {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium) !important;
+    line-height: 1.3 !important;
+}
+
+.cta {
+    margin-top: var(--spacing-xs);
+}
+
+.closing {
+    max-width: 52ch;
+    margin: var(--spacing-2xl) auto 0;
+    text-align: center;
+    color: var(--color-text-inverse);
+}
+
+@media (max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .content {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+}
+
+@media (max-width: 640px) {
+    .title {
+        letter-spacing: -2px;
+    }
+
+    .panel {
+        padding: var(--spacing-sm);
+    }
+}

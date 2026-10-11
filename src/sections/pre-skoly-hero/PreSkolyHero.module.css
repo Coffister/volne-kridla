@@ -1,0 +1,86 @@
+/* mirrors the home page Hero card so the two pages read as one family */
+
+.hero {
+    padding-top: clamp(120px, 14vw, 220px);
+    padding-bottom: var(--spacing-xl);
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.title {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.1fr);
+    gap: var(--spacing-xs);
+
+    background: var(--color-surface-primary);
+    padding: var(--spacing-sm);
+}
+
+.content {
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.eyebrow {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.headline {
+    color: var(--color-accent-secondary);
+    letter-spacing: -4px;
+    line-height: 0.9 !important;
+}
+
+.lead {
+    color: var(--color-text-primary);
+    max-width: 44ch;
+}
+
+.actions {
+    margin-top: var(--spacing-sm);
+}
+
+.imageSlot {
+    min-height: 420px;
+}
+
+@media (max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .imageSlot {
+        order: -1;
+        min-height: 300px;
+    }
+
+    .actions {
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100%;
+    }
+
+    .primaryCta {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .content {
+        padding: var(--spacing-sm) var(--spacing-xs);
+    }
+
+    .headline {
+        letter-spacing: -2px;
+    }
+}
