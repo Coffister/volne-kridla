@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 
 import { useAuth } from "./auth/AuthProvider";
 import PublishButton from "./components/PublishButton";
+import Toasts from "./components/Toasts";
 
 export default function AdminLayout() {
   const { session, signOut } = useAuth();
@@ -13,7 +14,6 @@ export default function AdminLayout() {
     <div className="admin-shell">
       <aside className={`admin-sidebar${navOpen ? " is-open" : ""}`}>
         <div className="admin-sidebar-head">
-          <div className="admin-brand">Voľné krídla</div>
           <button
             type="button"
             className="admin-nav-toggle"
@@ -74,6 +74,7 @@ export default function AdminLayout() {
             its own space so it never covers the last item */}
         <PublishButton />
       </main>
+      <Toasts />
     </div>
   );
 }

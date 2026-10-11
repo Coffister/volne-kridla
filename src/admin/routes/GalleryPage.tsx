@@ -275,53 +275,82 @@ export default function GalleryPage() {
               : `${countLabel(items.length, PHOTO)} · ${countLabel(albums.length, FOLDER)}`}
           </p>
         </div>
-        <label className="admin-btn">
-          {progress ?? (album ? "Pridať fotky do priečinka" : "Pridať fotky")}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            multiple
-            hidden
-            disabled={busy}
-            onChange={(e) => onFiles(e.target.files)}
-          />
-        </label>
       </header>
 
       {error && <p className="admin-error">{error}</p>}
 
-      <nav className="admin-albums" aria-label="Priečinky">
-        <button
-          type="button"
-          className={view === "all" ? "is-current" : ""}
-          onClick={() => switchView("all")}
-        >
-          Všetky <span>{items.length}</span>
-        </button>
-        <button
-          type="button"
-          className={view === "none" ? "is-current" : ""}
-          onClick={() => switchView("none")}
-        >
-          Nezaradené <span>{counts.get(null) ?? 0}</span>
-        </button>
-        {albums.map((a) => (
+      {/* Stays pinned while scrolling — with a few hundred photos, scrolling
+          back up just to add more or switch folder isn't an option. */}
+      <div className="admin-gallery-sticky">
+        <div className="admin-gallery-sticky-row">
+          <label className="admin-btn">
+            {progress ?? (album ? "Pridať fotky do priečinka" : "Pridať fotky")}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              disabled={busy}
+              onChange={(e) => onFiles(e.target.files)}
+            />
+          </label>
+          {visible.length > 0 && (
+            <div className="admin-gallery-toolbar">
+              <button
+                type="button"
+                className="admin-ghost"
+                onClick={() => {
+                  setSelecting((s) => !s);
+                  setSelected(new Set());
+                }}
+              >
+                {selecting ? "Zrušiť výber" : "Vybrať viac"}
+              </button>
+              {selecting && (
+                <button
+                  type="button"
+                  className="admin-ghost"
+                  onClick={() => setSelected(new Set(visible.map((i) => i.id)))}
+                >
+                  Vybrať všetky ({visible.length})
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        <nav className="admin-albums" aria-label="Priečinky">
           <button
-            key={a.id}
             type="button"
-            className={[view === a.id ? "is-current" : "", a.published ? "" : "is-hidden"]
-              .join(" ")
-              .trim()}
-            onClick={() => switchView(a.id)}
+            className={view === "all" ? "is-current" : ""}
+            onClick={() => switchView("all")}
           >
-            📁 {a.title || "Bez názvu"} <span>{counts.get(a.id) ?? 0}</span>
+            Všetky <span>{items.length}</span>
           </button>
-        ))}
-        <button type="button" className="is-add" onClick={() => setCreating((c) => !c)}>
-          + Nový priečinok
-        </button>
-      </nav>
+          <button
+            type="button"
+            className={view === "none" ? "is-current" : ""}
+            onClick={() => switchView("none")}
+          >
+            Nezaradené <span>{counts.get(null) ?? 0}</span>
+          </button>
+          {albums.map((a) => (
+            <button
+              key={a.id}
+              type="button"
+              className={[view === a.id ? "is-current" : "", a.published ? "" : "is-hidden"]
+                .join(" ")
+                .trim()}
+              onClick={() => switchView(a.id)}
+            >
+              📁 {a.title || "Bez názvu"} <span>{counts.get(a.id) ?? 0}</span>
+            </button>
+          ))}
+          <button type="button" className="is-add" onClick={() => setCreating((c) => !c)}>
+            + Nový priečinok
+          </button>
+        </nav>
+      </div>
 
       {creating && (
         <form className="admin-album-new" onSubmit={onCreateAlbum}>
@@ -401,30 +430,6 @@ export default function GalleryPage() {
             </div>
           </div>
         </details>
-      )}
-
-      {visible.length > 0 && (
-        <div className="admin-gallery-toolbar">
-          <button
-            type="button"
-            className="admin-ghost"
-            onClick={() => {
-              setSelecting((s) => !s);
-              setSelected(new Set());
-            }}
-          >
-            {selecting ? "Zrušiť výber" : "Vybrať viac"}
-          </button>
-          {selecting && (
-            <button
-              type="button"
-              className="admin-ghost"
-              onClick={() => setSelected(new Set(visible.map((i) => i.id)))}
-            >
-              Vybrať všetky ({visible.length})
-            </button>
-          )}
-        </div>
       )}
 
       <ul className={`admin-gallery${selecting ? " is-selecting" : ""}`}>
