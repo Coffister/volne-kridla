@@ -95,6 +95,14 @@
     .imageSlot {
         order: -1;
         min-height: 0;
+    }
+
+    /* stacked layout: back in flow with its own ratio — an empty slot whose
+       height comes only from aspect-ratio collapses to 0 in Safari's grid */
+    .image {
+        position: static;
+        display: block;
+        height: auto;
         aspect-ratio: 4 / 3;
     }
 
