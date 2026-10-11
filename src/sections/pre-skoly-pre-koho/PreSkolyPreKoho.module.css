@@ -109,6 +109,28 @@
 }
 
 @media (max-width: 640px) {
+    /* a stacked wrap of 10 tags turns into a wall on phones — keep them on
+       one swipeable line, bleeding to the card edge, with a fade hinting
+       there's more */
+    .audiences {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        margin-inline: calc(-1 * var(--spacing-xs) - var(--spacing-sm));
+        padding-inline: calc(var(--spacing-xs) + var(--spacing-sm));
+        scroll-padding-inline: calc(var(--spacing-xs) + var(--spacing-sm));
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 40px), transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 40px), transparent 100%);
+    }
+
+    .audiences::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tag {
+        flex-shrink: 0;
+    }
+
     .photos {
         grid-template-columns: 1fr;
     }

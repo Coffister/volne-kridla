@@ -53,14 +53,9 @@ export default function PreSkolyRezervacia() {
               ))}
             </Stack>
 
-            <Stack direction="column" gap="xs" className={styles.cta}>
-              <Button variant="primary" fullWidth onClick={() => openRezervacia("skola")}>
-                Rezervovať pre školu
-              </Button>
-              <Button variant="secondary" fullWidth onClick={() => openRezervacia("organizacia")}>
-                Rezervovať pre organizáciu
-              </Button>
-            </Stack>
+            <Button variant="primary" fullWidth className={styles.cta} onClick={() => openRezervacia()}>
+              Rezervovať prezentáciu
+            </Button>
           </Squircle>
         </Squircle>
 

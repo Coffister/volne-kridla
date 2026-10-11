@@ -28,11 +28,9 @@ export default function PreSkolyFilozofia() {
               v klietke. Je to osobnosť, ktorá potrebuje priestor, podnety, vzťah
               a možnosť správať sa prirodzene.
             </Text>
-            <Squircle radius={18} className={styles.quote}>
-              <Text as="p" variant="cardTitle" className={styles.quoteText}>
-                Aby mohol byť jednoducho papagájom. 🦜
-              </Text>
-            </Squircle>
+            <Text as="p" variant="cardTitle" className={styles.quote}>
+              Aby mohol byť jednoducho papagájom. 🦜
+            </Text>
           </Box>
         </Squircle>
       </Container>

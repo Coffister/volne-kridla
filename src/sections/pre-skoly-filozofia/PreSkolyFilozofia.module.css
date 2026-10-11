@@ -50,12 +50,8 @@
 
 .quote {
     margin-top: var(--spacing-xs);
-    background: var(--color-accent-primary);
-    padding: var(--spacing-md);
-}
-
-.quoteText {
-    color: var(--color-text-inverse);
+    color: var(--color-accent-secondary);
+    font-weight: var(--font-weight-extrabold) !important;
     letter-spacing: -1px;
 }
 
