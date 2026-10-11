@@ -18,6 +18,7 @@ import PreSkoly from "./pages/PreSkoly";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
+import { RezervaciaModal } from "./features/rezervacia-modal";
 import Placeholder from "./pages/Placeholder";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
@@ -41,6 +42,7 @@ function SiteApp() {
     <>
       <Cursor />
       <KonzultaciaModal />
+      <RezervaciaModal />
       <Routes>
         {/* standalone — not wrapped in the site chrome (navbar/footer) */}
         <Route path="/playground" element={<Playground />} />

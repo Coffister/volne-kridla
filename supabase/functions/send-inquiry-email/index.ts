@@ -1,6 +1,7 @@
 // Supabase Edge Function — sends email notifications via Resend whenever a
-// visitor submits either "Mám záujem" (product) or the consultation modal's
-// form. Called client-side, right after the row is already safely inserted
+// visitor submits "Mám záujem" (product), the consultation modal's form, or
+// the presentation booking modal on /pre-skoly (internal notification only).
+// Called client-side, right after the row is already safely inserted
 // (see src/lib/inquiries.ts) — this is a best-effort notification, not the
 // source of truth (the database row is).
 //
@@ -69,7 +70,22 @@ interface ConsultationInquiryPayload {
   phone?: string;
 }
 
-type Payload = ProductInquiryPayload | ConsultationInquiryPayload;
+interface PresentationInquiryPayload {
+  kind: "presentation";
+  inviterLabel: string;
+  subtype: string;
+  orgName: string;
+  city: string;
+  participants: string;
+  ageGroup: string;
+  dateLabel: string;
+  note?: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+type Payload = ProductInquiryPayload | ConsultationInquiryPayload | PresentationInquiryPayload;
 
 function buildInternalNotification(payload: Payload): { subject: string; html: string } {
   const mailto = payload.email ? `<a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a>` : "–";
@@ -95,6 +111,39 @@ function buildInternalNotification(payload: Payload): { subject: string; html: s
     return {
       subject: `Nový záujem o produkt: ${payload.productName}`,
       html: emailShell("🛒 Nový záujem o produkt", bodySections, false),
+    };
+  }
+
+  if (payload.kind === "presentation") {
+    const bodySections = [
+      section(
+        h2("🏫", "Kto pozýva") +
+          [
+            p(`${escapeHtml(payload.inviterLabel)}: ${escapeHtml(payload.subtype)}`),
+            p(`Názov: ${escapeHtml(payload.orgName)}`),
+            lastP(`Mesto: ${escapeHtml(payload.city)}`),
+          ].join("\n"),
+      ),
+      divider(),
+      section(
+        h2("📅", "Termín a účastníci") +
+          [
+            p(`Preferovaný termín: ${escapeHtml(payload.dateLabel)}`),
+            p(`Počet účastníkov: ${escapeHtml(payload.participants)}`),
+            lastP(`Vek: ${escapeHtml(payload.ageGroup)}`),
+          ].join("\n"),
+      ),
+      divider(),
+      section(
+        h2("👤", "Kontaktná osoba") +
+          [p(`Meno: ${escapeHtml(payload.name)}`), p(`E-mail: ${mailto}`), lastP(`Telefón: ${tel}`)].join("\n"),
+      ),
+      ...(payload.note ? [divider(), section(h2("📎", "Poznámka") + lastP(escapeHtml(payload.note)))] : []),
+    ].join("\n");
+
+    return {
+      subject: `Rezervácia prezentácie: ${payload.orgName} (${payload.city})`,
+      html: emailShell("🦜 Nová rezervácia prezentácie", bodySections, false),
     };
   }
 
@@ -421,7 +470,7 @@ Deno.serve(async (req) => {
 
   try {
     const payload = (await req.json()) as Payload;
-    if (payload.kind !== "product" && payload.kind !== "consultation") {
+    if (payload.kind !== "product" && payload.kind !== "consultation" && payload.kind !== "presentation") {
       throw new Error(`unknown kind: ${(payload as { kind?: unknown }).kind}`);
     }
 

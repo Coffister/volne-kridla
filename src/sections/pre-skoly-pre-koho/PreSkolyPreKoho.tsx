@@ -8,6 +8,7 @@ import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 
 import styles from "./PreSkolyPreKoho.module.css";
 
+// audience chips, shown as a static wrap of tags
 const audiences = [
   "Materské školy",
   "Základné školy",
@@ -24,26 +25,6 @@ const audiences = [
 // one young, one adult audience — shows the range at a glance
 const photos = [preSkolyPhotos.triedaSkupina, preSkolyPhotos.prednaska];
 
-// same marquee as the home page Hero tags
-function TagRow({ reverse = false }: { reverse?: boolean }) {
-  const items = reverse ? [...audiences].reverse() : audiences;
-
-  return (
-    <Squircle radius="2xl" className={`${styles.tagsRow} ${reverse ? styles.tagsRowReverse : ""}`}>
-      <div className={styles.tagsTrack} aria-hidden>
-        {[...items, ...items].map((tag, index) => (
-          <span
-            key={`${tag}-${index}`}
-            className={`${styles.tag} ${index % 2 === 0 ? styles.tagBlue : styles.tagTan}`}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </Squircle>
-  );
-}
-
 export default function PreSkolyPreKoho() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -55,28 +36,27 @@ export default function PreSkolyPreKoho() {
         </Stack>
 
         <Squircle radius="2xl" className={styles.card}>
-          {/* the marquee is decorative — screen readers get the plain list */}
-          <ul className="srOnly">
-            {audiences.map((audience) => (
-              <li key={audience}>{audience}</li>
-            ))}
-          </ul>
-
-          <div className={styles.tags}>
-            <TagRow />
-            <TagRow reverse />
-          </div>
-
           <Box className={styles.textRow}>
-            <Text as="h2" variant="cardTitle" className={styles.title}>
-              Pre koho sú prezentácie určené?
-            </Text>
-            <Text as="p" variant="body" className={styles.text}>
-              Pre materské, základné a stredné školy, školské kluby, centrá
-              voľného času, domovy seniorov, tábory, komunitné centrá, záujmové
-              skupiny a chovateľské podujatia. Program prispôsobíme veku
-              účastníkov, počtu ľudí aj vašim časovým možnostiam.
-            </Text>
+            <Box>
+              <Text as="h2" variant="cardTitle" className={styles.title}>
+                Pre koho sú prezentácie určené?
+              </Text>
+              <Text as="p" variant="body" className={styles.text}>
+                Program prispôsobíme veku účastníkov, počtu ľudí aj vašim
+                časovým možnostiam.
+              </Text>
+            </Box>
+
+            <ul className={styles.audiences}>
+              {audiences.map((audience, index) => (
+                <li
+                  key={audience}
+                  className={`${styles.tag} ${index % 2 === 0 ? styles.tagBlue : styles.tagTan}`}
+                >
+                  {audience}
+                </li>
+              ))}
+            </ul>
           </Box>
 
           <div className={styles.photos}>

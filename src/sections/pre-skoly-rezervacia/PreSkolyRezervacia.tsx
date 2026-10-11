@@ -3,6 +3,7 @@ import { Buildings, MapPin, Users, CalendarCheck } from "@phosphor-icons/react";
 
 import { Box, Container, Stack, Text, Section, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
+import { useRezervaciaModal } from "@/features/rezervacia-modal";
 
 import styles from "./PreSkolyRezervacia.module.css";
 
@@ -14,6 +15,8 @@ const checklist: { icon: Icon; label: string }[] = [
 ];
 
 export default function PreSkolyRezervacia() {
+  const { open: openRezervacia } = useRezervaciaModal();
+
   return (
     <Section id="rezervacia" className={styles.section}>
       <Container>
@@ -34,7 +37,7 @@ export default function PreSkolyRezervacia() {
 
           <Squircle radius={32} className={styles.panel}>
             <Text as="h3" variant="cardTitle" className={styles.panelTitle}>
-              Stačí nám napísať
+              Čo budeme potrebovať
             </Text>
 
             <Stack direction="column" gap="xs" className={styles.checklist}>
@@ -50,10 +53,14 @@ export default function PreSkolyRezervacia() {
               ))}
             </Stack>
 
-            {/* TODO: napojiť na rezervačný formulár (samostatný krok) */}
-            <Button variant="primary" fullWidth className={styles.cta}>
-              Rezervovať termín
-            </Button>
+            <Stack direction="column" gap="xs" className={styles.cta}>
+              <Button variant="primary" fullWidth onClick={() => openRezervacia("skola")}>
+                Rezervovať pre školu
+              </Button>
+              <Button variant="secondary" fullWidth onClick={() => openRezervacia("organizacia")}>
+                Rezervovať pre organizáciu
+              </Button>
+            </Stack>
           </Squircle>
         </Squircle>
 

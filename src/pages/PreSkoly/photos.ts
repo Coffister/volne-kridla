@@ -33,10 +33,3 @@ export const preSkolyPhotos = {
     alt: "Papagáj roztiahne krídla pred deťmi v materskej škole",
   },
 } satisfies Record<string, PreSkolyPhoto>;
-
-export const preSkolyGallery: PreSkolyPhoto[] = [
-  preSkolyPhotos.frankaAra,
-  preSkolyPhotos.triedaSkupina,
-  preSkolyPhotos.materskaSkola,
-  preSkolyPhotos.prednaska,
-];

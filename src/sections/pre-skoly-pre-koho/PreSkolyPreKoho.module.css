@@ -17,34 +17,19 @@
     padding: var(--spacing-sm);
 }
 
-/* ---- audience marquee (copied from Hero tags) ---- */
+/* ---- audience tags ---- */
 
-.tags {
+.audiences {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.tagsRow {
-    overflow: hidden;
-    border-radius: var(--radius-xs);
-}
-
-.tagsTrack {
-    display: flex;
-    gap: var(--spacing-sm);
-    width: max-content;
-
-    animation: scroll 36s linear infinite;
-}
-
-.tagsRowReverse .tagsTrack {
-    animation-direction: reverse;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
 }
 
 .tag {
-    flex-shrink: 0;
-
     padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--radius-md);
 
@@ -64,32 +49,18 @@
     color: var(--color-text-primary);
 }
 
-@keyframes scroll {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .tagsTrack {
-        animation: none;
-    }
-}
-
 /* ---- text ---- */
 
 .textRow {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: 1fr 1.3fr;
     gap: var(--spacing-lg);
     align-items: center;
     padding: var(--spacing-sm) var(--spacing-md);
 }
 
 .title {
+    margin-bottom: var(--spacing-xs);
     color: var(--color-accent-secondary);
     letter-spacing: -1px;
 }
@@ -132,7 +103,7 @@
 @media (max-width: 900px) {
     .textRow {
         grid-template-columns: 1fr;
-        gap: var(--spacing-xs);
+        gap: var(--spacing-md);
         padding: var(--spacing-xs);
     }
 }

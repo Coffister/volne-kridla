@@ -1,15 +1,17 @@
 import { Box, Container, Stack, Text, Image, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Badge from "@/ui/components/Badge";
-import Carousel from "@/ui/components/Carousel";
 
 import vkTypelogo from "@/assets/hero/volne-kridla.svg";
-import { preSkolyGallery } from "@/pages/PreSkoly/photos";
+import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 import { scrollToSection } from "@/lib/scrollToSection";
+import { useRezervaciaModal } from "@/features/rezervacia-modal";
 
 import styles from "./PreSkolyHero.module.css";
 
 export default function PreSkolyHero() {
+  const { open: openRezervacia } = useRezervaciaModal();
+
   return (
     <Box as="section" id="hero" className={styles.hero}>
       <Container>
@@ -39,7 +41,7 @@ export default function PreSkolyHero() {
                 <Button
                   variant="primary"
                   className={styles.primaryCta}
-                  onClick={() => scrollToSection("rezervacia")}
+                  onClick={() => openRezervacia()}
                 >
                   Rezervovať prezentáciu
                 </Button>
@@ -49,9 +51,15 @@ export default function PreSkolyHero() {
               </Stack>
             </Stack>
 
-            <Box className={styles.imageSlot}>
-              <Carousel images={preSkolyGallery} radius="lg" />
-            </Box>
+            <Squircle radius="lg" className={styles.imageSlot}>
+              <Image
+                src={preSkolyPhotos.frankaAra.src}
+                alt={preSkolyPhotos.frankaAra.alt}
+                className={styles.image}
+                loading="eager"
+                fetchPriority="high"
+              />
+            </Squircle>
           </Box>
         </Squircle>
       </Container>
