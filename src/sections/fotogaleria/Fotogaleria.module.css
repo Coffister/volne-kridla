@@ -170,6 +170,37 @@
     text-align: center;
 }
 
+/* --------------------------------------------------------------- cta -- */
+
+/* same card language as the album cards: cream, thick outline, blunt shadow */
+.cta {
+    max-width: 44rem;
+    margin: var(--spacing-2xl) auto 0;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    text-align: center;
+    background: var(--color-surface-primary);
+    border: 3px solid var(--color-border-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 6px 0 var(--color-border-primary);
+}
+
+.ctaTitle {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem) !important;
+    line-height: 1.15;
+    color: var(--color-text-primary);
+}
+
+.ctaText {
+    max-width: 34rem;
+    margin: 0 0 var(--spacing-xs);
+    color: var(--color-text-primary);
+}
+
+.ctaButton {
+    white-space: nowrap;
+}
+
 @media (max-width: 900px) {
     .grid {
         column-count: 2;
@@ -188,6 +219,10 @@
     }
     /* same breakpoint as the single-column grid: the button spans the
        column like the photos below it */
+    .cta {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+
     .backButton {
         width: 100%;
         border-width: 3px;

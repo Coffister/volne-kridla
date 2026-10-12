@@ -7,6 +7,7 @@ import Button from "@/ui/components/Button";
 import type { GalleryAlbum } from "@/content";
 import { site } from "@/content";
 
+import FacebookCta from "./FacebookCta";
 import PhotoGrid from "./PhotoGrid";
 import { formatEventDate } from "./formatDate";
 import styles from "./Fotogaleria.module.css";
@@ -42,6 +43,8 @@ export default function Album({ album }: { album: GalleryAlbum }) {
         </Stack>
 
         <PhotoGrid photos={photos} />
+
+        <FacebookCta />
       </Container>
     </Section>
   );

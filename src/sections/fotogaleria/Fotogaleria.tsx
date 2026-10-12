@@ -6,6 +6,7 @@ import Badge from "@/ui/components/Badge";
 import { galleryImages as fallbackGalleryImages } from "@/pages/Fotogaleria/images";
 import { site } from "@/content";
 
+import FacebookCta from "./FacebookCta";
 import PhotoGrid, { GRID_SIZES } from "./PhotoGrid";
 import { formatEventDate } from "./formatDate";
 import styles from "./Fotogaleria.module.css";
@@ -71,6 +72,8 @@ export default function Fotogaleria() {
         )}
 
         {loosePhotos.length > 0 && <PhotoGrid photos={loosePhotos} />}
+
+        <FacebookCta />
       </Container>
     </Section>
   );
