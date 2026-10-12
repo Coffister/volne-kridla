@@ -291,6 +291,29 @@
   outline-offset: 2px;
 }
 
+/* ---- "wrong form?" hint under the first choice — deliberately quiet ---- */
+.switchHint {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-family-body);
+  font-size: 0.82rem;
+  color: var(--color-text-primary);
+  opacity: 0.8;
+}
+
+.switchLink {
+  all: unset;
+  font-weight: 700;
+  color: var(--color-accent-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.switchLink:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
 /* ---- package cards ---- */
 .packages {
   display: grid;
