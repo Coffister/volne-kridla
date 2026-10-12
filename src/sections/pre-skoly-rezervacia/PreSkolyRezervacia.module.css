@@ -22,62 +22,13 @@
 
 .text {
     max-width: 40ch;
-    /* dark, not white: white on the sky blue is ~2.3:1, #333 is ~5:1 */
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-medium) !important;
-}
-
-.needs {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-xs);
-    margin-top: var(--spacing-xs);
-}
-
-.needsLabel {
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-bold) !important;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: var(--font-size-label) !important;
-}
-
-.pills {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--spacing-xs);
-}
-
-.pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 16px 6px 6px;
-    border-radius: 999px;
-
-    background: var(--color-surface-primary);
-    color: var(--color-text-primary);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-caption);
-    font-weight: var(--font-weight-semibold);
-    white-space: nowrap;
-}
-
-.pillIcon {
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-
-    background: var(--color-accent-primary);
-    color: var(--color-text-inverse);
+    color: var(--color-text-secondary);
+    -webkit-text-fill-color: var(--color-text-secondary);
+    /* thin version of the heading's outline — white alone is ~2.3:1 on the
+       sky blue, the dark stroke carries the contrast */
+    -webkit-text-stroke: 5px var(--color-border-primary);
+    paint-order: stroke fill;
+    font-weight: var(--font-weight-semibold) !important;
 }
 
 .cta {
@@ -88,27 +39,16 @@
     max-width: 52ch;
     margin: var(--spacing-3xl) auto 0;
     text-align: center;
-    color: var(--color-text-primary);
+    color: var(--color-text-secondary);
+    -webkit-text-fill-color: var(--color-text-secondary);
+    /* thin version of the heading's outline — white alone is ~2.3:1 on the
+       sky blue, the dark stroke carries the contrast */
+    -webkit-text-stroke: 5px var(--color-border-primary);
+    paint-order: stroke fill;
+    font-weight: var(--font-weight-semibold) !important;
 }
 
 @media (max-width: 640px) {
-    /* 2×2 grid instead of a ragged wrap */
-    .pills {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: 100%;
-    }
-
-    .pill {
-        white-space: normal;
-        line-height: 1.2;
-        text-align: left;
-    }
-
-    .pillIcon {
-        flex-shrink: 0;
-    }
-
     .cta {
         align-self: stretch;
     }
