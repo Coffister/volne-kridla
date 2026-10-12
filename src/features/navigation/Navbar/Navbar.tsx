@@ -9,7 +9,7 @@ import CloseIcon from "@/ui/icons/CloseIcon";
 
 import logo from "@/assets/logos/volnekridla-logo.svg";
 import { getLenis } from "@/lib/scroll";
-import { useKonzultaciaModal } from "@/features/konzultacia-modal";
+import { usePageCta } from "../usePageCta";
 import { visibility } from "@/content/visibility";
 
 import styles from "./Navbar.module.css";
@@ -36,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   ...(visibility.showTipsAndTricks ? [{ label: "Tipy a triky", id: "tipy" }] : []),
   ...(visibility.showTargetTraining ? [{ label: "Target Tréning", id: "target" }] : []),
   { label: "Najčastejšie otázky", id: "otazky" },
+  { label: "Pre školy", to: "/pre-skoly" },
   { label: "Fotogaléria", to: "/fotogaleria" },
 ];
 
@@ -55,7 +56,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const pendingSectionId = useRef<string | null>(null);
-  const { open: openKonzultacia } = useKonzultaciaModal();
+  const cta = usePageCta();
 
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
@@ -231,6 +232,7 @@ export default function Navbar() {
               </Squircle>
             </Box>
 
+            <Link to="/pre-skoly">Pre školy</Link>
             <Link to="/fotogaleria">Fotogaléria</Link>
           </Stack>
 
@@ -238,9 +240,9 @@ export default function Navbar() {
             variant="navbar"
             weight="medium"
             className={styles.cta}
-            onClick={() => openKonzultacia()}
+            onClick={cta.onClick}
           >
-            Začať lietať
+            {cta.label}
           </Button>
 
           <button

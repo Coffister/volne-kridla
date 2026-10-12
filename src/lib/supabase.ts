@@ -16,7 +16,7 @@ export const CONTENT_CHANGE_EVENT = "vk:content-change";
 
 // Inquiries are customer requests, not website content — editing them never
 // needs a publish, so they don't announce a change.
-const NON_CONTENT_TABLES = new Set(["product_inquiries", "consultation_inquiries"]);
+const NON_CONTENT_TABLES = new Set(["product_inquiries", "consultation_inquiries", "presentation_inquiries"]);
 
 // Wraps fetch to fire CONTENT_CHANGE_EVENT after any successful insert /
 // update / delete on a content table. The admin listens for it to remind

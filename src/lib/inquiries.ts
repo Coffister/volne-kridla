@@ -4,7 +4,7 @@ import { getSupabase } from "@/lib/supabase";
  * notification. Best-effort: the inquiry is already safely in the database
  * by the time this runs, so a failed/slow email must never surface as an
  * error to the visitor — just log it for debugging. */
-async function notifyByEmail(kind: "product" | "consultation", payload: Record<string, unknown>) {
+async function notifyByEmail(kind: "product" | "consultation" | "presentation", payload: Record<string, unknown>) {
   try {
     const { error } = await getSupabase().functions.invoke("send-inquiry-email", {
       body: { kind, ...payload },
@@ -99,5 +99,62 @@ export async function submitConsultationInquiry(input: {
     name: input.name.trim(),
     email: input.email.trim(),
     phone: input.phone?.trim() || "",
+  });
+}
+
+/** Public — booking request for a school / organisation presentation from
+ * RezervaciaModal, no auth required (RLS on presentation_inquiries allows
+ * insert-only for anon). */
+export async function submitPresentationInquiry(input: {
+  inviterKind: string;
+  inviterLabel: string;
+  subtype: string;
+  orgName: string;
+  city: string;
+  participants: string;
+  ageGroup: string;
+  /** ISO "YYYY-MM-DD" */
+  dateFrom: string;
+  /** ISO "YYYY-MM-DD" — same as dateFrom for a single day */
+  dateTo: string;
+  /** human-readable range for the notification email */
+  dateLabel: string;
+  note?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  consent: boolean;
+}): Promise<void> {
+  const row = {
+    inviter_kind: input.inviterLabel,
+    subtype: input.subtype,
+    org_name: input.orgName.trim(),
+    city: input.city.trim(),
+    participants: input.participants.trim(),
+    age_group: input.ageGroup,
+    date_from: input.dateFrom,
+    date_to: input.dateTo,
+    note: input.note?.trim() || "",
+    name: input.name.trim(),
+    email: input.email.trim(),
+    phone: input.phone?.trim() || "",
+    consent: input.consent,
+  };
+
+  const { error } = await getSupabase().from("presentation_inquiries").insert(row);
+  if (error) throw error;
+
+  void notifyByEmail("presentation", {
+    inviterLabel: input.inviterLabel,
+    subtype: row.subtype,
+    orgName: row.org_name,
+    city: row.city,
+    participants: row.participants,
+    ageGroup: row.age_group,
+    dateLabel: input.dateLabel,
+    note: row.note,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
   });
 }

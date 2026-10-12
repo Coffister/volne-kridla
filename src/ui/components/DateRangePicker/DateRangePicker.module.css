@@ -1,0 +1,353 @@
+/* Inline range calendar — same cream / gold / orange language as the
+   consultation modal's pills and fields. */
+
+.picker {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    font-family: var(--font-family-body);
+    color: var(--color-text-primary);
+}
+
+/* ---- summary fields ("Od" / "Do") ---- */
+
+.summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.6rem;
+}
+
+.summaryField {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.95rem;
+    background: #fff;
+    border: 2px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    transition:
+        border-color 0.14s ease,
+        box-shadow 0.14s ease;
+}
+
+.summaryField[data-active="true"] {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 3px rgba(245, 102, 4, 0.22);
+}
+
+.picker[data-invalid] .summaryField:not([data-active="true"]) {
+    border-color: #c62828;
+}
+
+.summaryLabel {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent-secondary);
+}
+
+.summaryValue {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.summaryValue[data-empty="true"] {
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* ---- calendar ---- */
+
+.calendar {
+    position: relative;
+    padding: 0.9rem;
+    background: var(--color-surface-secondary);
+    border-radius: 24px;
+}
+
+.nav {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.navBtn {
+    all: unset;
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--color-accent-secondary);
+    background: var(--color-surface-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.14s ease;
+}
+
+.navBtn:hover:not(:disabled) {
+    transform: scale(1.08);
+}
+
+.navBtn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.navBtn:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}
+
+.months {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.4rem;
+}
+
+.monthTitle {
+    margin: 0.35rem 0 0.7rem;
+    text-align: center;
+    font-family: var(--font-family-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent-secondary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    row-gap: 3px;
+}
+
+.weekday {
+    padding-bottom: 0.3rem;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    opacity: 0.6;
+}
+
+/* the cell is the band (range background); the inner span is the circle */
+.day {
+    all: unset;
+    box-sizing: border-box;
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 2.35rem;
+    cursor: pointer;
+}
+
+.day > .num {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 50%;
+    transition:
+        background-color 0.12s ease,
+        color 0.12s ease;
+}
+
+.day[data-weekend] > .num {
+    color: var(--color-text-muted);
+}
+
+@media (hover: hover) {
+    .day:not([data-start]):not([data-end]):hover:not(:disabled) > .num {
+        background: var(--color-surface-primary);
+    }
+}
+
+.day[data-today] > .num {
+    box-shadow: inset 0 0 0 2px var(--color-accent-secondary);
+}
+
+.day:disabled {
+    cursor: default;
+}
+
+.day:disabled > .num {
+    color: var(--color-text-primary);
+    opacity: 0.25;
+    text-decoration: line-through;
+}
+
+.day:focus-visible > .num {
+    outline: 2px solid var(--color-accent-secondary);
+    outline-offset: 1px;
+}
+
+/* range band */
+.day[data-in-range] {
+    background: var(--color-surface-primary);
+}
+
+.day[data-in-range] > .num {
+    color: var(--color-text-primary);
+}
+
+.day[data-range-edge][data-start] {
+    background: linear-gradient(to right, transparent 50%, var(--color-surface-primary) 50%);
+}
+
+.day[data-range-edge][data-end] {
+    background: linear-gradient(to left, transparent 50%, var(--color-surface-primary) 50%);
+}
+
+/* a range edge on a row's first/last column has no neighbour on that
+   side — drop the half-band that would stick out past the week */
+.grid > .day[data-start]:nth-child(7n),
+.grid > .day[data-end]:nth-child(7n + 1) {
+    background: none;
+}
+
+/* round the band where it wraps to a new week row */
+.grid > .day[data-in-range]:nth-child(7n + 1) {
+    border-radius: 999px 0 0 999px;
+}
+
+.grid > .day[data-in-range]:nth-child(7n) {
+    border-radius: 0 999px 999px 0;
+}
+
+.day[data-start] > .num,
+.day[data-end] > .num {
+    color: #fff;
+    background: var(--color-accent-primary);
+    box-shadow: inset 0 0 0 2px var(--color-border-primary);
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.6rem;
+}
+
+/* "now pick the last day" bubble over the chosen first day */
+.tip {
+    position: absolute;
+    z-index: 2;
+    bottom: calc(100% + 8px);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: max-content;
+    max-width: 15rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: left;
+    color: #fff;
+    background: var(--color-accent-secondary);
+    border: 2px solid var(--color-border-primary);
+    border-radius: 12px;
+    pointer-events: none;
+    animation: tipIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tip small {
+    font-size: 0.7rem;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* arrow */
+.tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent-secondary);
+    border-right: 2px solid var(--color-border-primary);
+    border-bottom: 2px solid var(--color-border-primary);
+    transform: translateY(-5px) rotate(45deg);
+}
+
+.tip[data-align="center"] {
+    left: 50%;
+    translate: -50% 0;
+}
+
+.tip[data-align="center"]::after {
+    left: calc(50% - 6px);
+}
+
+.tip[data-align="left"] {
+    left: 0;
+}
+
+.tip[data-align="left"]::after {
+    left: 14px;
+}
+
+.tip[data-align="right"] {
+    right: 0;
+}
+
+.tip[data-align="right"]::after {
+    right: 14px;
+}
+
+@keyframes tipIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+}
+
+.clear {
+    all: unset;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-accent-secondary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.clear:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}
+
+/* one month on narrow containers (phones, narrow modals) */
+@container (max-width: 520px) {
+    .months {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .month[data-secondary] {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .day > .num,
+    .navBtn {
+        transition: none;
+    }
+
+    .tip {
+        animation: none;
+    }
+}

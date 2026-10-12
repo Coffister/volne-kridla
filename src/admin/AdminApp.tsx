@@ -11,6 +11,7 @@ import ReviewsPage from "./routes/ReviewsPage";
 import FaqPage from "./routes/FaqPage";
 import ProductsPage from "./routes/ProductsPage";
 import OrdersPage from "./routes/OrdersPage";
+import ReservationsPage from "./routes/ReservationsPage";
 import VersionsPage from "./routes/VersionsPage";
 
 import "./admin.css";
@@ -49,6 +50,7 @@ export default function AdminApp() {
           <Route path="otazky" element={<FaqPage />} />
           <Route path="produkty" element={<ProductsPage />} />
           <Route path="objednavky" element={<OrdersPage />} />
+          <Route path="rezervacie" element={<ReservationsPage />} />
           <Route path="verzie" element={<VersionsPage />} />
         </Route>
       </Routes>

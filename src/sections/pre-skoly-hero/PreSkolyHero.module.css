@@ -1,0 +1,145 @@
+/* Hero per the Figma design: narrower than the home hero, logo with the
+   ribbon tucked over the top edge of the card, text left / photo right. */
+
+.hero {
+    padding-top: clamp(120px, 12vw, 180px);
+    padding-bottom: var(--spacing-xl);
+}
+
+.heading {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(100%, 840px);
+    margin: 0 auto;
+}
+
+.title {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ribbon badge (src/assets/logos/Vector.svg, 549×114):
+   ~51% of the logo width, dipping slightly into the logo's baseline and
+   ~25px over the card's top edge. Percent margins resolve against the
+   heading's width, so the overlap scales with the logo. */
+.ribbon {
+    width: max(51%, 240px);
+    height: auto;
+    margin-top: -1.7%;
+    margin-bottom: -2.8%;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--spacing-lg);
+    align-items: stretch;
+
+    background: var(--color-surface-primary);
+    padding: var(--spacing-md);
+}
+
+.content {
+    justify-content: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-lg) var(--spacing-lg);
+}
+
+.headline {
+    color: var(--color-accent-secondary);
+    font-size: clamp(34px, 3.4vw, 48px) !important;
+    letter-spacing: -1.5px;
+    line-height: 1 !important;
+}
+
+.lead {
+    color: var(--color-text-primary);
+    letter-spacing: -0.4px;
+}
+
+.cta {
+    align-self: flex-start;
+}
+
+/* Keep "Rezervovať prezentáciu" on one line on every phone: the primary
+   button pads 16px per side and its label 24px more, which left no room in
+   narrow phone columns. Slim both (the doubled class beats .primary regardless of
+   CSS load order), never wrap, and step the label down a size on the
+   narrowest screens (iPhone SE and smaller). */
+@media (max-width: 640px) {
+    .cta.cta {
+        padding-inline: var(--spacing-xs);
+        white-space: nowrap;
+    }
+
+    .cta > span {
+        padding-inline: var(--spacing-xs);
+    }
+}
+
+@media (max-width: 380px) {
+    .cta > span > span {
+        font-size: 15px !important;
+    }
+}
+
+.imageSlot {
+    /* no aspect-ratio here: the grid stretches this to the text column's
+       height, and a fixed ratio would then derive a width wider than the
+       column and push the photo into the card's right padding */
+    position: relative;
+    min-width: 0;
+    min-height: 440px;
+}
+
+/* taken out of flow so the portrait photo's intrinsic height can't stretch
+   the card — the text column decides the height, the photo just covers it */
+.image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+
+@media (max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+
+    .imageSlot {
+        order: -1;
+        min-height: 0;
+    }
+
+    /* stacked layout: back in flow with its own ratio — an empty slot whose
+       height comes only from aspect-ratio collapses to 0 in Safari's grid */
+    .image {
+        position: static;
+        display: block;
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .content {
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm) var(--spacing-xs) var(--spacing-md);
+    }
+
+    .cta {
+        align-self: stretch;
+    }
+}
+
+@media (max-width: 640px) {
+    .headline {
+        letter-spacing: -1px;
+    }
+}
