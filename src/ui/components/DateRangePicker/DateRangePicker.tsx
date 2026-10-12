@@ -32,11 +32,9 @@ interface DateRangePickerProps {
   className?: string;
 }
 
-type Edge = "start" | "end";
-
-// Inline "od – do" range calendar, booking/airline style: two summary fields
-// on top (the highlighted one is what the next click sets), two months side
-// by side (one on narrow containers), hover preview of the range.
+// Inline "od – do" range calendar, booking/airline style. Deliberately one
+// rule only: 1st tap = first day, 2nd tap = last day, a 3rd tap starts over.
+// While the last day is pending, a bubble over the first day says so.
 export default function DateRangePicker({
   value,
   onChange,
@@ -50,61 +48,43 @@ export default function DateRangePicker({
   const min = minDate ? startOfDay(minDate) : today;
 
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(value.start ?? min));
-  const [editing, setEditing] = useState<Edge>(value.start && !value.end ? "end" : "start");
   const [hovered, setHovered] = useState<Date | null>(null);
 
   const { start, end } = value;
+  const pickingEnd = !!start && !end;
   const canGoBack = viewMonth > startOfMonth(min);
 
-  // the end of the range as currently drawn: the real end, or — while the
-  // visitor is picking it — the day under the pointer
-  const previewEnd =
-    end ?? (editing === "end" && start && hovered && hovered >= start ? hovered : null);
+  // the end as currently drawn: the real end, or — while picking it with a
+  // mouse — the day under the pointer
+  const previewEnd = end ?? (start && !end && hovered && hovered >= start ? hovered : null);
 
   function pick(day: Date) {
-    if (editing === "start" || !start || day < start) {
-      // a fresh start; keep an existing end only if it's still after it
-      onChange({ start: day, end: end && day <= end && editing === "start" ? end : null });
-      setEditing("end");
-      return;
+    if (start && !end && day >= start) {
+      onChange({ start, end: day });
+    } else {
+      // first tap, a tap before the current start, or a fresh range
+      onChange({ start: day, end: null });
     }
-    onChange({ start, end: day });
-    setEditing("start");
-  }
-
-  function clear() {
-    onChange({ start: null, end: null });
-    setEditing("start");
-  }
-
-  function focusEdge(edge: Edge) {
-    setEditing(edge);
-    const target = edge === "start" ? start : end ?? start;
-    if (target) setViewMonth(startOfMonth(target));
+    setHovered(null);
   }
 
   const months = [viewMonth, addMonths(viewMonth, 1)];
 
   return (
     <div className={`${styles.picker} ${className}`} data-invalid={invalid || undefined}>
-      <div className={styles.summary}>
+      <div className={styles.summary} aria-live="polite">
         {(["start", "end"] as const).map((edge) => {
           const date = edge === "start" ? start : end;
+          const next = edge === "start" ? !start || !!end : pickingEnd;
           return (
-            <button
-              key={edge}
-              type="button"
-              className={styles.summaryField}
-              data-active={editing === edge}
-              onClick={() => focusEdge(edge)}
-            >
+            <div key={edge} className={styles.summaryField} data-active={next}>
               <span className={styles.summaryLabel}>
                 {edge === "start" ? startLabel : endLabel}
               </span>
               <span className={styles.summaryValue} data-empty={!date}>
-                {date ? formatShort(date) : "Vyberte dátum"}
+                {date ? formatShort(date) : "Vyberte v kalendári"}
               </span>
-            </button>
+            </div>
           );
         })}
       </div>
@@ -137,9 +117,7 @@ export default function DateRangePicker({
               className={styles.month}
               data-secondary={monthIndex === 1 || undefined}
             >
-              <p className={styles.monthTitle} aria-live={monthIndex === 0 ? "polite" : undefined}>
-                {formatMonth(month)}
-              </p>
+              <p className={styles.monthTitle}>{formatMonth(month)}</p>
 
               <div className={styles.grid} role="grid" aria-label={formatMonth(month)}>
                 {WEEKDAYS.map((weekday) => (
@@ -155,7 +133,10 @@ export default function DateRangePicker({
                   const isStart = isSameDay(day, start);
                   const isEnd = isSameDay(day, previewEnd);
                   const inRange = !!start && !!previewEnd && day > start && day < previewEnd;
-                  const selected = isSameDay(day, start) || isSameDay(day, end);
+                  const isRange = !!previewEnd && !isSameDay(start, previewEnd);
+                  // weekday column 0–6 → which way the bubble may extend
+                  const column = (day.getDay() + 6) % 7;
+                  const showTip = isStart && pickingEnd && !hovered;
 
                   return (
                     <button
@@ -165,16 +146,26 @@ export default function DateRangePicker({
                       disabled={disabled}
                       data-start={isStart || undefined}
                       data-end={isEnd || undefined}
-                      data-range-edge={(isStart || isEnd) && !!previewEnd && !isSameDay(start, previewEnd) ? "true" : undefined}
+                      data-range-edge={(isStart || isEnd) && isRange ? "true" : undefined}
                       data-in-range={inRange || undefined}
                       data-today={isSameDay(day, today) || undefined}
                       data-weekend={isWeekend(day) || undefined}
-                      aria-pressed={selected}
+                      aria-pressed={isSameDay(day, start) || isSameDay(day, end)}
                       aria-label={formatLong(day)}
                       onClick={() => pick(day)}
-                      onMouseEnter={() => setHovered(day)}
+                      onMouseEnter={() => pickingEnd && setHovered(day)}
                     >
-                      <span>{day.getDate()}</span>
+                      <span className={styles.num}>{day.getDate()}</span>
+                      {showTip && (
+                        <span
+                          className={styles.tip}
+                          data-align={column < 2 ? "left" : column > 4 ? "right" : "center"}
+                          role="status"
+                        >
+                          Teraz vyberte posledný deň
+                          <small>alebo ťuknite znova pre 1 deň</small>
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -183,16 +174,17 @@ export default function DateRangePicker({
           ))}
         </div>
 
-        <div className={styles.footer}>
-          <span className={styles.hint}>
-            {editing === "start" ? "Vyberte prvý možný deň" : "Vyberte posledný možný deň"}
-          </span>
-          {(start || end) && (
-            <button type="button" className={styles.clear} onClick={clear}>
-              Vymazať
+        {(start || end) && (
+          <div className={styles.footer}>
+            <button
+              type="button"
+              className={styles.clear}
+              onClick={() => onChange({ start: null, end: null })}
+            >
+              Vymazať výber
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

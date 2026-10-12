@@ -24,6 +24,7 @@ import {
   type InviterKind,
 } from "./data";
 import { useRezervaciaModal } from "./useRezervaciaModal";
+import CityInput from "./CityInput";
 // same visual shell as the consultation modal — one look for every booking
 // flow on the site
 import Confetti from "@/features/konzultacia-modal/Confetti";
@@ -142,6 +143,8 @@ export default function RezervaciaModal() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [gdprOpen, setGdprOpen] = useState(false);
+  // honeypot: invisible to people, bots that fill every field fill it too
+  const [website, setWebsite] = useState("");
 
   const headingRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -279,15 +282,14 @@ export default function RezervaciaModal() {
     if (!form.subtype) next.subtype = isSchool ? "Vyberte typ školy." : "Vyberte typ organizácie.";
     if (!form.orgName.trim())
       next.orgName = isSchool ? "Uveďte názov školy." : "Uveďte názov organizácie.";
-    if (!form.city.trim()) next.city = "Uveďte mesto.";
+    if (!form.city.trim()) next.city = "Uveďte mesto alebo obec.";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
 
   function validateStep2(): boolean {
     const next: typeof errors = {};
-    const count = Number(form.participants);
-    if (!form.participants.trim() || !Number.isFinite(count) || count < 1)
+    if (!/^\d{1,5}$/.test(form.participants.trim()) || Number(form.participants) < 1)
       next.participants = "Uveďte približný počet účastníkov.";
     if (!form.ageGroup) next.ageGroup = "Vyberte vek účastníkov.";
     if (!dates.start) next.dates = "Vyberte preferovaný termín.";
@@ -308,6 +310,11 @@ export default function RezervaciaModal() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (!validateStep3() || !kind || !dates.start) return;
+    // a bot filled the hidden field — pretend it worked, store nothing
+    if (website) {
+      setStep(4);
+      return;
+    }
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -330,8 +337,13 @@ export default function RezervaciaModal() {
         consent: form.consent,
       });
       setStep(4);
-    } catch {
-      setSubmitError("Rezerváciu sa nepodarilo odoslať. Skúste to prosím znova.");
+    } catch (err) {
+      const tooMany = (err as { code?: string } | null)?.code === "P0429";
+      setSubmitError(
+        tooMany
+          ? "Z tohto e-mailu sme práve dostali viac rezervácií. Skúste to prosím o pár minút, alebo nám napíšte priamo."
+          : "Rezerváciu sa nepodarilo odoslať. Skúste to prosím znova.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -416,6 +428,7 @@ export default function RezervaciaModal() {
                         <input
                           id="r-org-name"
                           type="text"
+                          maxLength={200}
                           autoComplete="organization"
                           placeholder={isSchool ? "napr. ZŠ Hviezdoslavova" : "napr. Komunitné centrum Ovocná"}
                           value={form.orgName}
@@ -426,14 +439,12 @@ export default function RezervaciaModal() {
                       </div>
 
                       <div className={styles.field}>
-                        <label htmlFor="r-city">Mesto</label>
-                        <input
+                        <label htmlFor="r-city">Mesto alebo obec</label>
+                        <CityInput
                           id="r-city"
-                          type="text"
-                          autoComplete="address-level2"
                           value={form.city}
-                          onChange={(e) => set("city", e.target.value)}
-                          aria-invalid={!!errors.city}
+                          onChange={(v) => set("city", v)}
+                          invalid={!!errors.city}
                         />
                         {errors.city && <p className={styles.error}>{errors.city}</p>}
                       </div>
@@ -459,6 +470,8 @@ export default function RezervaciaModal() {
                         type="number"
                         inputMode="numeric"
                         min={1}
+                        max={99999}
+                        step={1}
                         value={form.participants}
                         onChange={(e) => set("participants", e.target.value)}
                         aria-invalid={!!errors.participants}
@@ -502,6 +515,7 @@ export default function RezervaciaModal() {
                     <label htmlFor="r-note">Poznámka (nepovinné)</label>
                     <textarea
                       id="r-note"
+                      maxLength={2000}
                       rows={3}
                       placeholder="Preferovaný čas, dĺžka programu, priestory, ďalšie želania…"
                       value={form.note}
@@ -526,6 +540,17 @@ export default function RezervaciaModal() {
                     </span>
                   </h1>
 
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+                  />
+
                   <div className={styles.recap}>
                     <span>{recapLabel}</span>
                     <button type="button" className={styles.recapEdit} onClick={() => setStep(1)}>
@@ -538,6 +563,7 @@ export default function RezervaciaModal() {
                     <input
                       id="r-name"
                       type="text"
+                      maxLength={200}
                       autoComplete="name"
                       value={form.name}
                       onChange={(e) => set("name", e.target.value)}
@@ -552,6 +578,7 @@ export default function RezervaciaModal() {
                       <input
                         id="r-email"
                         type="email"
+                        maxLength={320}
                         autoComplete="email"
                         value={form.email}
                         onChange={(e) => set("email", e.target.value)}
