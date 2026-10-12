@@ -24,6 +24,7 @@ import {
   type InviterKind,
 } from "./data";
 import { useRezervaciaModal } from "./useRezervaciaModal";
+import { useModalSwitch } from "@/features/modal-switch/useModalSwitch";
 import CityInput from "./CityInput";
 // same visual shell as the consultation modal — one look for every booking
 // flow on the site
@@ -130,6 +131,7 @@ function formatRange({ start, end }: DateRange): string {
 export default function RezervaciaModal() {
   const { isOpen, kind: requestedKind, close, setKind } = useRezervaciaModal();
 
+  const { toKonzultacia } = useModalSwitch();
   const [isClosing, setIsClosing] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
 
@@ -398,6 +400,16 @@ export default function RezervaciaModal() {
                     ))}
                   </div>
                   {errors.kind && <p className={styles.error}>{errors.kind}</p>}
+
+                  {/* quiet side-door for parrot owners — only until a kind is picked */}
+                  {!kind && (
+                    <p className={styles.switchHint}>
+                      Hľadáte pomoc s vlastným papagájom?{" "}
+                      <button type="button" className={styles.switchLink} onClick={toKonzultacia}>
+                        Pozrite si konzultácie →
+                      </button>
+                    </p>
+                  )}
 
                   {kind && (
                     <div key={`reveal-${kind}`} className={styles.reveal}>
