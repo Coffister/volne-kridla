@@ -1,19 +1,19 @@
-import { Container, Text, Section, Squircle } from "@/ui/primitives";
+import { Container, Stack, Text, Section } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
 import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 import styles from "./PreSkolyRezervacia.module.css";
 
-// Closing CTA: one centred card — the booking modal itself asks for the
-// details, so this only needs to invite and open it.
+// Closing CTA straight on the sky background: outlined brand heading, one
+// line of text, one button — the booking modal itself asks for the details.
 export default function PreSkolyRezervacia() {
   const { open: openRezervacia } = useRezervaciaModal();
 
   return (
     <Section id="rezervacia" className={styles.section}>
       <Container style={PRE_SKOLY_CONTAINER}>
-        <Squircle radius="2xl" className={styles.card}>
+        <Stack direction="column" align="center" className={styles.content}>
           <Text as="h2" variant="sectionTitle" className={styles.title}>
             Chcete zažiť svet papagájov zblízka?
           </Text>
@@ -24,7 +24,7 @@ export default function PreSkolyRezervacia() {
           <Button variant="primary" className={styles.cta} onClick={() => openRezervacia()}>
             Rezervovať prezentáciu
           </Button>
-        </Squircle>
+        </Stack>
 
         <Text as="p" variant="body" className={styles.closing}>
           Možno po našom stretnutí už nikdy neuvidíte papagája len ako farebného
