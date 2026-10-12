@@ -8,16 +8,17 @@ export default function OMneFreedom() {
   return (
     <Section id="posledny-krok" className={styles.section}>
       <Container>
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Squircle radius="lg" className={styles.mediaPanel}>
             <Image
               src={freedomPhoto}
               alt="Franka s papagájom a dieťaťom v prírode"
               className={styles.mediaImage}
+              data-reveal="media"
             />
           </Squircle>
 
-          <Box className={styles.infoPanel}>
+          <Box className={styles.infoPanel} reveal="stagger">
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
               Volám sa Franka
             </Text>

@@ -21,8 +21,8 @@ export default function PreSkolyRezervacia() {
   return (
     <Section id="rezervacia" className={styles.section}>
       <Container style={PRE_SKOLY_CONTAINER}>
-        <Squircle radius="2xl" className={styles.card}>
-          <Box className={styles.content}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
+          <Box className={styles.content} reveal="stagger">
             <Text as="span" variant="caption" className={styles.eyebrow}>
               Rezervácia prezentácie
             </Text>
@@ -36,12 +36,12 @@ export default function PreSkolyRezervacia() {
             </Text>
           </Box>
 
-          <Squircle radius={32} className={styles.panel}>
+          <Squircle radius={32} className={styles.panel} reveal="up">
             <Text as="h3" variant="cardTitle" className={styles.panelTitle}>
               Čo budeme potrebovať
             </Text>
 
-            <Stack direction="column" gap="xs" className={styles.checklist}>
+            <Stack direction="column" gap="xs" className={styles.checklist} reveal="stagger">
               {checklist.map(({ icon: ItemIcon, label }) => (
                 <Squircle key={label} radius={16} className={styles.checkItem}>
                   <span className={styles.checkIcon} aria-hidden>
@@ -60,7 +60,7 @@ export default function PreSkolyRezervacia() {
           </Squircle>
         </Squircle>
 
-        <Text as="p" variant="sectionSubtitle" className={styles.closing}>
+        <Text as="p" variant="sectionSubtitle" className={styles.closing} reveal="up">
           Možno po našom stretnutí už nikdy neuvidíte papagája len ako farebného
           vtáka v klietke. Uvidíte v ňom inteligentného, citlivého a fascinujúceho
           spoločníka. 🦜

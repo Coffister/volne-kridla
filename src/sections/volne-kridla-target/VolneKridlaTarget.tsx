@@ -20,12 +20,13 @@ export default function VolneKridlaTarget() {
           <Badge>Čo je to ten target tréning?</Badge>
         </Stack>
 
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Squircle radius="lg" className={styles.mediaPanel}>
-            <Image src={targetPhoto} alt="Target tréning s papagájom" className={styles.mediaImage} />
+            <Image src={targetPhoto} alt="Target tréning s papagájom" className={styles.mediaImage}
+              data-reveal="media" />
           </Squircle>
 
-          <Box className={styles.infoPanel}>
+          <Box className={styles.infoPanel} reveal="stagger">
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
               Target tréning
             </Text>
@@ -38,6 +39,7 @@ export default function VolneKridlaTarget() {
         <Squircle
           radius="xl"
           className={styles.rulesList}
+          reveal="up"
           borderWidth={0}
           borderColor="white"
         >
@@ -58,7 +60,7 @@ export default function VolneKridlaTarget() {
           <Badge>Výhody target tréningu</Badge>
         </Stack>
 
-        <Box className={styles.benefitsRow}>
+        <Box className={styles.benefitsRow} reveal="stagger">
           {targetBenefits.map((benefit, index) => (
             <Squircle
               key={benefit.title}

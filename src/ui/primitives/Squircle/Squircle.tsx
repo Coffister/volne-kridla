@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { radius as radiusTokens } from "@/ui/foundation/radius";
 import type { Radius } from "@/ui/foundation/radius";
+import type { RevealVariant } from "@/lib/reveal";
 
 export type CornerKey = "topLeft" | "topRight" | "bottomRight" | "bottomLeft";
 export type CornerRadius = Partial<Record<CornerKey, number>>;
@@ -77,6 +78,7 @@ interface SquircleProps {
     borderColor?: string;
     className?: string;
     style?: CSSProperties;
+    reveal?: RevealVariant;
 }
 
 export default function Squircle({
@@ -86,6 +88,7 @@ export default function Squircle({
     borderColor = "transparent",
     className,
     style,
+    reveal,
 }: SquircleProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [size, setSize] = useState({ width: 0, height: 0 });
@@ -143,6 +146,7 @@ export default function Squircle({
         <div
             ref={containerRef}
             className={className}
+            data-reveal={reveal}
             style={{
                 position: "relative",
                 clipPath: svgPath ? `path('${svgPath}')` : undefined,

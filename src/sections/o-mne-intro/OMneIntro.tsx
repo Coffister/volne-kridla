@@ -15,7 +15,7 @@ export default function OMneIntro() {
           <Text as="h1" className="srOnly">
             O mne — Franka
           </Text>
-          <Squircle radius="2xl" className={styles.carouselWrapper}>
+          <Squircle radius="2xl" className={styles.carouselWrapper} reveal="up">
             <Carousel
               images={oMneCarouselImages}
               radius="xl"

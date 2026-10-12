@@ -55,7 +55,7 @@ function FaqGroup({ id, badge, items }: FaqGroupProps) {
       </Stack>
 
       <Box className={styles.columns}>
-        <Stack className={styles.column} gap="xs">
+        <Stack className={styles.column} gap="xs" reveal="stagger">
           {leftColumn.map((item, index) => (
             <FaqItem
               key={item.question}
@@ -66,7 +66,7 @@ function FaqGroup({ id, badge, items }: FaqGroupProps) {
           ))}
         </Stack>
 
-        <Stack className={styles.column} gap="xs">
+        <Stack className={styles.column} gap="xs" reveal="stagger">
           {rightColumn.map((item, index) => (
             <FaqItem
               key={item.question}

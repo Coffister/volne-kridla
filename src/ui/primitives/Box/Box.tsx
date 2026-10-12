@@ -5,6 +5,7 @@ import type {
     HTMLAttributes,
 } from "react";
 import { spacing } from "@/ui/foundation/spacing";
+import type { RevealVariant } from "@/lib/reveal";
 
 type SpacingValue = keyof typeof spacing;
 
@@ -37,6 +38,8 @@ export interface BoxProps
     position?: CSSProperties["position"];
     overflow?: CSSProperties["overflow"];
     zIndex?: number;
+
+    reveal?: RevealVariant;
 }
 
 export default function Box({
@@ -68,6 +71,7 @@ export default function Box({
     position,
     overflow,
     zIndex,
+    reveal,
 }: BoxProps) {
     const style: CSSProperties = {
         width: w,
@@ -93,7 +97,7 @@ export default function Box({
     };
 
     return (
-        <Component className={className} style={style}>
+        <Component className={className} style={style} data-reveal={reveal}>
             {children}
         </Component>
     );

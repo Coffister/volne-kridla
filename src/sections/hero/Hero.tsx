@@ -43,16 +43,17 @@ export default function Hero() {
     <Box as="section" className={styles.hero}>
       <Container>
         <Stack direction="column" align="center" gap="xs" className={styles.heading}>
-          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} />
+          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} data-reveal="up" />
           <Badge>Nielen škola pre papagáje</Badge>
         </Stack>
 
         <Squircle
           radius="2xl"
           className={styles.cardWrapper}
+          reveal="up"
         >
           <Box className={styles.card}>
-            <Stack direction="column" gap="sm" className={styles.content}>
+            <Stack direction="column" gap="sm" className={styles.content} reveal="stagger">
               <Text as="span" variant="caption" className={styles.eyebrow}>
                 Tréning voľných krídel
               </Text>
@@ -81,7 +82,7 @@ export default function Hero() {
           </Box>
         </Squircle>
 
-        <div className={styles.tags}>
+        <div className={styles.tags} data-reveal="up">
           <TagRow />
           <TagRow reverse />
         </div>

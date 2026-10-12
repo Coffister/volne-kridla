@@ -16,19 +16,20 @@ export default function PreSkolyHero() {
     <Box as="section" id="hero" className={styles.hero}>
       <Container style={PRE_SKOLY_CONTAINER}>
         <div className={styles.heading}>
-          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} />
+          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} data-reveal="up" />
           <Image
             src={ribbon}
             alt="Pre školy a organizácie"
             className={styles.ribbon}
+            data-reveal="pop"
             width={549}
             height={114}
             loading="eager"
           />
         </div>
 
-        <Squircle radius="2xl" className={styles.card}>
-          <Stack direction="column" className={styles.content}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
+          <Stack direction="column" className={styles.content} reveal="stagger">
             <Text as="h1" variant="sectionTitle" className={styles.headline}>
               Objavte svet papagájov tak, ako ho ešte nepoznáte!
             </Text>
@@ -49,6 +50,7 @@ export default function PreSkolyHero() {
               src={preSkolyPhotos.frankaAra.src}
               alt={preSkolyPhotos.frankaAra.alt}
               className={styles.image}
+              data-reveal="media"
               loading="eager"
               fetchPriority="high"
             />

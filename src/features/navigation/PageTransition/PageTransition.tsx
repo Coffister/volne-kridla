@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { getLenis } from "@/lib/scroll";
+import { setupReveals } from "@/lib/reveal";
 
 // outgoing page: quick lift + fade so it feels like it steps aside
 const EXIT_DURATION = 0.28;
@@ -112,6 +113,10 @@ export default function PageTransition() {
       return;
     }
 
+    // hide the page's [data-reveal] content before paint; it cascades in as
+    // the page fades up and the rest follows on scroll
+    const cleanupReveals = setupReveals(element);
+
     if (prefersReducedMotion()) {
       gsap.set(element, { opacity: 1, y: 0, filter: "blur(0px)" });
       reveal();
@@ -143,6 +148,7 @@ export default function PageTransition() {
     return () => {
       window.clearTimeout(safety);
       tween.kill();
+      cleanupReveals();
     };
   }, [shown.key]);
 

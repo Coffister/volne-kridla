@@ -251,14 +251,14 @@ export default function Testimonials() {
     <Section className={styles.section}>
       <Container className={styles.container}>
         <Stack direction="column" align="center" className={styles.sectionheader}>
-          <Text as="h2" variant="sectionTitle" className={styles.title}>
+          <Text as="h2" variant="sectionTitle" className={styles.title} reveal="up">
             Vidíš ich? Tí už spravili prvý krok.
           </Text>
           <Badge>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</Badge>
         </Stack>
       </Container>
 
-      <div ref={trackRef} className={styles.track} data-cursor="drag">
+      <div ref={trackRef} className={styles.track} data-cursor="drag" data-reveal="up">
         {loopedTestimonials.map((testimonial, index) => (
           <ReviewCard key={`${testimonial.id}-${index}`} testimonial={testimonial} />
         ))}

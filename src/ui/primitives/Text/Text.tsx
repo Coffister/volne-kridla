@@ -8,6 +8,7 @@ import { typography } from "@/ui/foundation/typography";
 import type { Typography } from "@/ui/foundation/typography";
 import { fontWeight } from "@/ui/foundation/fontWeight";
 import type { FontWeight } from "@/ui/foundation/fontWeight";
+import type { RevealVariant } from "@/lib/reveal";
 
 export interface TextProps {
     as?: ElementType;
@@ -18,6 +19,7 @@ export interface TextProps {
 
     className?: string;
     style?: CSSProperties;
+    reveal?: RevealVariant;
 }
 
 export default function Text({
@@ -29,10 +31,12 @@ export default function Text({
 
     className,
     style,
+    reveal,
 }: TextProps) {
     return (
         <Component
             className={className}
+            data-reveal={reveal}
             style={{
                 ...typography[variant],
                 ...(weight ? { fontWeight: fontWeight[weight] } : null),

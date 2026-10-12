@@ -18,6 +18,7 @@ export default function Badge({
     return (
         <span
             className={styles.badgewrapper}
+            data-reveal="pop"
             style={{ "--badge-rotate": rotate } as CSSProperties}
         >
         <Squircle className={styles.badge} radius="xs">

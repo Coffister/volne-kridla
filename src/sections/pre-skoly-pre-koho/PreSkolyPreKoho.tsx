@@ -36,7 +36,7 @@ export default function PreSkolyPreKoho() {
           <Badge>Pre koho?</Badge>
         </Stack>
 
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Box className={styles.textRow}>
             <Box>
               <Text as="h2" variant="cardTitle" className={styles.title}>
@@ -48,7 +48,7 @@ export default function PreSkolyPreKoho() {
               </Text>
             </Box>
 
-            <ul className={styles.audiences}>
+            <ul className={styles.audiences} data-reveal="stagger">
               {audiences.map((audience, index) => (
                 <li
                   key={audience}
@@ -60,7 +60,7 @@ export default function PreSkolyPreKoho() {
             </ul>
           </Box>
 
-          <div className={styles.photos}>
+          <div className={styles.photos} data-reveal="stagger">
             {photos.map((photo, index) => (
               <button
                 key={photo.id}

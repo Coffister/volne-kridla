@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { forwardRef } from "react";
 import { spacing } from "@/ui/foundation/spacing";
+import type { RevealVariant } from "@/lib/reveal";
 
 type SpacingValue = keyof typeof spacing;
 
@@ -16,6 +17,7 @@ export interface StackProps {
 
     className?: string;
     style?: CSSProperties;
+    reveal?: RevealVariant;
 }
 
 const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack({
@@ -30,6 +32,7 @@ const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack({
 
     className,
     style: customStyle,
+    reveal,
 }, ref) {
     const style: CSSProperties = {
         display: "flex",
@@ -45,7 +48,7 @@ const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack({
     };
 
     return (
-        <div ref={ref} className={className} style={style}>
+        <div ref={ref} className={className} style={style} data-reveal={reveal}>
             {children}
         </div>
     );

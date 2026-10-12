@@ -23,9 +23,9 @@ export default function VolneKridlaIntro() {
           <Text as="h1" className="srOnly">
             Kurz a tréning voľného lietania papagájov
           </Text>
-          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} />
+          <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} data-reveal="up" />
 
-          <Squircle radius="2xl" className={styles.carouselWrapper}>
+          <Squircle radius="2xl" className={styles.carouselWrapper} reveal="up">
             <Carousel
               images={heroCarouselImages}
               radius="xl"
@@ -35,7 +35,7 @@ export default function VolneKridlaIntro() {
             />
           </Squircle>
 
-          <Squircle radius="xl" className={styles.textCard}>
+          <Squircle radius="xl" className={styles.textCard} reveal="up">
             <Text as="p" variant="body" className={styles.text}>
               {
                 "Po viac než dvadsiatich rokoch každodenného života s papagájmi som sa naučila vnímať ich povahu, rešpektovať ich jedinečnosť a chápať, že aj keď majú spoločné črty, každý z nich je osobnosťou. Každý papagáj má svoj vlastný spôsob interakcie či už v kŕdli alebo s človekom, ktorý sa mu stane spoločníkom.\n\nNa tejto stránke s vami zdieľam skúsenosti a poznatky, ktoré Vám môžu pomôcť lepšie porozumieť vášmu papagájovi, nájsť rovnováhu medzi slobodou a hranicami a vytvoriť vzťah založený na dôvere a komunikácii."

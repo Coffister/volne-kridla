@@ -36,12 +36,13 @@ export default function VolneKridlaTraining() {
           <Badge>Prečo by som mal učit papagája lietať?</Badge>
         </Stack>
 
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Squircle radius="lg" className={styles.mediaPanel}>
-            <Image src={trainingPhoto} alt="Papagáj počas letu" className={styles.mediaImage} />
+            <Image src={trainingPhoto} alt="Papagáj počas letu" className={styles.mediaImage}
+              data-reveal="media" />
           </Squircle>
 
-          <Box className={styles.infoPanel}>
+          <Box className={styles.infoPanel} reveal="stagger">
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
               Tréning voľného letu
             </Text>
@@ -57,6 +58,7 @@ export default function VolneKridlaTraining() {
         <Squircle
           radius="xl"
           className={styles.rulesList}
+          reveal="up"
           borderWidth={0}
           borderColor="white"
         >
@@ -77,7 +79,7 @@ export default function VolneKridlaTraining() {
           <Badge>Výhody voľného lietania</Badge>
         </Stack>
 
-        <Box className={styles.benefitsRow}>
+        <Box className={styles.benefitsRow} reveal="stagger">
           {benefits.map((benefit) => (
             <Squircle
               key={benefit.title}

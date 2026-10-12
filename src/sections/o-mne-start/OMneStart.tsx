@@ -13,16 +13,17 @@ export default function OMneStart() {
           <Badge>Môj príbeh</Badge>
         </Stack>
 
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Squircle radius="lg" className={styles.mediaPanel}>
             <Image
               src={startPhoto}
               alt="Franka počas svojich začiatkov s papagájmi"
               className={styles.mediaImage}
+              data-reveal="media"
             />
           </Squircle>
 
-          <Box className={styles.infoPanel}>
+          <Box className={styles.infoPanel} reveal="stagger">
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
               Kde to celé začalo
             </Text>

@@ -38,7 +38,7 @@ export default function PreSkolyProgram() {
           <Badge>Čo vás čaká?</Badge>
         </Stack>
 
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Box className={styles.intro}>
             <Text as="h2" variant="sectionTitle" className={styles.title}>
               Život papagájov v prírode aj doma
@@ -51,7 +51,7 @@ export default function PreSkolyProgram() {
             </Text>
           </Box>
 
-          <div className={styles.grid}>
+          <div className={styles.grid} data-reveal="stagger">
             {themes.map(({ icon: ThemeIcon, title, text, points }, index) => (
               <Squircle key={title} radius={26} className={styles.theme}>
                 <Stack direction="row" align="center" justify="space-between">
@@ -81,7 +81,7 @@ export default function PreSkolyProgram() {
             ))}
           </div>
 
-          <Squircle radius={26} className={styles.note}>
+          <Squircle radius={26} className={styles.note} reveal="up">
             <span className={styles.noteIcon} aria-hidden>
               <Sparkle size={28} weight="fill" />
             </span>

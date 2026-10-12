@@ -56,11 +56,16 @@
   padding: 16px 32px 16px;
   cursor: pointer;
   border-radius: 24px 24px 8px 8px;
-  transition: background 180ms ease, transform 180ms ease, 180ms ease;
+  transition: background 180ms ease, transform 450ms var(--ease-squish);
 }
 
 .tabButton:hover {
   transform: translateY(-1px);
+}
+
+.tabButton:active {
+  transform: scale(1.04, 0.92);
+  transition-duration: 120ms;
 }
 
 .tabButtonActive {

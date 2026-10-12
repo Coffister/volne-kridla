@@ -11,12 +11,13 @@ export default function PreSkolyFilozofia() {
   return (
     <Section id="filozofia" className={styles.section}>
       <Container style={PRE_SKOLY_CONTAINER}>
-        <Squircle radius="2xl" className={styles.card}>
+        <Squircle radius="2xl" className={styles.card} reveal="up">
           <Squircle radius="lg" className={styles.mediaPanel}>
-            <Image src={photo.src} alt={photo.alt} className={styles.mediaImage} />
+            <Image src={photo.src} alt={photo.alt} className={styles.mediaImage}
+              data-reveal="media" />
           </Squircle>
 
-          <Box className={styles.infoPanel}>
+          <Box className={styles.infoPanel} reveal="stagger">
             <Text as="h2" variant="sectionTitle" className={styles.infoTitle}>
               Naša filozofia
             </Text>
