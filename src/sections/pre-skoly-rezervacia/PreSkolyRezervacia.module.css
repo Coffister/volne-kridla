@@ -82,6 +82,13 @@
     margin-top: var(--spacing-xs);
 }
 
+/* the button already pads 16px each side; the default inner 24px on top of
+   that left "Rezervovať prezentáciu" ~10px short of fitting on one line in
+   the narrow mobile panel */
+.cta > span {
+    padding-inline: var(--spacing-xs);
+}
+
 .closing {
     max-width: 52ch;
     margin: var(--spacing-2xl) auto 0;

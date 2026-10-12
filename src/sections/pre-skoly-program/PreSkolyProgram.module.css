@@ -143,8 +143,10 @@
 }
 
 @media (max-width: 640px) {
+    /* the "Čo vás čaká?" badge overhangs the card's top edge, so the heading
+       needs real room above it — 16px left it touching the badge */
     .card {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-sm);
     }
 
     .title {
