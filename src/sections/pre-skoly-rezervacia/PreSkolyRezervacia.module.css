@@ -82,11 +82,26 @@
     margin-top: var(--spacing-xs);
 }
 
-/* the button already pads 16px each side; the default inner 24px on top of
-   that left "Rezervovať prezentáciu" ~10px short of fitting on one line in
-   the narrow mobile panel */
-.cta > span {
-    padding-inline: var(--spacing-xs);
+/* Keep "Rezervovať prezentáciu" on one line on every phone: the primary
+   button pads 16px per side and its label 24px more, which left no room in
+   narrow phone columns. Slim both (the doubled class beats .primary regardless of
+   CSS load order), never wrap, and step the label down a size on the
+   narrowest screens (iPhone SE and smaller). */
+@media (max-width: 640px) {
+    .cta.cta {
+        padding-inline: var(--spacing-xs);
+        white-space: nowrap;
+    }
+
+    .cta > span {
+        padding-inline: var(--spacing-xs);
+    }
+}
+
+@media (max-width: 380px) {
+    .cta > span > span {
+        font-size: 15px !important;
+    }
 }
 
 .closing {

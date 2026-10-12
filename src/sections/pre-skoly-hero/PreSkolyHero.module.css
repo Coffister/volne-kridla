@@ -65,6 +65,28 @@
     align-self: flex-start;
 }
 
+/* Keep "Rezervovať prezentáciu" on one line on every phone: the primary
+   button pads 16px per side and its label 24px more, which left no room in
+   narrow phone columns. Slim both (the doubled class beats .primary regardless of
+   CSS load order), never wrap, and step the label down a size on the
+   narrowest screens (iPhone SE and smaller). */
+@media (max-width: 640px) {
+    .cta.cta {
+        padding-inline: var(--spacing-xs);
+        white-space: nowrap;
+    }
+
+    .cta > span {
+        padding-inline: var(--spacing-xs);
+    }
+}
+
+@media (max-width: 380px) {
+    .cta > span > span {
+        font-size: 15px !important;
+    }
+}
+
 .imageSlot {
     /* no aspect-ratio here: the grid stretches this to the text column's
        height, and a fixed ratio would then derive a width wider than the
