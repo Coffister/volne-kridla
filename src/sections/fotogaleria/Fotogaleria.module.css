@@ -78,23 +78,23 @@
     list-style: none;
 }
 
+/* simple card: black outline, no shadow — photo inset with its own rounded
+   corners, photo count over its bottom-right corner, title + date below */
 .album {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow: hidden;
+    padding: 12px;
     color: var(--color-text-primary);
     text-decoration: none;
     background: var(--color-surface-primary);
     border: 3px solid var(--color-border-primary);
     border-radius: var(--radius-md);
-    box-shadow: 0 6px 0 var(--color-border-primary);
-    transition: transform 160ms ease, box-shadow 160ms ease;
+    transition: transform 160ms ease;
 }
 
 .album:hover {
     transform: translateY(-3px);
-    box-shadow: 0 9px 0 var(--color-border-primary);
 }
 
 .album:focus-visible {
@@ -105,13 +105,13 @@
 .albumCover {
     position: relative;
     display: block;
-    aspect-ratio: 4 / 3;
-    background: var(--color-surface-secondary);
+    aspect-ratio: 3 / 2;
     overflow: hidden;
-    border-bottom: 3px solid var(--color-border-primary);
+    background: var(--color-surface-secondary);
+    border-radius: var(--radius-sm);
 }
 
-/* absolutely positioned so a tall photo can't stretch the 4:3 box */
+/* absolutely positioned so a tall photo can't stretch the 3:2 box */
 .albumCover img {
     position: absolute;
     inset: 0;
@@ -126,26 +126,32 @@
     z-index: 1;
     right: 12px;
     bottom: 12px;
-    padding: 4px 10px;
-    font: var(--font-weight-bold) 0.8rem / 1.2 var(--font-family-body);
+    padding: 6px 14px;
+    font: var(--font-weight-bold) 0.95rem / 1.2 var(--font-family-body);
+    color: var(--color-text-primary);
     background: var(--color-surface-secondary);
-    border: 2px solid var(--color-border-primary);
-    border-radius: var(--radius-xs);
+    border-radius: 10px;
 }
 
 .albumMeta {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+    gap: 2px;
+    padding: var(--spacing-sm) 6px 6px;
 }
 
+/* Text applies its variant styles inline, hence !important */
 .albumTitle {
-    line-height: 1.15;
+    font-family: var(--font-family-body) !important;
+    font-weight: var(--font-weight-bold) !important;
+    font-size: 1.35rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em;
 }
 
 .albumDate {
-    color: var(--color-text-muted);
+    font-size: 1rem !important;
+    color: var(--color-text-primary);
 }
 
 .back {
