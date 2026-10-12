@@ -7,6 +7,7 @@ import Lightbox from "@/ui/components/Lightbox";
 import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 
 import styles from "./PreSkolyPreKoho.module.css";
+import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 // audience chips, shown as a static wrap of tags
 const audiences = [
@@ -30,7 +31,7 @@ export default function PreSkolyPreKoho() {
 
   return (
     <Section id="pre-koho" className={styles.section}>
-      <Container>
+      <Container style={PRE_SKOLY_CONTAINER}>
         <Stack direction="column" align="center" className={styles.header}>
           <Badge>Pre koho?</Badge>
         </Stack>

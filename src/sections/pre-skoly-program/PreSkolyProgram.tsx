@@ -5,6 +5,7 @@ import { Box, Container, Stack, Text, Section, Squircle } from "@/ui/primitives"
 import Badge from "@/ui/components/Badge";
 
 import styles from "./PreSkolyProgram.module.css";
+import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 // the original 7 talking points, grouped into 3 themes — each point survives
 // as a small tag under its theme so nothing from the brief is lost
@@ -32,7 +33,7 @@ const themes: { icon: Icon; title: string; text: string; points: string[] }[] = 
 export default function PreSkolyProgram() {
   return (
     <Section id="program" className={styles.section}>
-      <Container>
+      <Container style={PRE_SKOLY_CONTAINER}>
         <Stack direction="column" align="center" className={styles.header}>
           <Badge>Čo vás čaká?</Badge>
         </Stack>

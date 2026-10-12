@@ -7,13 +7,14 @@ import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
 
 import styles from "./PreSkolyHero.module.css";
+import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 export default function PreSkolyHero() {
   const { open: openRezervacia } = useRezervaciaModal();
 
   return (
     <Box as="section" id="hero" className={styles.hero}>
-      <Container style={{ maxWidth: 1140 }}>
+      <Container style={PRE_SKOLY_CONTAINER}>
         <div className={styles.heading}>
           <Image src={vkTypelogo} alt="Voľné krídla" className={styles.title} />
           <Image

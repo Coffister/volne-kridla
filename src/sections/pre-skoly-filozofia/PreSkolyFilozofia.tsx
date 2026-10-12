@@ -3,13 +3,14 @@ import { Box, Container, Text, Section, Squircle, Image } from "@/ui/primitives"
 import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 
 import styles from "./PreSkolyFilozofia.module.css";
+import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 export default function PreSkolyFilozofia() {
   const photo = preSkolyPhotos.materskaSkola;
 
   return (
     <Section id="filozofia" className={styles.section}>
-      <Container>
+      <Container style={PRE_SKOLY_CONTAINER}>
         <Squircle radius="2xl" className={styles.card}>
           <Squircle radius="lg" className={styles.mediaPanel}>
             <Image src={photo.src} alt={photo.alt} className={styles.mediaImage} />

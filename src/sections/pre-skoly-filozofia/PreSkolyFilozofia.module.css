@@ -37,10 +37,11 @@
 }
 
 .infoTitle {
+    font-size: clamp(34px, 3.4vw, 48px) !important;
     margin-bottom: var(--spacing-xs);
     color: var(--color-text-secondary);
     -webkit-text-fill-color: var(--color-text-secondary);
-    -webkit-text-stroke: clamp(6px, 2vw, 12px) var(--color-border-primary);
+    -webkit-text-stroke: clamp(6px, 1.4vw, 9px) var(--color-border-primary);
     paint-order: stroke fill;
 }
 

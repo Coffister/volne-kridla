@@ -25,8 +25,9 @@
 }
 
 .title {
+    font-size: clamp(34px, 3.4vw, 48px) !important;
     color: var(--color-accent-secondary);
-    letter-spacing: -3px;
+    letter-spacing: -1.5px;
     line-height: 0.92 !important;
 }
 
@@ -130,13 +131,11 @@
     font-weight: var(--font-weight-bold);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
     .grid {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 900px) {
     .intro {
         grid-template-columns: 1fr;
         gap: var(--spacing-sm);

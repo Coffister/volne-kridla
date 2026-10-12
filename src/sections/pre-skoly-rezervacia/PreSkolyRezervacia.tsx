@@ -6,6 +6,7 @@ import Button from "@/ui/components/Button";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
 
 import styles from "./PreSkolyRezervacia.module.css";
+import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
 
 const checklist: { icon: Icon; label: string }[] = [
   { icon: Buildings, label: "Názov vašej organizácie" },
@@ -19,7 +20,7 @@ export default function PreSkolyRezervacia() {
 
   return (
     <Section id="rezervacia" className={styles.section}>
-      <Container>
+      <Container style={PRE_SKOLY_CONTAINER}>
         <Squircle radius="2xl" className={styles.card}>
           <Box className={styles.content}>
             <Text as="span" variant="caption" className={styles.eyebrow}>
