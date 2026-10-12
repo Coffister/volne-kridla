@@ -253,6 +253,8 @@ export default function RezervaciaModal() {
   if (!isOpen && !isClosing) return null;
 
   const isSchool = kind === "skola";
+  const groupDescribed =
+    /^\d{1,5}$/.test(form.participants.trim()) && Number(form.participants) >= 1 && !!form.ageGroup;
   const kindLabel = INVITER_KINDS.find((k) => k.id === kind)?.label ?? "";
   const subtypes = isSchool ? SCHOOL_TYPES : ORGANIZATION_TYPES;
   const recapLabel = [form.orgName.trim(), form.city.trim(), formatRange(dates)]
@@ -498,30 +500,35 @@ export default function RezervaciaModal() {
                     </div>
                   </div>
 
-                  <h2 className={styles.subheading}>
-                    <CalendarBlank size={22} />
-                    Preferovaný termín
-                  </h2>
-                  <DateRangePicker
-                    value={dates}
-                    onChange={changeDates}
-                    startLabel="Najskôr od"
-                    endLabel="Najneskôr do"
-                    invalid={!!errors.dates}
-                  />
-                  {errors.dates && <p className={styles.error}>{errors.dates}</p>}
+                  {/* dates only once the group is described — one thing at a time */}
+                  {groupDescribed && (
+                    <div key="dates-reveal" className={styles.reveal}>
+                      <h2 className={styles.subheading}>
+                        <CalendarBlank size={22} />
+                        Preferovaný termín
+                      </h2>
+                      <DateRangePicker
+                        value={dates}
+                        onChange={changeDates}
+                        startLabel="Najskôr od"
+                        endLabel="Najneskôr do"
+                        invalid={!!errors.dates}
+                      />
+                      {errors.dates && <p className={styles.error}>{errors.dates}</p>}
 
-                  <div className={styles.field} style={{ marginTop: "0.9rem" }}>
-                    <label htmlFor="r-note">Poznámka (nepovinné)</label>
-                    <textarea
-                      id="r-note"
-                      maxLength={2000}
-                      rows={3}
-                      placeholder="Preferovaný čas, dĺžka programu, priestory, ďalšie želania…"
-                      value={form.note}
-                      onChange={(e) => set("note", e.target.value)}
-                    />
-                  </div>
+                      <div className={styles.field} style={{ marginTop: "0.9rem" }}>
+                        <label htmlFor="r-note">Poznámka (nepovinné)</label>
+                        <textarea
+                          id="r-note"
+                          maxLength={2000}
+                          rows={3}
+                          placeholder="Preferovaný čas, dĺžka programu, priestory, ďalšie želania…"
+                          value={form.note}
+                          onChange={(e) => set("note", e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </section>
               )}
 
