@@ -22,7 +22,7 @@
     object-fit: contain;
 }
 
-/* ribbon from Figma (stuha-pre-skoly.svg, 548×112 incl. its drop shadow):
+/* ribbon badge (src/assets/logos/Vector.svg, 549×114):
    ~51% of the logo width, dipping slightly into the logo's baseline and
    ~25px over the card's top edge. Percent margins resolve against the
    heading's width, so the overlap scales with the logo. */

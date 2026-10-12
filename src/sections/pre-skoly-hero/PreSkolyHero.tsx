@@ -2,7 +2,7 @@ import { Box, Container, Stack, Text, Image, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 
 import vkTypelogo from "@/assets/hero/volne-kridla.svg";
-import ribbon from "@/assets/pre-skoly/stuha-pre-skoly.svg";
+import ribbon from "@/assets/logos/Vector.svg";
 import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
 
@@ -20,8 +20,8 @@ export default function PreSkolyHero() {
             src={ribbon}
             alt="Pre školy a organizácie"
             className={styles.ribbon}
-            width={548}
-            height={112}
+            width={549}
+            height={114}
             loading="eager"
           />
         </div>
