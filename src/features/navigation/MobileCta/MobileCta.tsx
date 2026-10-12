@@ -1,5 +1,5 @@
 import Button from "@/ui/components/Button";
-import { useKonzultaciaModal } from "@/features/konzultacia-modal";
+import { usePageCta } from "../usePageCta";
 
 import styles from "./MobileCta.module.css";
 
@@ -9,7 +9,7 @@ import styles from "./MobileCta.module.css";
 // "squish" transform, and a position:fixed child of a transformed element is
 // fixed to that element instead of the viewport.
 export default function MobileCta() {
-  const { open: openKonzultacia } = useKonzultaciaModal();
+  const cta = usePageCta();
 
   return (
     // the footer reserves room for this bar at the bottom (Footer.module.css)
@@ -19,9 +19,9 @@ export default function MobileCta() {
         weight="bold"
         fullWidth
         className={styles.button}
-        onClick={() => openKonzultacia()}
+        onClick={cta.onClick}
       >
-        Začať lietať
+        {cta.label}
       </Button>
     </div>
   );

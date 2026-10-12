@@ -14,9 +14,11 @@ import OMne from "./pages/OMne";
 import Fotogaleria from "./pages/Fotogaleria";
 import FotogaleriaAlbum from "./pages/FotogaleriaAlbum";
 import Eshop from "./pages/Eshop";
+import PreSkoly from "./pages/PreSkoly";
 import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
+import { RezervaciaModal } from "./features/rezervacia-modal";
 import Placeholder from "./pages/Placeholder";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
@@ -40,6 +42,7 @@ function SiteApp() {
     <>
       <Cursor />
       <KonzultaciaModal />
+      <RezervaciaModal />
       <Routes>
         {/* standalone — not wrapped in the site chrome (navbar/footer) */}
         <Route path="/playground" element={<Playground />} />
@@ -49,6 +52,7 @@ function SiteApp() {
           <Route path="/" element={<Home />} />
           <Route path="/volne-kridla" element={<VolneKridla />} />
           <Route path="/o-mne" element={<OMne />} />
+          <Route path="/pre-skoly" element={<PreSkoly />} />
           <Route path="/fotogaleria" element={<Fotogaleria />} />
           <Route path="/fotogaleria/:slug" element={<FotogaleriaAlbum />} />
           <Route path="/eshop" element={<Eshop />} />

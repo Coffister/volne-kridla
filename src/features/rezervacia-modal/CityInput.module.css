@@ -1,0 +1,44 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* in flow (not a floating popover): the modal body scrolls, and an absolute
+   dropdown would get clipped by it on short screens */
+.list {
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: #fff;
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+}
+
+.option {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  font-family: var(--font-family-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.option[data-active] {
+  background: var(--color-surface-secondary);
+}
+
+.name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.okres {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-primary);
+  opacity: 0.6;
+}

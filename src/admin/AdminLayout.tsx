@@ -46,6 +46,9 @@ export default function AdminLayout() {
             <NavLink to="/admin/objednavky" onClick={closeNav}>
               Dopyty
             </NavLink>
+            <NavLink to="/admin/rezervacie" onClick={closeNav}>
+              Rezervácie
+            </NavLink>
             <hr className="admin-divider" />
             <NavLink to="/admin/verzie" onClick={closeNav}>
               Verzie

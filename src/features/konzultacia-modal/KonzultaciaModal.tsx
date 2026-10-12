@@ -23,6 +23,7 @@ import {
   type TrackId,
 } from "./data";
 import { useKonzultaciaModal } from "./useKonzultaciaModal";
+import { useModalSwitch } from "@/features/modal-switch/useModalSwitch";
 import Confetti from "./Confetti";
 import {
   FeatherIcon,
@@ -138,6 +139,7 @@ export default function KonzultaciaModal() {
     setSelection,
   } = useKonzultaciaModal();
 
+  const { toRezervacia } = useModalSwitch();
   const [isClosing, setIsClosing] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
 
@@ -468,6 +470,17 @@ export default function KonzultaciaModal() {
                 </button>
               ))}
             </div>
+
+            {/* quiet side-door for schools/companies — only until a track is
+                picked, so it never sits in the middle of the flow */}
+            {track === null && (
+              <p className={styles.switchHint}>
+                Ste škola, firma alebo organizácia?{" "}
+                <button type="button" className={styles.switchLink} onClick={toRezervacia}>
+                  Rezervujte si prezentáciu →
+                </button>
+              </p>
+            )}
 
             {track === "konzultacia" && (
               <div key="type-reveal" className={styles.reveal}>

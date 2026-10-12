@@ -169,6 +169,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* if a label ever wraps, keep both lines centred like the single line */
+  text-align: center;
 }
 
 .icon {
