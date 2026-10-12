@@ -40,3 +40,15 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* iOS Safari zooms into any text field whose font is under 16px and doesn't
+   zoom back out. Rather than disabling pinch-zoom (an accessibility loss),
+   keep every form control at 16px on touch screens. !important because the
+   form modules style their controls with more specific selectors. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
