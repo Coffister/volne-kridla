@@ -3,6 +3,11 @@
 -- =============================================================================
 -- RezervaciaModal on /pre-skoly. Mirrors consultation_inquiries: public
 -- insert-only, admin-only read/update/delete.
+--
+-- Applied to production in parts (one statement group per migration, the
+-- Supabase tooling times out on bigger batches) as 0014a_table,
+-- 0014b_policies, 0014c_check, 0014d_guard_fn, 0014e_guard_trigger and
+-- 0014f_guard_not_rpc — the content is identical to this file.
 
 create table if not exists public.presentation_inquiries (
   id            uuid primary key default gen_random_uuid(),
@@ -28,39 +33,26 @@ create index if not exists presentation_inquiries_created_idx
 
 alter table public.presentation_inquiries enable row level security;
 
-drop policy if exists "presentation_inquiries: anyone can submit" on public.presentation_inquiries;
 create policy "presentation_inquiries: anyone can submit"
   on public.presentation_inquiries for insert
   to anon, authenticated
   with check (true);
 
-drop policy if exists "presentation_inquiries: admin reads" on public.presentation_inquiries;
 create policy "presentation_inquiries: admin reads"
   on public.presentation_inquiries for select
   to authenticated
   using (public.is_admin());
 
-drop policy if exists "presentation_inquiries: admin updates" on public.presentation_inquiries;
 create policy "presentation_inquiries: admin updates"
   on public.presentation_inquiries for update
   to authenticated
   using (public.is_admin())
   with check (public.is_admin());
 
-drop policy if exists "presentation_inquiries: admin deletes" on public.presentation_inquiries;
 create policy "presentation_inquiries: admin deletes"
   on public.presentation_inquiries for delete
   to authenticated
   using (public.is_admin());
-
--- anon may only fill the form's own columns — never id, handled or
--- created_at (otherwise a direct API call could back-date a row or mark it
--- as already handled so it hides in the admin list)
-revoke insert on public.presentation_inquiries from anon, authenticated;
-grant insert (
-  inviter_kind, subtype, org_name, city, participants, age_group,
-  date_from, date_to, note, name, email, phone, consent
-) on public.presentation_inquiries to anon, authenticated;
 
 -- server-side limits: the browser validates too, but anon inserts go
 -- straight to Postgres, so the database is the real gate
@@ -82,6 +74,10 @@ alter table public.presentation_inquiries
     and consent
   );
 
+-- server-owned columns: whatever a direct API call sends for id, handled
+-- or created_at is overwritten, so nobody can back-date a row or mark it as
+-- already handled to hide it in the admin list
+--
 -- dates must not be in the past (checked at insert time, so old rows stay
 -- valid as time passes) — a trigger, because CHECK can't use now()
 --
@@ -95,6 +91,10 @@ security definer
 set search_path = public
 as $$
 begin
+  new.id := gen_random_uuid();
+  new.handled := false;
+  new.created_at := now();
+
   if new.date_from < (now() at time zone 'Europe/Bratislava')::date then
     raise exception 'date_from is in the past' using errcode = 'check_violation';
   end if;
@@ -111,7 +111,11 @@ begin
 end;
 $$;
 
-drop trigger if exists presentation_inquiries_guard on public.presentation_inquiries;
 create trigger presentation_inquiries_guard
   before insert on public.presentation_inquiries
   for each row execute function public.presentation_inquiries_guard();
+
+-- a trigger function has no business being an RPC endpoint (Supabase's
+-- security advisor flags SECURITY DEFINER functions callable by anon);
+-- triggers still fire — EXECUTE is only checked when the trigger is created
+revoke execute on function public.presentation_inquiries_guard() from public, anon, authenticated;

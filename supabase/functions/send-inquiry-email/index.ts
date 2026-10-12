@@ -300,7 +300,7 @@ function buildSummaryEmail(payload: ConsultationInquiryPayload): { subject: stri
     divider(),
     section(
       h2("ℹ️", "Čo bude nasledovať") +
-        p("Toto je len potvrdzovací a informačný e-mail.") +
+        p("Toto je len potvrdzovací a informáčný e-mail.") +
         lastP("V ďalšom kroku ti pošlem samostatný e-mail s ďalšími informáciami a následne ťa budem kontaktovať osobne telefonicky, aby sme si dohodli postup a detaily konzultácie."),
     ),
     divider(),
@@ -333,7 +333,7 @@ const NEXT_STEPS_CONTENT: Record<string, { about: string; months: number }> = {
       p("Konzultácia prebieha formou 2 video hovorov (každý približne 60 minút) a je zameraná na konkrétneho papagája, konkrétnu situáciu a konkrétneho človeka.") +
       p("Cieľom nie je rýchle riešenie, ale:") +
       bullets(["pochopenie správania", "rešpekt k potrebám papagája", "dlhodobý a udržateľný výsledok"]) +
-      lastP("Medzi hovormi sledujem tvoj pokrok podľa zaslaných videí, priebežne upravujem tréning podľa reakcií papagája a venujem sa detailnejšiemu vedeniu pri práci s papagájom."),
+      lastP("Medzi hovormi sledujem tvoj pokrok podľa zaslaných videí, priebéžne upravujem tréning podľa reakcií papagája a venujem sa detailnejšiemu vedeniu pri práci s papagájom."),
     months: 2,
   },
   "osobna:basic": {
@@ -358,7 +358,7 @@ const NEXT_STEPS_CONTENT: Record<string, { about: string; months: number }> = {
         "osobne pozorujem papagája",
         "pracujeme priamo v praxi",
         "vysvetľujem správanie naživo",
-        "priebežne sledujem tvoj pokrok a upravujem tréning podľa reakcií papagája",
+        "priebéžne sledujem tvoj pokrok a upravujem tréning podľa reakcií papagája",
       ]) +
       lastP("Venujem sa aj detailnejšiemu vedeniu a odporúčaniam pre domáci tréning medzi jednotlivými stretnutiami."),
     months: 2,
@@ -397,7 +397,7 @@ function buildNextStepsEmail(payload: ConsultationInquiryPayload): { subject: st
           "krátke usmernenia",
         ]) +
         p("📅 Podpora prebieha v pracovné dni<br>⏱️ Reakčná doba je do 24 hodín<br>🕊️ Nejde o non-stop chat") +
-        lastP(`Dĺžka podpory je ${monthsLabel} a po jej uplynutí sa automaticky ukončuje.`),
+        lastP(`Dĺžka podpory je ${monthsLabel} a po jej uplynutí sa automaticky ukončí.`),
     ),
     divider(),
     section(
