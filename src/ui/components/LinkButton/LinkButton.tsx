@@ -7,6 +7,7 @@ import styles from "../Button/Button.module.css";
 import { buttonRecipe } from "../Button/recipe";
 
 import type { ButtonSize, ButtonVariant } from "../Button/recipe";
+import type { FontWeight } from "@/ui/foundation/fontWeight";
 
 interface LinkButtonProps {
   children: ReactNode;
@@ -19,6 +20,8 @@ interface LinkButtonProps {
   target?: string;
   icon?: ReactNode;
   iconPosition?: "left" | "right";
+  weight?: FontWeight;
+  className?: string;
 }
 
 export default function LinkButton({
@@ -32,6 +35,8 @@ export default function LinkButton({
   size = "md",
 
   target,
+  weight,
+  className = "",
 }: LinkButtonProps) {
   const recipe = buttonRecipe({
     variant,
@@ -42,7 +47,9 @@ export default function LinkButton({
     <a
       href={href}
       target={target}
-      className={`${styles.button} ${recipe.variant}`}
+      // a new tab must not get a handle back to this page
+      rel={target === "_blank" ? "noopener noreferrer" : undefined}
+      className={`${styles.button} ${recipe.variant} ${className}`}
     >
       <Squircle radius="lg">
         <span
@@ -56,7 +63,7 @@ export default function LinkButton({
             </span>
           ) : null}
 
-          <Text as="span" variant="button">
+          <Text as="span" variant="button" weight={weight}>
             {children}
           </Text>
 

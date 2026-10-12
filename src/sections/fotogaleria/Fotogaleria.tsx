@@ -8,6 +8,7 @@ import Lightbox from "@/ui/components/Lightbox";
 import { galleryImages as fallbackGalleryImages } from "@/pages/Fotogaleria/images";
 import { site, type GalleryAlbum } from "@/content";
 
+import FacebookCta from "./FacebookCta";
 import { GRID_SIZES, type GridPhoto } from "./PhotoGrid";
 import { useColumnCount } from "./useColumnCount";
 import { formatEventDate } from "./formatDate";
@@ -107,6 +108,8 @@ export default function Fotogaleria() {
             </div>
           ))}
         </div>
+
+        <FacebookCta />
       </Container>
 
       <Lightbox
