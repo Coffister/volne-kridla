@@ -4,9 +4,12 @@
     padding-bottom: var(--spacing-3xl);
 }
 
+/* the badge under the title hangs ~45px below the heading's own box (it's
+   built to overlap what follows), so the margin has to clear that first —
+   otherwise it covers the top of the first row of cards */
 .heading {
     text-align: center;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: calc(var(--spacing-3xl) + 24px);
 }
 
 /* Text primitive applies its variant font-size as an inline style, so the
@@ -65,17 +68,26 @@
 
 /* ------------------------------------------------------------ albums -- */
 
-/* Same columns and gap as the photo masonry below, so folders and photos
-   read as one continuous grid. Folders stay a separate row-first block:
-   inside the masonry they would stack down the first column instead of
-   leading across the top. */
-.albums {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Row-first masonry for the gallery overview (see distribute() in
+   Fotogaleria.tsx): albums and loose photos share the same columns. */
+.masonry {
+    display: flex;
+    align-items: flex-start;
     gap: 16px;
-    margin: 0 0 16px;
-    padding: 0;
-    list-style: none;
+}
+
+.masonryColumn {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* the column gap handles spacing here; .item's margin is for the CSS-column
+   grid on album pages */
+.masonryColumn > .item {
+    margin: 0;
 }
 
 /* simple card: black outline, no shadow — photo inset with its own rounded
@@ -180,17 +192,11 @@
     .grid {
         column-count: 2;
     }
-    .albums {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 @media (max-width: 560px) {
     .grid {
         column-count: 1;
-    }
-    .albums {
-        grid-template-columns: minmax(0, 1fr);
     }
     /* same breakpoint as the single-column grid: the button spans the
        column like the photos below it */
