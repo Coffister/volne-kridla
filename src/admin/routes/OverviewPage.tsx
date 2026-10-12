@@ -24,6 +24,11 @@ const actions = [
     hint: "Pozrieť dopyty z e-shopu",
   },
   {
+    to: "/admin/rezervacie",
+    title: "Rezervácie",
+    hint: "Rezervácie prezentácií od škôl a organizácií",
+  },
+  {
     to: "/admin/verzie",
     title: "História verzií",
     hint: "Pozrieť a obnoviť staršie verzie",
