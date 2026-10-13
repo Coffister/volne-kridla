@@ -85,7 +85,7 @@ export default function Hero() {
               <Carousel
                 images={heroSlides}
                 radius="lg"
-                autoplayInterval={4000}
+                autoplayInterval={3000}
                 swipeable={false}
               />
             </Box>
