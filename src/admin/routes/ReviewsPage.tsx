@@ -9,7 +9,9 @@ import {
   type ReviewItem,
 } from "../lib/reviews";
 import { msg } from "../lib/errors";
-import ImagePositionDialog from "../components/ImagePositionDialog";
+import ImagePositionDialog, { type ImagePosition } from "../components/ImagePositionDialog";
+
+const DEFAULT_POS: ImagePosition = { x: 50, y: 0 };
 
 export default function ReviewsPage() {
   const [items, setItems] = useState<ReviewItem[]>([]);
@@ -23,10 +25,15 @@ export default function ReviewsPage() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [cropping, setCropping] = useState<ReviewItem | null>(null);
+  // framing for the review being added — set in the same dialog, saved with it
+  const [newPos, setNewPos] = useState<ImagePosition>(DEFAULT_POS);
+  const [croppingNew, setCroppingNew] = useState(false);
 
   // live preview for the clickable avatar square — an uploaded file wins
   // over a typed URL, matching which one actually gets saved
   useEffect(() => {
+    // a different photo starts from the default framing again
+    setNewPos(DEFAULT_POS);
     if (!imageFile) {
       setAvatarPreview(imageUrl.trim() || null);
       return;
@@ -58,7 +65,7 @@ export default function ReviewsPage() {
     setAdding(true);
     setError(null);
     try {
-      await createReview({ author, body, imageFile, imageUrl });
+      await createReview({ author, body, imageFile, imageUrl, imagePos: newPos });
       setAuthor("");
       setBody("");
       setImageFile(null);
@@ -128,18 +135,36 @@ export default function ReviewsPage() {
         <h3>Pridať recenziu</h3>
 
         <div className="admin-review-form-row">
-          <label
-            className="admin-avatar-upload"
-            style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : undefined}
-          >
-            {!avatarPreview && <span>+ Foto</span>}
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
+          <div className="admin-avatar-col">
+            <label
+              className="admin-avatar-upload"
+              style={
+                avatarPreview
+                  ? {
+                      backgroundImage: `url(${avatarPreview})`,
+                      backgroundPosition: `${newPos.x}% ${newPos.y}%`,
+                    }
+                  : undefined
+              }
+            >
+              {!avatarPreview && <span>+ Foto</span>}
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            {avatarPreview && (
+              <button
+                type="button"
+                className="admin-ghost admin-avatar-crop"
+                onClick={() => setCroppingNew(true)}
+              >
+                Upraviť orez
+              </button>
+            )}
+          </div>
 
           <div className="admin-review-form-fields">
             <div className="admin-field-affixed">
@@ -259,6 +284,15 @@ export default function ReviewsPage() {
 
       {!loading && items.length === 0 && (
         <p className="admin-muted">Zatiaľ žiadne recenzie.</p>
+      )}
+
+      {croppingNew && avatarPreview && (
+        <ImagePositionDialog
+          src={avatarPreview}
+          initial={newPos}
+          onSave={setNewPos}
+          onClose={() => setCroppingNew(false)}
+        />
       )}
 
       {cropping && (

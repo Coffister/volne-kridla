@@ -52,6 +52,8 @@ export async function createReview(input: {
   body: string;
   imageFile?: File | null;
   imageUrl?: string;
+  /** focal point chosen in the crop dialog before saving */
+  imagePos?: { x: number; y: number };
 }): Promise<ReviewItem> {
   const supabase = getSupabase();
 
@@ -82,6 +84,9 @@ export async function createReview(input: {
       body: input.body.trim(),
       image_path,
       image_url: image_path ? null : image_url,
+      ...(input.imagePos
+        ? { image_pos_x: input.imagePos.x, image_pos_y: input.imagePos.y }
+        : {}),
       sort_order,
     })
     .select(COLS)

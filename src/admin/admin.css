@@ -1055,6 +1055,19 @@ textarea {
     color 0.12s ease;
 }
 
+.admin-avatar-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.admin-avatar-crop {
+  justify-content: center;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+}
+
 .admin-avatar-upload:hover {
   border-color: var(--accent);
   color: var(--accent-ink);
