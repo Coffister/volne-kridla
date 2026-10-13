@@ -113,6 +113,40 @@
     text-overflow: ellipsis;
 }
 
+.moreButton {
+    margin-top: 6px;
+    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-accent-secondary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+/* full text replaces the photo inside the card's locked size */
+.isExpanded .mediaPanel {
+    display: none;
+}
+
+.isExpanded .contentPanel {
+    width: 100%;
+}
+
+.isExpanded .inner {
+    justify-content: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.isExpanded .innerBody {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
 .inner p, .inner h2 {
     color: var(--color-accent-secondary) !important;
 }
@@ -165,6 +199,7 @@
     }
 
     .innerBody {
-        -webkit-line-clamp: 10;
+        /* short teaser — "Zobraziť viac" reveals the rest */
+        -webkit-line-clamp: 8;
     }
 }
