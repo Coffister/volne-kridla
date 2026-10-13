@@ -43,6 +43,8 @@ export interface Review {
   body: string;
   /** resolved image URL (media bucket or external); "" if none */
   image: string;
+  /** CSS object-position chosen in the admin, e.g. "50% 20%" */
+  imagePosition?: string;
 }
 
 export interface ProductVariant {

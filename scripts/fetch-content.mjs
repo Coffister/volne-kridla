@@ -88,7 +88,8 @@ try {
     fetchGallery(),
     supabase
       .from("reviews")
-      .select("id, author, body, image_path, image_url, sort_order, published")
+      // "*" so the build doesn't lose every review if 0015 isn't applied yet
+      .select("*")
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: true }),
@@ -184,6 +185,7 @@ try {
     image: row.image_path
       ? publicUrl(row.image_path)
       : (row.image_url ?? ""),
+    imagePosition: `${row.image_pos_x ?? 50}% ${row.image_pos_y ?? 0}%`,
   }));
 
   const faq = {

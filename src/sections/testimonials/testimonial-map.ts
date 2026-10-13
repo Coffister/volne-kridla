@@ -3,6 +3,8 @@ export type Testimonial = {
   clientName: string;
   text: string;
   image: string;
+  /** CSS object-position; the stylesheet's "top" applies when unset */
+  imagePosition?: string;
 };
 
 export const testimonials: Testimonial[] = [
