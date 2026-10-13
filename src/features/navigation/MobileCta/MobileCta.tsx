@@ -9,7 +9,7 @@ import styles from "./MobileCta.module.css";
 // "squish" transform, and a position:fixed child of a transformed element is
 // fixed to that element instead of the viewport.
 export default function MobileCta() {
-  const cta = usePageCta();
+  const cta = usePageCta("mobilna-lista");
 
   return (
     // the footer reserves room for this bar at the bottom (Footer.module.css)

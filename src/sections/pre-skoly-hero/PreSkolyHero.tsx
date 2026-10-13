@@ -5,6 +5,7 @@ import vkTypelogo from "@/assets/hero/volne-kridla.svg";
 import ribbon from "@/assets/logos/Vector.svg";
 import { preSkolyPhotos } from "@/pages/PreSkoly/photos";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
+import { markOpenSource } from "@/lib/analytics";
 
 import styles from "./PreSkolyHero.module.css";
 import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
@@ -40,7 +41,10 @@ export default function PreSkolyHero() {
               otvorí sa nám úplne nový svet.
             </Text>
 
-            <Button variant="primary" className={styles.cta} onClick={() => openRezervacia()}>
+            <Button variant="primary" className={styles.cta} onClick={() => {
+              markOpenSource("pre-skoly-hero");
+              openRezervacia();
+            }}>
               Rezervovať prezentáciu
             </Button>
           </Stack>

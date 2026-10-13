@@ -11,6 +11,8 @@ import { CalendarBlank } from "@phosphor-icons/react";
 import { Squircle } from "@/ui/primitives";
 import DateRangePicker, { formatShort, toIsoDate, type DateRange } from "@/ui/components/DateRangePicker";
 import { submitPresentationInquiry } from "@/lib/inquiries";
+import { trackEvent } from "@/lib/analytics";
+import { useFormFunnel } from "@/lib/useFormFunnel";
 
 import {
   AGE_GROUPS,
@@ -144,6 +146,7 @@ export default function RezervaciaModal() {
   const [errors, setErrors] = useState<Partial<Record<ErrorKey, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  useFormFunnel("rezervacia", isOpen, step);
   const [gdprOpen, setGdprOpen] = useState(false);
   // honeypot: invisible to people, bots that fill every field fill it too
   const [website, setWebsite] = useState("");
@@ -341,7 +344,9 @@ export default function RezervaciaModal() {
         consent: form.consent,
       });
       setStep(4);
+      trackEvent("rezervacia-odoslanie", { kto: kind });
     } catch (err) {
+      trackEvent("rezervacia-chyba");
       const tooMany = (err as { code?: string } | null)?.code === "P0429";
       setSubmitError(
         tooMany
