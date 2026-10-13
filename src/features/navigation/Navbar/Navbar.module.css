@@ -115,6 +115,13 @@
   color: var(--color-accent-primary);
 }
 
+/* only rendered for a signed-in admin — orange so it reads as "yours",
+   not as one more page of the site */
+.list .adminLink,
+.mobileMenuList .adminLink {
+  color: var(--color-accent-primary);
+}
+
 .dropdown {
   position: relative;
 }

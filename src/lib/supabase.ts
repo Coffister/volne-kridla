@@ -11,6 +11,9 @@ export const isSupabaseConfigured = Boolean(url && anonKey);
 
 let client: SupabaseClient | null = null;
 
+/** localStorage key holding the admin's Supabase session (see useIsAdmin). */
+export const ADMIN_AUTH_STORAGE_KEY = "vk-admin-auth";
+
 /** Window event fired after a successful write to site content (see below). */
 export const CONTENT_CHANGE_EVENT = "vk:content-change";
 
@@ -43,7 +46,7 @@ if (isSupabaseConfigured) {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      storageKey: "vk-admin-auth",
+      storageKey: ADMIN_AUTH_STORAGE_KEY,
     },
   });
 }
