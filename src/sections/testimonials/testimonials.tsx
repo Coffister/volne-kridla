@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container, Stack, Text, Section } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 
@@ -18,6 +18,7 @@ const testimonials = site.reviews.length
       clientName: `@${r.author}`,
       text: `“${r.body}”`,
       image: r.image,
+      imagePosition: r.imagePosition,
     }))
   : fallbackTestimonials;
 
@@ -35,6 +36,12 @@ const NATIVE_SCROLL_SETTLE_DELAY = 150;
 
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
+
+  // index into loopedTestimonials of the card showing its full text, if any —
+  // autoplay holds still while someone reads, and any swipe/drag folds it back
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const expandedRef = useRef<number | null>(null);
+  expandedRef.current = expandedIndex;
 
   const currentRef = useRef(0);
   const targetRef = useRef(0);
@@ -146,6 +153,7 @@ export default function Testimonials() {
     const startAutoplay = () => {
       stopAutoplay();
       autoplayInterval = setInterval(() => {
+        if (expandedRef.current !== null) return;
         targetRef.current = nearestCardPosition(currentRef.current) + cardStepRef.current;
         isAutoplayingRef.current = true;
         startLoop();
@@ -162,6 +170,7 @@ export default function Testimonials() {
       if (Math.abs(track.scrollLeft - lastSetScrollLeftRef.current) < 0.5) return;
 
       stopAutoplay();
+      setExpandedIndex(null);
 
       if (track.scrollLeft < setWidth * 0.5) {
         track.scrollLeft += setWidth;
@@ -181,8 +190,11 @@ export default function Testimonials() {
 
     const handlePointerDown = (event: globalThis.PointerEvent) => {
       if (event.pointerType !== "mouse") return;
+      // a click on "Zobraziť viac" is not the start of a drag
+      if ((event.target as Element).closest("button")) return;
 
       stopAutoplay();
+      setExpandedIndex(null);
       clearTimeout(nativeScrollSettleTimeout);
       isAutoplayingRef.current = false;
 
@@ -260,7 +272,12 @@ export default function Testimonials() {
 
       <div ref={trackRef} className={styles.track} data-cursor="drag" data-reveal="up">
         {loopedTestimonials.map((testimonial, index) => (
-          <ReviewCard key={`${testimonial.id}-${index}`} testimonial={testimonial} />
+          <ReviewCard
+            key={`${testimonial.id}-${index}`}
+            testimonial={testimonial}
+            expanded={expandedIndex === index}
+            onToggle={() => setExpandedIndex((cur) => (cur === index ? null : index))}
+          />
         ))}
       </div>
     </Section>
