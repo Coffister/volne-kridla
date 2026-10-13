@@ -11,6 +11,7 @@ import logo from "@/assets/logos/volnekridla-logo.svg";
 import { getLenis } from "@/lib/scroll";
 import { usePageCta } from "../usePageCta";
 import { visibility } from "@/content/visibility";
+import { useIsAdmin } from "@/lib/useIsAdmin";
 
 import styles from "./Navbar.module.css";
 
@@ -57,6 +58,8 @@ export default function Navbar() {
   const location = useLocation();
   const pendingSectionId = useRef<string | null>(null);
   const cta = usePageCta();
+  // shortcut back into the admin, only for a signed-in admin
+  const isAdmin = useIsAdmin();
 
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
@@ -234,6 +237,11 @@ export default function Navbar() {
 
             <Link to="/pre-skoly">Pre školy</Link>
             <Link to="/fotogaleria">Fotogaléria</Link>
+            {isAdmin && (
+              <Link to="/admin" className={styles.adminLink}>
+                Admin
+              </Link>
+            )}
           </Stack>
 
           <Button
@@ -281,6 +289,16 @@ export default function Navbar() {
                     {item.label}
                   </Link>
                 ),
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={styles.adminLink}
+                  tabIndex={isMenuOpen ? undefined : -1}
+                  onClick={closeMenu}
+                >
+                  Admin
+                </Link>
               )}
             </nav>
 
