@@ -21,6 +21,12 @@
     cursor: grabbing;
 }
 
+.carousel.static,
+.carousel.static:active {
+    cursor: auto;
+    touch-action: auto;
+}
+
 .carouselTrack {
     display: flex;
     width: 100%;

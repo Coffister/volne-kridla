@@ -24,6 +24,8 @@ interface CarouselProps {
   activeIndex?: number;
   /** fires whenever the slide changes, from autoplay, drag, or activeIndex */
   onActiveIndexChange?: (index: number) => void;
+  /** false = autoplay-only slider: no drag/swipe, so touch scrolling is never intercepted */
+  swipeable?: boolean;
 }
 
 // drag-to-swipe image carousel with autoplay — reused wherever the site needs
@@ -37,6 +39,7 @@ export default function Carousel({
   borderColor,
   activeIndex,
   onActiveIndexChange,
+  swipeable = true,
 }: CarouselProps) {
   const count = images.length;
 
@@ -117,13 +120,15 @@ export default function Carousel({
       borderColor={borderColor}
     >
       <div
-        className={styles.carousel}
-        data-cursor="drag"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onPointerLeave={endDrag}
+        className={`${styles.carousel} ${swipeable ? "" : styles.static}`}
+        {...(swipeable && {
+          "data-cursor": "drag",
+          onPointerDown: handlePointerDown,
+          onPointerMove: handlePointerMove,
+          onPointerUp: endDrag,
+          onPointerCancel: endDrag,
+          onPointerLeave: endDrag,
+        })}
       >
         <div
           className={styles.carouselTrack}

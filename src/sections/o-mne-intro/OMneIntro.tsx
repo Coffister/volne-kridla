@@ -18,6 +18,7 @@ export default function OMneIntro() {
           <Squircle radius="2xl" className={styles.carouselWrapper} reveal="up">
             <Carousel
               images={oMneCarouselImages}
+              swipeable={false}
               radius="xl"
               className={styles.carousel}
               borderWidth={2}
