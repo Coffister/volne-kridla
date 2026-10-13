@@ -28,6 +28,7 @@ export default function VolneKridlaIntro() {
           <Squircle radius="2xl" className={styles.carouselWrapper} reveal="up">
             <Carousel
               images={heroCarouselImages}
+              swipeable={false}
               radius="xl"
               className={styles.carousel}
               borderWidth={2}
