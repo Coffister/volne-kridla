@@ -19,7 +19,6 @@ import Playground from "./pages/Playground";
 import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
 import { RezervaciaModal } from "./features/rezervacia-modal";
-import Placeholder from "./pages/Placeholder";
 import NotFound from "./pages/NotFound";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
@@ -59,11 +58,6 @@ function SiteApp() {
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/eshop/produkt/:productId" element={<Eshop />} />
           <Route path="/eshop/checkout" element={<Navigate to="/eshop" replace />} />
-          {/* legal text must be supplied by the client — Placeholder is a stub */}
-          <Route
-            path="/ochrana-osobnych-udajov"
-            element={<Placeholder title="Ochrana osobných údajov" />}
-          />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
