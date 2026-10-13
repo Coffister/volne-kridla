@@ -14,10 +14,10 @@ interface Props {
 
 // The two frames the public review card actually crops into (see
 // sections/testimonials/testimonials.module.css): a tall half-card on desktop
-// and a 4:3 strip above the text on mobile. One focal point drives both.
+// and a square above the text on mobile. One focal point drives both.
 const FRAMES = [
   { key: "desktop", label: "Počítač", ratio: 7 / 10 },
-  { key: "mobile", label: "Mobil", ratio: 4 / 3 },
+  { key: "mobile", label: "Mobil", ratio: 1 },
 ] as const;
 
 const DEFAULT_POS: ImagePosition = { x: 50, y: 0 };

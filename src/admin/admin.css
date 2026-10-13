@@ -1251,7 +1251,7 @@ textarea {
 
 .admin-crop-frames {
   display: grid;
-  grid-template-columns: 0.7fr 1.33fr;
+  grid-template-columns: 0.7fr 1fr;
   align-items: start;
   gap: 1rem;
 }

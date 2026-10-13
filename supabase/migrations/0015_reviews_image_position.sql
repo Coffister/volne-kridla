@@ -3,7 +3,7 @@
 -- =============================================================================
 -- Run in the Supabase SQL Editor after 0014.
 -- The review card shows the photo with object-fit: cover in two very different
--- frames (tall portrait on desktop, 4:3 landscape on mobile), so a fixed crop
+-- frames (tall portrait on desktop, square on mobile), so a fixed crop
 -- can't fit both. Instead the admin stores a focal point — the CSS
 -- object-position, in percent — and both frames centre on it as best they can.
 -- Defaults (50 / 0 = "center top") match the previous hardcoded styling, so

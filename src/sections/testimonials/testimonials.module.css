@@ -146,7 +146,8 @@
 
     .mediaPanel {
         order: -1;
-        aspect-ratio: 4 / 3;
+        /* square — most client photos are portrait, 4:3 cut them too hard */
+        aspect-ratio: 1 / 1;
         height: auto;
         flex-shrink: 0;
     }
