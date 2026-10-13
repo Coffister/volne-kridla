@@ -75,8 +75,7 @@ function write(file, html) {
 const SITE_ORIGIN = "https://volnekridla.sk";
 
 const indexable = routes();
-// prerendered, but noindex (placeholder) — kept out of the sitemap
-const all = [...indexable, "/ochrana-osobnych-udajov"];
+const all = indexable;
 for (const url of all) {
   write(url === "/" ? "index.html" : `${url.slice(1)}.html`, page(url));
 }
