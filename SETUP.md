@@ -60,7 +60,8 @@ Admin: `http://localhost:5173/admin`
   ako hotové HTML do `dist/` — s textom a meta tagmi pre vyhľadávače a AI
   crawlery, ktoré nespúšťajú JavaScript. Prehliadač ho potom len „oživí“
   (hydratácia). `dist/spa.html` je prázdny shell pre admin a presmerovania,
-  `dist/404.html` sa servíruje so stavom 404.
+  `dist/404.html` sa servíruje so stavom 404. Z rovnakého zoznamu stránok sa
+  generuje aj `dist/sitemap.xml` (statická `public/sitemap.xml` už neexistuje).
 - **Verejný web** číta iba tento JSON — žiadne volania Supabase za behu, žiadny
   `@supabase/supabase-js` v hlavnom bundli (overené: je len v lazy `/admin` chunku).
 - **Admin** píše do `site_content_draft`; „Publikovať" skopíruje draft do

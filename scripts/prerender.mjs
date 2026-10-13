@@ -10,6 +10,7 @@
 //   dist/404.html              the NotFound page, served with a 404 status
 //   dist/spa.html              the empty app shell — fallback for routes that
 //                              aren't prerendered (admin, redirects)
+//   dist/sitemap.xml           every indexable route above
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -71,12 +72,28 @@ function write(file, html) {
   writeFileSync(path, html);
 }
 
-const all = [...routes(), "/ochrana-osobnych-udajov"];
+const SITE_ORIGIN = "https://volnekridla.sk";
+
+const indexable = routes();
+// prerendered, but noindex (placeholder) — kept out of the sitemap
+const all = [...indexable, "/ochrana-osobnych-udajov"];
 for (const url of all) {
   write(url === "/" ? "index.html" : `${url.slice(1)}.html`, page(url));
 }
 // any path the router doesn't know renders the catch-all NotFound page
 write("404.html", page("/__not-found__"));
 
+// No <lastmod>/<priority>: Google ignores priority, and the only date we
+// have is the build time, which changes on every deploy and so isn't an
+// accurate lastmod either.
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${indexable
+  .map((url) => `  <url><loc>${escapeText(SITE_ORIGIN + url)}</loc></url>`)
+  .join("\n")}
+</urlset>
+`;
+writeFileSync(join(DIST, "sitemap.xml"), sitemap);
+
 rmSync(SSR_DIST, { recursive: true, force: true });
-console.log(`prerendered ${all.length} routes + 404`);
+console.log(`prerendered ${all.length} routes + 404, sitemap with ${indexable.length} URLs`);
