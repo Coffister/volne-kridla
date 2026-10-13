@@ -5,6 +5,7 @@ import { AuthProvider } from "./auth/AuthProvider";
 import RequireAdmin from "./auth/RequireAdmin";
 import AdminLayout from "./AdminLayout";
 import LoginPage from "./routes/LoginPage";
+import SetPasswordPage from "./routes/SetPasswordPage";
 import OverviewPage from "./routes/OverviewPage";
 import GalleryPage from "./routes/GalleryPage";
 import ReviewsPage from "./routes/ReviewsPage";
@@ -37,6 +38,7 @@ export default function AdminApp() {
     <AuthProvider>
       <Routes>
         <Route path="login" element={<LoginPage />} />
+        <Route path="heslo" element={<SetPasswordPage />} />
         <Route
           element={
             <RequireAdmin>

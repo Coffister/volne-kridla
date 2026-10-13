@@ -2,6 +2,25 @@
 <html lang="sk">
   <head>
     <meta charset="UTF-8" />
+    <!-- Supabase invite / password-reset links land on the Site URL (the home
+         page) with the session in the hash. Send them to the set-password
+         page *before* the app loads — the Supabase client reads and strips
+         that hash the moment it starts. Expired links (error_code=…) go
+         there too, so the visitor gets an explanation. -->
+    <script>
+      (function () {
+        var h = location.hash;
+        // kept for the set-password page: the Supabase client clears the
+        // hash before the (lazy-loaded) admin gets to read it
+        window.__vkAuthHash = h;
+        if (
+          /(?:^#|&)(type=(invite|recovery)|error_code=)/.test(h) &&
+          location.pathname !== "/admin/heslo"
+        ) {
+          location.replace("/admin/heslo" + h);
+        }
+      })();
+    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
