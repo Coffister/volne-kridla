@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { useLayoutEffect, useRef, useState } from "react";
+import { useTilt } from "@/lib/useTilt";
 import {
   Box,
   Stack,
@@ -21,7 +22,7 @@ interface ReviewCardProps {
 }
 
 export default function ReviewCard({ testimonial, expanded, onToggle }: ReviewCardProps) {
-  const [rotate] = useState(() => `${(Math.random() * 4 - 2).toFixed(2)}deg`);
+  const rotate = useTilt();
   const cardRef = useRef<HTMLDivElement>(null);
   const [truncated, setTruncated] = useState(false);
   // expanding swaps the photo for the full text inside the SAME box — the card

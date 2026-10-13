@@ -1,6 +1,6 @@
 import { Box, Container, Text, Section, Squircle, Image } from "@/ui/primitives";
 
-import freedomPhoto from "@/assets/omne/IMG_2756-1.jpg";
+import freedomPhoto from "@/assets/omne/IMG_2756-1.webp";
 
 import styles from "./OMneFreedom.module.css";
 

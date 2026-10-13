@@ -14,6 +14,54 @@ interface DocumentMetaOptions {
   noindex?: boolean;
 }
 
+/** Fully resolved tags for one page — what ends up in <head>. */
+export interface DocumentMeta {
+  title: string;
+  description: string;
+  robots: string;
+  canonical: string;
+  /** keyed by the tag's `property` (og:*) or `name` (twitter:*) attribute */
+  og: Record<string, string>;
+  twitter: Record<string, string>;
+}
+
+function resolveMeta({
+  title,
+  description,
+  path,
+  image,
+  noindex,
+}: DocumentMetaOptions): DocumentMeta {
+  const url = `${SITE_ORIGIN}${path}`;
+  const fullTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
+  const img = image ?? DEFAULT_IMAGE;
+
+  return {
+    title: fullTitle,
+    description,
+    robots: noindex ? "noindex, nofollow" : "index, follow",
+    canonical: url,
+    og: {
+      "og:type": "website",
+      "og:site_name": SITE_NAME,
+      "og:title": fullTitle,
+      "og:description": description,
+      "og:url": url,
+      "og:image": img,
+    },
+    twitter: {
+      "twitter:card": "summary_large_image",
+      "twitter:title": fullTitle,
+      "twitter:description": description,
+      "twitter:image": img,
+    },
+  };
+}
+
+/** Filled in during the build-time prerender (no `document` there, effects
+ * don't run) — scripts/prerender.mjs writes it into the page's <head>. */
+export const ssrMeta: { current: DocumentMeta | null } = { current: null };
+
 function upsertMeta(attr: "name" | "property", key: string, content: string) {
   let tag = document.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
   if (!tag) {
@@ -35,34 +83,23 @@ function upsertLink(rel: string, href: string) {
 }
 
 /** Sets per-page title, description, canonical URL, and Open Graph / Twitter
- * card tags — this is a client-rendered SPA with no meta-tags library, so
- * every route otherwise shares index.html's single static <title>. */
-export function useDocumentMeta({
-  title,
-  description,
-  path,
-  image,
-  noindex,
-}: DocumentMetaOptions) {
+ * card tags. Prerendered pages already ship these in their HTML; this keeps
+ * them in sync on client-side navigation between routes. */
+export function useDocumentMeta(options: DocumentMetaOptions) {
+  const { title, description, path, image, noindex } = options;
+
+  if (typeof document === "undefined") {
+    ssrMeta.current = resolveMeta(options);
+  }
+
   useEffect(() => {
-    const url = `${SITE_ORIGIN}${path}`;
-    const fullTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
+    const meta = resolveMeta({ title, description, path, image, noindex });
 
-    document.title = fullTitle;
-    upsertMeta("name", "description", description);
-    upsertMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
-    upsertLink("canonical", url);
-
-    upsertMeta("property", "og:type", "website");
-    upsertMeta("property", "og:site_name", SITE_NAME);
-    upsertMeta("property", "og:title", fullTitle);
-    upsertMeta("property", "og:description", description);
-    upsertMeta("property", "og:url", url);
-    upsertMeta("property", "og:image", image ?? DEFAULT_IMAGE);
-
-    upsertMeta("name", "twitter:card", "summary_large_image");
-    upsertMeta("name", "twitter:title", fullTitle);
-    upsertMeta("name", "twitter:description", description);
-    upsertMeta("name", "twitter:image", image ?? DEFAULT_IMAGE);
+    document.title = meta.title;
+    upsertMeta("name", "description", meta.description);
+    upsertMeta("name", "robots", meta.robots);
+    upsertLink("canonical", meta.canonical);
+    for (const [key, value] of Object.entries(meta.og)) upsertMeta("property", key, value);
+    for (const [key, value] of Object.entries(meta.twitter)) upsertMeta("name", key, value);
   }, [title, description, path, image, noindex]);
 }

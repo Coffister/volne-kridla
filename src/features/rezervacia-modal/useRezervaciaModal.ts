@@ -1,5 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
+import { useHydrated } from "@/lib/useHydrated";
+
 import { INVITER_KINDS, type InviterKind } from "./data";
 
 const PARAM_OPEN = "rezervacia";
@@ -10,8 +12,10 @@ const PARAM_KIND = "kto";
 // so any CTA (or a link sent to a school) can open it pre-filled.
 export function useRezervaciaModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const hydrated = useHydrated();
 
-  const isOpen = searchParams.get(PARAM_OPEN) === "1";
+  // not until hydration is done — see useHydrated
+  const isOpen = hydrated && searchParams.get(PARAM_OPEN) === "1";
   const requestedKind = searchParams.get(PARAM_KIND);
   const kind: InviterKind | null = INVITER_KINDS.some((k) => k.id === requestedKind)
     ? (requestedKind as InviterKind)

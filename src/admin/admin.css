@@ -4,7 +4,7 @@
    — warm paper surfaces, a pale sky canvas, thick ink outlines, blunt drop
    shadows, League Spartan headings over Poppins UI text. Self-contained; the
    public site is untouched.
-   Fonts (League Spartan, Poppins) are already loaded globally in index.html.
+   Fonts (League Spartan, Poppins) are already loaded globally (src/main.tsx).
    ========================================================================== */
 
 .admin-shell,

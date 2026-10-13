@@ -2,7 +2,7 @@ import carouselItem1 from "@/assets/carousel/volnekridlafoto.webp";
 import carouselItem2 from "@/assets/carousel/frankapapagaje.webp";
 import carouselItem3 from "@/assets/carousel/frankatrening.webp";
 import carouselItem4 from "@/assets/carousel/franka.webp";
-import carouselItem5 from "@/assets/carousel/rudy.jpg";
+import carouselItem5 from "@/assets/carousel/rudy.webp";
 
 
 export interface CarouselImage {

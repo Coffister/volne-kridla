@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 // keep in sync with the 560px / 900px breakpoints in Fotogaleria.module.css
 const QUERIES: [string, number][] = [
@@ -7,19 +7,21 @@ const QUERIES: [string, number][] = [
 ];
 
 function current(): number {
-  if (typeof window === "undefined") return 3;
   for (const [q, n] of QUERIES) if (window.matchMedia(q).matches) return n;
   return 3;
 }
 
+function subscribe(onChange: () => void): () => void {
+  const lists = QUERIES.map(([q]) => window.matchMedia(q));
+  lists.forEach((l) => l.addEventListener("change", onChange));
+  return () => lists.forEach((l) => l.removeEventListener("change", onChange));
+}
+
+// the prerendered HTML is laid out for 3 columns; when hydrating, React
+// starts from this value and then switches to the viewport's real count
+const serverSnapshot = () => 3;
+
 /** 3 / 2 / 1 masonry columns, following the viewport. */
 export function useColumnCount(): number {
-  const [count, setCount] = useState(current);
-  useEffect(() => {
-    const lists = QUERIES.map(([q]) => window.matchMedia(q));
-    const update = () => setCount(current());
-    lists.forEach((l) => l.addEventListener("change", update));
-    return () => lists.forEach((l) => l.removeEventListener("change", update));
-  }, []);
-  return count;
+  return useSyncExternalStore(subscribe, current, serverSnapshot);
 }

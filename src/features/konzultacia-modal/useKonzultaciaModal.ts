@@ -1,5 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
+import { useHydrated } from "@/lib/useHydrated";
+
 import { TRACKS, type TrackId } from "./data";
 
 const PARAM_OPEN = "konzultacia";
@@ -14,8 +16,10 @@ const PARAM_PACKAGE = "balik";
 // on top of whatever route the visitor is already on.
 export function useKonzultaciaModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const hydrated = useHydrated();
 
-  const isOpen = searchParams.get(PARAM_OPEN) === "1";
+  // not until hydration is done — see useHydrated
+  const isOpen = hydrated && searchParams.get(PARAM_OPEN) === "1";
   const requestedTrack = searchParams.get(PARAM_TRACK);
   // null when the link/CTA didn't ask for a specific track — the modal then
   // opens with neither pill pre-selected, rather than defaulting to one
