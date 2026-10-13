@@ -63,6 +63,12 @@ export default function LoginPage() {
         <button type="submit" className="admin-btn" disabled={busy}>
           {busy ? "Prihlasujem…" : "Prihlásiť sa"}
         </button>
+
+        {/* plain <a>, like "Späť na web" in the admin sidebar: the public
+            site loads fresh, without the admin bundle */}
+        <a href="/" className="admin-user-link admin-login-back">
+          ← Späť na web
+        </a>
       </form>
     </div>
   );
