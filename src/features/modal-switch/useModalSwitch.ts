@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { markOpenSource } from "@/lib/analytics";
 
 // Both booking modals live in URL search params (see useKonzultaciaModal and
 // useRezervaciaModal). Switching rewrites the params in one step — closing
@@ -25,8 +26,14 @@ export function useModalSwitch() {
 
   return {
     /** consultation modal → presentation booking (schools, organisations) */
-    toRezervacia: () => swap(KONZULTACIA_KEYS, "rezervacia"),
+    toRezervacia: () => {
+      markOpenSource("prepnutie");
+      swap(KONZULTACIA_KEYS, "rezervacia");
+    },
     /** presentation booking → consultation modal (own parrot) */
-    toKonzultacia: () => swap(REZERVACIA_KEYS, "konzultacia"),
+    toKonzultacia: () => {
+      markOpenSource("prepnutie");
+      swap(REZERVACIA_KEYS, "konzultacia");
+    },
   };
 }

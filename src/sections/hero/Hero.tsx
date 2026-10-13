@@ -5,6 +5,7 @@ import Badge from "@/ui/components/Badge";
 import Carousel from "@/ui/components/Carousel";
 import { useNavigate } from "react-router-dom";
 import { useKonzultaciaModal } from "@/features/konzultacia-modal";
+import { markOpenSource } from "@/lib/analytics";
 
 import vkTypelogo from "@/assets/hero/volne-kridla.svg";
 import { heroCarouselImages } from "./carousel";
@@ -80,7 +81,10 @@ export default function Hero() {
                 <Button
                   variant="primary"
                   className={styles.primaryCta}
-                  onClick={() => openKonzultacia()}
+                  onClick={() => {
+                    markOpenSource("hero");
+                    openKonzultacia();
+                  }}
                 >
                   Začať lietať
                 </Button>

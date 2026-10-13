@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 
 import type { Product } from "@/content";
 import { submitProductInquiry } from "@/lib/inquiries";
+import { takeOpenSource, trackEvent } from "@/lib/analytics";
 import Button from "@/ui/components/Button";
 import Confetti from "@/features/konzultacia-modal/Confetti";
 import { CheckIcon } from "@/features/konzultacia-modal/icons";
@@ -71,6 +72,12 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
+  // mounted = opened (Eshop renders this only while an inquiry is active)
+  useEffect(() => {
+    trackEvent("eshop-dopyt-otvorenie", { produkt: product.name, zdroj: takeOpenSource() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [closing, setClosing] = useState(false);
 
   // play the exit animation, then let the parent unmount us
@@ -140,7 +147,9 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
         variants,
       });
       setDone(true);
+      trackEvent("eshop-dopyt-odoslanie", { produkt: product.name });
     } catch {
+      trackEvent("eshop-dopyt-chyba", { produkt: product.name });
       setSubmitError("Správu sa nepodarilo odoslať. Skús to prosím znova.");
     } finally {
       setSubmitting(false);

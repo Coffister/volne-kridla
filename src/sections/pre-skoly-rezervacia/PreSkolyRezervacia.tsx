@@ -4,6 +4,7 @@ import { Buildings, MapPin, Users, CalendarCheck } from "@phosphor-icons/react";
 import { Box, Container, Stack, Text, Section, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import { useRezervaciaModal } from "@/features/rezervacia-modal";
+import { markOpenSource } from "@/lib/analytics";
 
 import styles from "./PreSkolyRezervacia.module.css";
 import { PRE_SKOLY_CONTAINER } from "@/pages/PreSkoly/layout";
@@ -54,7 +55,10 @@ export default function PreSkolyRezervacia() {
               ))}
             </Stack>
 
-            <Button variant="primary" fullWidth className={styles.cta} onClick={() => openRezervacia()}>
+            <Button variant="primary" fullWidth className={styles.cta} onClick={() => {
+                markOpenSource("pre-skoly-sekcia");
+                openRezervacia();
+              }}>
               Rezervovať prezentáciu
             </Button>
           </Squircle>

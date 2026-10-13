@@ -7,6 +7,7 @@ import Badge from "@/ui/components/Badge";
 import Button from "@/ui/components/Button";
 import { site, type Product } from "@/content";
 import { PRODUCT_CATEGORIES } from "@/content/categories";
+import { markOpenSource } from "@/lib/analytics";
 
 import ProductCard from "./ProductCard";
 import ProductPage from "./ProductPage";
@@ -187,7 +188,10 @@ export default function Eshop() {
         {detailProduct ? (
           <ProductPage
             product={detailProduct}
-            onInterest={(product, variants) => setInquiry({ product, variants })}
+            onInterest={(product, variants) => {
+              markOpenSource("detail-produktu");
+              setInquiry({ product, variants });
+            }}
           />
         ) : products.length === 0 ? (
           <Text as="p" variant="body" className={styles.empty}>
@@ -204,7 +208,10 @@ export default function Eshop() {
                 <ProductCard
                   product={product}
                   onViewDetails={openDetail}
-                  onInterest={(product) => setInquiry({ product, variants: {} })}
+                  onInterest={(product) => {
+                    markOpenSource("karta-produktu");
+                    setInquiry({ product, variants: {} });
+                  }}
                   onShare={handleShare}
                 />
                 {linkCopiedFor === product.id && (

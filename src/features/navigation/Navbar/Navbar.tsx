@@ -57,7 +57,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const pendingSectionId = useRef<string | null>(null);
-  const cta = usePageCta();
+  const cta = usePageCta("navbar");
   // shortcut back into the admin, only for a signed-in admin
   const isAdmin = useIsAdmin();
 

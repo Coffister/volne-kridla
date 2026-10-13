@@ -67,3 +67,21 @@ Admin: `http://localhost:5173/admin`
 - **Admin** píše do `site_content_draft`; „Publikovať" skopíruje draft do
   `site_content`, uloží verziu a pingne Vercel Deploy Hook → rebuild.
 - **Revert** načíta staršiu verziu späť do draftu.
+
+## Analytika (Umami Cloud)
+
+Bez cookies, takže netreba cookie lištu. Kód je v `src/lib/analytics.ts`.
+
+- **Kde sa meria:** skript sa načíta len na verejnom webe (nikdy `/admin`) a len na doméne
+  `volnekridla.sk`. Preview, `*.vercel.app` ani localhost neposielajú nič.
+- **Zobrazenia stránok:** posielajú sa pri zmene stránky. Parametre formulárov
+  (`?konzultacia=1…`) sa nepočítajú ako nová návšteva, UTM parametre sa zachovajú.
+- **Udalosti:** pre formulár `konzultacia` a `rezervacia`:
+  - `<formulár>-otvorenie` s údajom `zdroj`: hero, navbar, mobilna-lista,
+    pre-skoly-hero, pre-skoly-sekcia, prepnutie, odkaz,
+  - `<formulár>-krok-2`, `<formulár>-krok-3`,
+  - `<formulár>-odoslanie`, `<formulár>-chyba`.
+
+  E-shop posiela `eshop-dopyt-otvorenie`, `eshop-dopyt-odoslanie` a `eshop-dopyt-chyba`
+  (s názvom produktu).
+- **Bez osobných údajov:** neposielajú sa mená, e-maily, telefóny ani texty správ.

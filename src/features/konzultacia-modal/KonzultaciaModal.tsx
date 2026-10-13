@@ -9,6 +9,8 @@ import {
 import { createPortal } from "react-dom";
 import { Squircle } from "@/ui/primitives";
 import { submitConsultationInquiry } from "@/lib/inquiries";
+import { trackEvent } from "@/lib/analytics";
+import { useFormFunnel } from "@/lib/useFormFunnel";
 
 import {
   CONSENT_PREFIX,
@@ -158,6 +160,7 @@ export default function KonzultaciaModal() {
   );
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  useFormFunnel("konzultacia", isOpen, step);
   const [gdprOpen, setGdprOpen] = useState(false);
 
   const headingRef = useRef<HTMLSpanElement>(null);
@@ -417,7 +420,13 @@ export default function KonzultaciaModal() {
         consent: form.consent,
       });
       setStep(4);
+      trackEvent("konzultacia-odoslanie", {
+        vetva: track ?? "",
+        sposob: typeId ?? "",
+        balik: packageId ?? "",
+      });
     } catch {
+      trackEvent("konzultacia-chyba");
       setSubmitError("Dopyt sa nepodarilo odoslať. Skús to prosím znova.");
     } finally {
       setSubmitting(false);
