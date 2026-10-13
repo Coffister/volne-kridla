@@ -18,6 +18,7 @@ const testimonials = site.reviews.length
       clientName: `@${r.author}`,
       text: `“${r.body}”`,
       image: r.image,
+      imagePosition: r.imagePosition,
     }))
   : fallbackTestimonials;
 

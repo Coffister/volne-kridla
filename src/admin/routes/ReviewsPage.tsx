@@ -9,6 +9,7 @@ import {
   type ReviewItem,
 } from "../lib/reviews";
 import { msg } from "../lib/errors";
+import ImagePositionDialog from "../components/ImagePositionDialog";
 
 export default function ReviewsPage() {
   const [items, setItems] = useState<ReviewItem[]>([]);
@@ -21,6 +22,7 @@ export default function ReviewsPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [cropping, setCropping] = useState<ReviewItem | null>(null);
 
   // live preview for the clickable avatar square — an uploaded file wins
   // over a typed URL, matching which one actually gets saved
@@ -85,7 +87,9 @@ export default function ReviewsPage() {
 
   async function patch(
     item: ReviewItem,
-    p: Partial<Pick<ReviewItem, "author" | "body" | "published">>,
+    p: Partial<
+      Pick<ReviewItem, "author" | "body" | "published" | "image_pos_x" | "image_pos_y">
+    >,
   ) {
     setItems((cur) => cur.map((i) => (i.id === item.id ? { ...i, ...p } : i)));
     try {
@@ -183,7 +187,12 @@ export default function ReviewsPage() {
         {items.map((item, i) => (
           <li key={item.id} className={item.published ? "" : "is-hidden"}>
             {item.image ? (
-              <img src={item.image} alt={item.author} loading="lazy" />
+              <img
+                src={item.image}
+                alt={item.author}
+                loading="lazy"
+                style={{ objectPosition: `${item.image_pos_x}% ${item.image_pos_y}%` }}
+              />
             ) : (
               <div className="admin-review-noimg">bez fotky</div>
             )}
@@ -224,6 +233,11 @@ export default function ReviewsPage() {
                 >
                   ↓
                 </button>
+                {item.image && (
+                  <button type="button" onClick={() => setCropping(item)}>
+                    Upraviť orez
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => patch(item, { published: !item.published })}
@@ -245,6 +259,15 @@ export default function ReviewsPage() {
 
       {!loading && items.length === 0 && (
         <p className="admin-muted">Zatiaľ žiadne recenzie.</p>
+      )}
+
+      {cropping && (
+        <ImagePositionDialog
+          src={cropping.image}
+          initial={{ x: cropping.image_pos_x, y: cropping.image_pos_y }}
+          onSave={({ x, y }) => patch(cropping, { image_pos_x: x, image_pos_y: y })}
+          onClose={() => setCropping(null)}
+        />
       )}
     </section>
   );

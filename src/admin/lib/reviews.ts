@@ -7,6 +7,9 @@ export interface ReviewRow {
   body: string;
   image_path: string | null;
   image_url: string | null;
+  /** focal point of the photo in percent (CSS object-position) */
+  image_pos_x: number;
+  image_pos_y: number;
   sort_order: number;
   published: boolean;
   created_at: string;
@@ -17,15 +20,21 @@ export interface ReviewItem extends ReviewRow {
   image: string;
 }
 
-const COLS =
-  "id, author, body, image_path, image_url, sort_order, published, created_at";
+// "*" rather than an explicit list so the page keeps working before
+// 0015_reviews_image_position.sql is applied — the position falls back below
+const COLS = "*";
 
 function resolve(row: ReviewRow): ReviewItem {
   const image = row.image_path
     ? getSupabase().storage.from(MEDIA_BUCKET).getPublicUrl(row.image_path).data
         .publicUrl
     : (row.image_url ?? "");
-  return { ...row, image };
+  return {
+    ...row,
+    image_pos_x: row.image_pos_x ?? 50,
+    image_pos_y: row.image_pos_y ?? 0,
+    image,
+  };
 }
 
 export async function listReviews(): Promise<ReviewItem[]> {
@@ -88,7 +97,12 @@ export async function createReview(input: {
 
 export async function updateReview(
   id: string,
-  patch: Partial<Pick<ReviewRow, "author" | "body" | "published" | "sort_order">>,
+  patch: Partial<
+    Pick<
+      ReviewRow,
+      "author" | "body" | "published" | "sort_order" | "image_pos_x" | "image_pos_y"
+    >
+  >,
 ): Promise<void> {
   const { error } = await getSupabase()
     .from("reviews")

@@ -41,6 +41,11 @@ export default function ReviewCard({ testimonial }: ReviewCardProps) {
               src={testimonial.image}
               alt={testimonial.clientName}
               className={styles.mediaImage}
+              style={
+                testimonial.imagePosition
+                  ? { objectPosition: testimonial.imagePosition }
+                  : undefined
+              }
               draggable={false}
             />
           </Squircle>
