@@ -20,6 +20,7 @@ import Cursor from "./ui/effects/Cursor";
 import { KonzultaciaModal } from "./features/konzultacia-modal";
 import { RezervaciaModal } from "./features/rezervacia-modal";
 import Placeholder from "./pages/Placeholder";
+import NotFound from "./pages/NotFound";
 
 // "/konzultacia" (and "?vetva=...") used to be a standalone page; it's now a
 // modal opened from any route via "?konzultacia=1&vetva=...". Old/shared
@@ -63,6 +64,7 @@ function SiteApp() {
             path="/ochrana-osobnych-udajov"
             element={<Placeholder title="Ochrana osobných údajov" />}
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>

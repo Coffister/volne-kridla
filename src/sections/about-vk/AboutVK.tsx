@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { useNavigate } from "react-router-dom";
 import { Box, Container, Stack, Text, Image, Section, Squircle } from "@/ui/primitives";
 import Button from "@/ui/components/Button";
 import Badge from "@/ui/components/Badge";
@@ -12,7 +13,45 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// The tab video is ~2.7 MB and sits below the fold — don't fetch it until
+// the visitor scrolls near it (an autoPlay <video> ignores preload="none",
+// so the src itself is withheld until then).
+function LazyVideo({ src, className }: { src: string; className?: string }) {
+  const ref = useRef<HTMLVideoElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || inView) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [inView]);
+
+  return (
+    <video
+      ref={ref}
+      src={inView ? src : undefined}
+      className={className}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="none"
+    />
+  );
+}
+
 export default function AboutVK() {
+  const navigate = useNavigate();
   // `activeTab` flips instantly on click (so the button highlights right away);
   // `displayTab` is what the panel actually shows and only catches up once the
   // outgoing content has animated away
@@ -149,13 +188,9 @@ export default function AboutVK() {
 
                 <Box className={styles.mediaFrame}>
                   {isVideoTabMedia ? (
-                    <video
+                    <LazyVideo
                       src={currentTab.tabimage}
                       className={styles.mediaVideo}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
                     />
                   ) : (
                     <Image
@@ -199,7 +234,12 @@ export default function AboutVK() {
                   ))}
                 </Stack>
 
-                <Button className={styles.ctaButton} variant="primary" size="sm">
+                <Button
+                  className={styles.ctaButton}
+                  variant="primary"
+                  size="sm"
+                  onClick={() => navigate(currentTab.ctaHref)}
+                >
                   {currentTab.cta}
                 </Button>
               </Squircle>

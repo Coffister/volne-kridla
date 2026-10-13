@@ -25,6 +25,8 @@ export type TabConfig = {
   description: string;
   benefits: Benefit[];
   cta: string;
+  /** where the CTA button leads */
+  ctaHref: string;
 };
 
 export const tabs: TabConfig[] = [
@@ -54,6 +56,7 @@ export const tabs: TabConfig[] = [
       },
     ],
     cta: "Viac o voľnom lete",
+    ctaHref: "/volne-kridla",
   },
   {
     id: "training",
@@ -81,5 +84,6 @@ export const tabs: TabConfig[] = [
       },
     ],
     cta: "Zistiť viac o tréningu",
+    ctaHref: "/volne-kridla",
   },
 ];

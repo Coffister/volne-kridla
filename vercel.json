@@ -1,4 +1,30 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/blog", "destination": "/", "permanent": true },
+    { "source": "/blog/:path*", "destination": "/", "permanent": true },
+    { "source": "/sitemap_index.xml", "destination": "/sitemap.xml", "permanent": true },
+    { "source": "/page-sitemap.xml", "destination": "/sitemap.xml", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/volne-kridla", "destination": "/index.html" },
+    { "source": "/o-mne", "destination": "/index.html" },
+    { "source": "/pre-skoly", "destination": "/index.html" },
+    { "source": "/fotogaleria/:path*", "destination": "/index.html" },
+    { "source": "/eshop/:path*", "destination": "/index.html" },
+    { "source": "/ochrana-osobnych-udajov", "destination": "/index.html" },
+    { "source": "/konzultacia", "destination": "/index.html" },
+    { "source": "/playground", "destination": "/index.html" },
+    { "source": "/admin/:path*", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
 }

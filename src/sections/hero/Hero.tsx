@@ -3,6 +3,8 @@ import Squircle from "@/ui/primitives/Squircle";
 import Button from "@/ui/components/Button";
 import Badge from "@/ui/components/Badge";
 import Carousel from "@/ui/components/Carousel";
+import { useNavigate } from "react-router-dom";
+import { useKonzultaciaModal } from "@/features/konzultacia-modal";
 
 import vkTypelogo from "@/assets/hero/volne-kridla.svg";
 import { heroCarouselImages } from "./carousel";
@@ -44,6 +46,9 @@ function TagRow({ reverse = false }: { reverse?: boolean }) {
 }
 
 export default function Hero() {
+  const navigate = useNavigate();
+  const { open: openKonzultacia } = useKonzultaciaModal();
+
   return (
     <Box as="section" className={styles.hero}>
       <Container>
@@ -72,10 +77,14 @@ export default function Hero() {
               </Text>
 
               <Stack direction="row" align="center" gap="lg" className={styles.actions}>
-                <Button variant="primary" className={styles.primaryCta}>
+                <Button
+                  variant="primary"
+                  className={styles.primaryCta}
+                  onClick={() => openKonzultacia()}
+                >
                   Začať lietať
                 </Button>
-                <Button variant="secondary">
+                <Button variant="secondary" onClick={() => navigate("/volne-kridla")}>
                   Zistiť viac
                 </Button>
               </Stack>
