@@ -71,20 +71,28 @@ function SiteApp() {
   );
 }
 
+// Router-agnostic route tree — wrapped in <BrowserRouter> in the browser and
+// in <StaticRouter> by the build-time prerender (src/entry-server.tsx).
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={null}>
+            <AdminApp />
+          </Suspense>
+        }
+      />
+      <Route path="/*" element={<SiteApp />} />
+    </Routes>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/admin/*"
-          element={
-            <Suspense fallback={null}>
-              <AdminApp />
-            </Suspense>
-          }
-        />
-        <Route path="/*" element={<SiteApp />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { useState } from "react";
+import { useTilt } from "@/lib/useTilt";
 
 import Squircle from "@/ui/primitives/Squircle";
 import Text from "@/ui/primitives/Text";
@@ -13,7 +13,7 @@ interface BadgeProps {
 export default function Badge({
     children,
 }: BadgeProps) {
-    const [rotate] = useState(() => `${(Math.random() * 4 - 2).toFixed(2)}deg`);
+    const rotate = useTilt();
 
     return (
         <span

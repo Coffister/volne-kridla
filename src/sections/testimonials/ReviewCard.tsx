@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { useState } from "react";
+import { useTilt } from "@/lib/useTilt";
 import {
   Box,
   Stack,
@@ -17,7 +17,7 @@ interface ReviewCardProps {
 }
 
 export default function ReviewCard({ testimonial }: ReviewCardProps) {
-  const [rotate] = useState(() => `${(Math.random() * 4 - 2).toFixed(2)}deg`);
+  const rotate = useTilt();
 
   return (
     <Box
