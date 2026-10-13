@@ -9,6 +9,11 @@ import { heroCarouselImages } from "./carousel";
 
 import styles from "./Hero.module.css";
 
+// home hero only (the Voľné krídla intro keeps the original order):
+// photo 2 leads, photo 1 moves to fourth place
+const [photo1, photo2, photo3, photo4, ...restPhotos] = heroCarouselImages;
+const heroSlides = [photo2, photo3, photo4, photo1, ...restPhotos];
+
 const tags = [
   "Konzultácia výživy",
   "Voľné lietanie",
@@ -77,7 +82,12 @@ export default function Hero() {
             </Stack>
 
             <Box className={styles.imageSlot}>
-              <Carousel images={heroCarouselImages} radius="lg" />
+              <Carousel
+                images={heroSlides}
+                radius="lg"
+                autoplayInterval={4000}
+                swipeable={false}
+              />
             </Box>
           </Box>
         </Squircle>
