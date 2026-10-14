@@ -148,9 +148,14 @@ export default function InquiryModal({ product, variants: initialVariants = {}, 
       });
       setDone(true);
       trackEvent("eshop-dopyt-odoslanie", { produkt: product.name });
-    } catch {
+    } catch (err) {
       trackEvent("eshop-dopyt-chyba", { produkt: product.name });
-      setSubmitError("Správu sa nepodarilo odoslať. Skús to prosím znova.");
+      const tooMany = (err as { code?: string } | null)?.code === "P0429";
+      setSubmitError(
+        tooMany
+          ? "Z tohto e-mailu sme práve dostali viac správ. Skús to prosím o pár minút."
+          : "Správu sa nepodarilo odoslať. Skús to prosím znova.",
+      );
     } finally {
       setSubmitting(false);
     }

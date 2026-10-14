@@ -425,9 +425,14 @@ export default function KonzultaciaModal() {
         sposob: typeId ?? "",
         balik: packageId ?? "",
       });
-    } catch {
+    } catch (err) {
       trackEvent("konzultacia-chyba");
-      setSubmitError("Dopyt sa nepodarilo odoslať. Skús to prosím znova.");
+      const tooMany = (err as { code?: string } | null)?.code === "P0429";
+      setSubmitError(
+        tooMany
+          ? "Z tohto e-mailu sme dnes už dostali viac dopytov. Ozvem sa ti čoskoro, alebo mi napíš priamo."
+          : "Dopyt sa nepodarilo odoslať. Skús to prosím znova.",
+      );
     } finally {
       setSubmitting(false);
     }
