@@ -653,6 +653,25 @@ export default function KonzultaciaModal() {
                   ))}
                 </select>
                 {errors.topic && <p className={styles.error}>{errors.topic}</p>}
+                {/* free flight is what the course is for — offer the switch;
+                    parrot details stay, the topic question goes away */}
+                {form.topic === "Lietanie" && (
+                  <p className={styles.switchHint}>
+                    Chcete, aby váš papagáj lietal voľne vonku? Na to je určený
+                    Kurz voľného lietania ({PACKAGES.kurz[0].price.replace(" ", "\u00a0")}).{" "}
+                    <button
+                      type="button"
+                      className={styles.switchLink}
+                      onClick={() => {
+                        trackEvent("konzultacia-prechod-na-kurz");
+                        set("topic", "");
+                        changeTrack("kurz");
+                      }}
+                    >
+                      Prejsť na kurz →
+                    </button>
+                  </p>
+                )}
               </div>
             )}
           </section>
