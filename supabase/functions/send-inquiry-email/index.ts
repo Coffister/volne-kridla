@@ -15,8 +15,9 @@
 //
 // Required secrets (set with `supabase secrets set NAME=value`):
 //   RESEND_API_KEY  — from resend.com → API Keys
-//   NOTIFY_EMAIL    — where the internal notification is sent (change any
-//                      time without redeploying)
+//   NOTIFY_EMAIL    — where the internal notification is sent, and the
+//                      reply-to of the visitor emails (change any time
+//                      without redeploying)
 // Optional:
 //   FROM_EMAIL      — verified sender, defaults to info@volnekridla.sk
 //                      (must be on a domain verified in Resend)
@@ -488,7 +489,10 @@ Deno.serve(async (req) => {
 
     if (payload.kind === "consultation" && payload.email) {
       const { subject: summarySubject, html: summaryHtml } = buildSummaryEmail(payload);
-      sends.push(sendEmail({ to: payload.email, subject: summarySubject, html: summaryHtml }));
+      // replies go to whoever handles inquiries — info@ has no inbox
+      sends.push(
+        sendEmail({ to: payload.email, subject: summarySubject, html: summaryHtml, replyTo: NOTIFY_EMAIL }),
+      );
 
       const nextSteps = buildNextStepsEmail(payload);
       if (nextSteps) {
@@ -499,6 +503,7 @@ Deno.serve(async (req) => {
             subject: nextSteps.subject,
             html: nextSteps.html,
             scheduledAt,
+            replyTo: NOTIFY_EMAIL,
           }),
         );
       }
