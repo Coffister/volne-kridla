@@ -1,5 +1,6 @@
 import { getSupabase } from "@/lib/supabase";
 import { MEDIA_BUCKET } from "./gallery";
+import { optimizeImage } from "./optimizeImage";
 
 export interface ReviewRow {
   id: string;
@@ -37,6 +38,20 @@ function resolve(row: ReviewRow): ReviewItem {
   };
 }
 
+/** Uploads a review photo, downscaled to the 800px thumb — the card shows it
+ * at a few hundred px, a phone original would be megabytes. */
+async function uploadPhoto(file: File): Promise<string> {
+  const optimized = await optimizeImage(file);
+  const blob = optimized?.thumb ?? file;
+  const ext = optimized?.thumbExt ?? (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `reviews/${crypto.randomUUID()}.${ext}`;
+  const { error } = await getSupabase()
+    .storage.from(MEDIA_BUCKET)
+    .upload(path, blob, { cacheControl: "31536000", contentType: blob.type || undefined });
+  if (error) throw error;
+  return path;
+}
+
 export async function listReviews(): Promise<ReviewItem[]> {
   const { data, error } = await getSupabase()
     .from("reviews")
@@ -60,14 +75,7 @@ export async function createReview(input: {
   let image_path: string | null = null;
   const image_url: string | null = input.imageUrl?.trim() || null;
 
-  if (input.imageFile) {
-    const ext = (input.imageFile.name.split(".").pop() || "bin").toLowerCase();
-    image_path = `reviews/${crypto.randomUUID()}.${ext}`;
-    const { error: upErr } = await supabase.storage
-      .from(MEDIA_BUCKET)
-      .upload(image_path, input.imageFile, { cacheControl: "31536000" });
-    if (upErr) throw upErr;
-  }
+  if (input.imageFile) image_path = await uploadPhoto(input.imageFile);
 
   const { data: last } = await supabase
     .from("reviews")
@@ -114,6 +122,31 @@ export async function updateReview(
     .update({ ...patch, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) throw error;
+}
+
+/** Swaps the photo for a new upload (also replaces an old external URL);
+ * the framing starts over, since it was set for the previous photo. */
+export async function replaceReviewImage(item: ReviewItem, file: File): Promise<ReviewItem> {
+  const supabase = getSupabase();
+  const image_path = await uploadPhoto(file);
+  const { data, error } = await supabase
+    .from("reviews")
+    .update({
+      image_path,
+      image_url: null,
+      image_pos_x: 50,
+      image_pos_y: 0,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", item.id)
+    .select(COLS)
+    .single();
+  if (error) {
+    await supabase.storage.from(MEDIA_BUCKET).remove([image_path]);
+    throw error;
+  }
+  if (item.image_path) await supabase.storage.from(MEDIA_BUCKET).remove([item.image_path]);
+  return resolve(data);
 }
 
 export async function deleteReview(item: ReviewItem): Promise<void> {

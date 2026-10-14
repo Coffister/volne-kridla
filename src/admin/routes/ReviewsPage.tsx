@@ -5,6 +5,7 @@ import {
   deleteReview,
   listReviews,
   reorderReviews,
+  replaceReviewImage,
   updateReview,
   type ReviewItem,
 } from "../lib/reviews";
@@ -28,6 +29,7 @@ export default function ReviewsPage() {
   // framing for the review being added — set in the same dialog, saved with it
   const [newPos, setNewPos] = useState<ImagePosition>(DEFAULT_POS);
   const [croppingNew, setCroppingNew] = useState(false);
+  const [replacingId, setReplacingId] = useState<string | null>(null);
 
   // live preview for the clickable avatar square — an uploaded file wins
   // over a typed URL, matching which one actually gets saved
@@ -104,6 +106,21 @@ export default function ReviewsPage() {
     } catch (e) {
       setError(msg(e));
       await refresh();
+    }
+  }
+
+  async function onReplaceImage(item: ReviewItem, file: File) {
+    setReplacingId(item.id);
+    setError(null);
+    try {
+      const updated = await replaceReviewImage(item, file);
+      setItems((cur) => cur.map((i) => (i.id === item.id ? updated : i)));
+      // a new photo needs framing — open the crop dialog right away
+      setCropping(updated);
+    } catch (e) {
+      setError(msg(e));
+    } finally {
+      setReplacingId(null);
     }
   }
 
@@ -258,6 +275,24 @@ export default function ReviewsPage() {
                 >
                   ↓
                 </button>
+                <label className="admin-ghost">
+                  {replacingId === item.id
+                    ? "Nahrávam…"
+                    : item.image
+                      ? "Nahradiť fotku"
+                      : "Pridať fotku"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    disabled={replacingId !== null}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = "";
+                      if (file) void onReplaceImage(item, file);
+                    }}
+                  />
+                </label>
                 {item.image && (
                   <button type="button" onClick={() => setCropping(item)}>
                     Upraviť orez
