@@ -3,7 +3,6 @@ import Squircle from "@/ui/primitives/Squircle";
 import Button from "@/ui/components/Button";
 import Badge from "@/ui/components/Badge";
 import Carousel from "@/ui/components/Carousel";
-import { useNavigate } from "react-router-dom";
 import { useKonzultaciaModal } from "@/features/konzultacia-modal";
 import { markOpenSource } from "@/lib/analytics";
 
@@ -47,7 +46,6 @@ function TagRow({ reverse = false }: { reverse?: boolean }) {
 }
 
 export default function Hero() {
-  const navigate = useNavigate();
   const { open: openKonzultacia } = useKonzultaciaModal();
 
   return (
@@ -78,18 +76,26 @@ export default function Hero() {
               </Text>
 
               <Stack direction="row" align="center" gap="lg" className={styles.actions}>
+                {/* the course is the pricier package → the orange, more prominent CTA */}
                 <Button
                   variant="primary"
-                  className={styles.primaryCta}
+                  className={`${styles.cta} ${styles.ctaAccent}`}
                   onClick={() => {
-                    markOpenSource("hero");
-                    openKonzultacia();
+                    markOpenSource("hero-kurz");
+                    openKonzultacia("kurz");
                   }}
                 >
-                  Začať lietať
+                  Kurz voľného lietania
                 </Button>
-                <Button variant="secondary" onClick={() => navigate("/volne-kridla")}>
-                  Zistiť viac
+                <Button
+                  variant="primary"
+                  className={styles.cta}
+                  onClick={() => {
+                    markOpenSource("hero-konzultacia");
+                    openKonzultacia("konzultacia");
+                  }}
+                >
+                  Konzultácie
                 </Button>
               </Stack>
             </Stack>

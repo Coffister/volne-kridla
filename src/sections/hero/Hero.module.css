@@ -54,6 +54,18 @@
     color: var(--color-text-primary);
 }
 
+.cta {
+    white-space: nowrap;
+}
+
+.ctaAccent {
+    background: var(--color-accent-primary) !important;
+}
+
+.actions .ctaAccent {
+    color: var(--color-text-inverse);
+}
+
 .link {
     color: var(--color-text-primary);
     font-family: var(--font-family-body);
@@ -141,7 +153,7 @@
         width: 100%;
     }
 
-    .primaryCta {
+    .cta {
         width: 100% !important;
     }
 }
