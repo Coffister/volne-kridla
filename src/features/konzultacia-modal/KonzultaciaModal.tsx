@@ -58,7 +58,6 @@ interface FormState {
   species: string;
   age: string;
   topic: string;
-  details: string;
   name: string;
   email: string;
   phone: string;
@@ -66,12 +65,14 @@ interface FormState {
   consent: boolean;
 }
 
+// stored as the topic for the flight course, which skips the topic question
+const KURZ_TOPIC = "Voľné lietanie";
+
 const EMPTY_FORM: FormState = {
   parrotName: "",
   species: "",
   age: "",
   topic: "",
-  details: "",
   name: "",
   email: "",
   phone: "",
@@ -377,9 +378,8 @@ export default function KonzultaciaModal() {
     if (!form.parrotName.trim()) next.parrotName = "Uveďte meno papagája.";
     if (!form.age.trim() || Number(form.age) < 0)
       next.age = "Uveďte vek papagája.";
-    if (!form.topic) next.topic = "Vyberte, čo chcete riešiť.";
-    if (!form.details.trim())
-      next.details = "Doplňte prosím pár slov o situácii.";
+    // the flight course has only one topic — nothing to ask
+    if (track !== "kurz" && !form.topic) next.topic = "Vyberte, čo chcete riešiť.";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -411,8 +411,8 @@ export default function KonzultaciaModal() {
         parrotName: form.parrotName,
         species: form.species,
         age: form.age,
-        topic: form.topic,
-        details: form.details,
+        topic: track === "kurz" ? KURZ_TOPIC : form.topic,
+        details: "",
         name: form.name,
         email: form.email,
         phone: form.phone.trim() ? `${phoneCode} ${form.phone.trim()}` : "",
@@ -635,37 +635,45 @@ export default function KonzultaciaModal() {
               </div>
             </div>
 
-            <div className={styles.field}>
-              <label htmlFor="k-topic">Čo chcete riešiť?</label>
-              <select
-                id="k-topic"
-                className={styles.select}
-                value={form.topic}
-                onChange={(e) => set("topic", e.target.value)}
-                aria-invalid={!!errors.topic}
-              >
-                <option value="">Vyberte…</option>
-                {PARROT_TOPICS.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-              {errors.topic && <p className={styles.error}>{errors.topic}</p>}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="k-details">Doplňujúce informácie</label>
-              <textarea
-                id="k-details"
-                rows={3}
-                placeholder="Ako dlho papagája máte, čo ste už skúšali…"
-                value={form.details}
-                onChange={(e) => set("details", e.target.value)}
-                aria-invalid={!!errors.details}
-              />
-              {errors.details && <p className={styles.error}>{errors.details}</p>}
-            </div>
+            {track !== "kurz" && (
+              <div className={styles.field}>
+                <label htmlFor="k-topic">Čo chcete riešiť?</label>
+                <select
+                  id="k-topic"
+                  className={styles.select}
+                  value={form.topic}
+                  onChange={(e) => set("topic", e.target.value)}
+                  aria-invalid={!!errors.topic}
+                >
+                  <option value="">Vyberte…</option>
+                  {PARROT_TOPICS.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+                {errors.topic && <p className={styles.error}>{errors.topic}</p>}
+                {/* free flight is what the course is for — offer the switch;
+                    parrot details stay, the topic question goes away */}
+                {form.topic === "Lietanie" && (
+                  <p className={styles.switchHint}>
+                    Chcete, aby váš papagáj lietal voľne vonku? Na to je určený
+                    Kurz voľného lietania ({PACKAGES.kurz[0].price.replace(" ", "\u00a0")}).{" "}
+                    <button
+                      type="button"
+                      className={styles.switchLink}
+                      onClick={() => {
+                        trackEvent("konzultacia-prechod-na-kurz");
+                        set("topic", "");
+                        changeTrack("kurz");
+                      }}
+                    >
+                      Prejsť na kurz →
+                    </button>
+                  </p>
+                )}
+              </div>
+            )}
           </section>
         )}
 
