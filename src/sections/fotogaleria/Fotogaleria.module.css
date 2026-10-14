@@ -192,8 +192,8 @@
 
 /* same card language as the album cards: cream, black outline, no shadow */
 .cta {
-    max-width: 44rem;
-    margin: var(--spacing-2xl) auto 0;
+    /* full container width — a narrow card looked stray under the grid */
+    margin: var(--spacing-2xl) 0 0;
     padding: var(--spacing-xl) var(--spacing-lg);
     text-align: center;
     background: var(--color-surface-primary);

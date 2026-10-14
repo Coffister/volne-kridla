@@ -15,7 +15,7 @@ export default function FacebookCta() {
     <aside className={styles.cta} aria-label="Ďalšia akcia">
       <Stack direction="column" align="center" gap="sm">
         <Text as="h2" variant="cardTitle" className={styles.ctaTitle}>
-          Chceš byť na fotkách z ďalšej akcie?
+          Chceš byť s nami na ďalšej akcii?
         </Text>
         <Text as="p" variant="body" className={styles.ctaText}>
           Spoločné lietanie, tréningy aj stretnutia majiteľov papagájov
