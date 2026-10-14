@@ -22,7 +22,7 @@ const VK_HERO_ID = "hero";
 
 type NavItem =
   | { label: string; to: string }
-  | { label: string; id: string; offset?: number };
+  | { label: string; id: string; offset?: number; path?: string }; // path defaults to VK_PATH
 
 // single source of truth for nav order. The mobile menu renders this list
 // verbatim as a flat set of links (no dropdown — nobody was opening it).
@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "O voľnom lietaní", id: VK_HERO_ID, offset: 0 },
   ...(visibility.showTipsAndTricks ? [{ label: "Tipy a triky", id: "tipy" }] : []),
   ...(visibility.showTargetTraining ? [{ label: "Target Tréning", id: "target" }] : []),
-  { label: "Najčastejšie otázky", id: "otazky" },
+  { label: "Najčastejšie otázky", id: "otazky", path: "/" },
   { label: "Pre školy", to: "/pre-skoly" },
   { label: "Fotogaléria", to: "/fotogaleria" },
 ];
@@ -84,11 +84,12 @@ export default function Navbar() {
     event: MouseEvent<HTMLAnchorElement>,
     id: string,
     offset?: number,
+    path: string = VK_PATH,
   ) => {
     event.preventDefault();
     closeMenu();
 
-    if (location.pathname === VK_PATH) {
+    if (location.pathname === path) {
       // closing the mobile menu stops Lenis via a useEffect cleanup that
       // only commits after this handler returns — calling scrollToSection
       // in the meantime would ask a still-stopped Lenis to scroll, which is
@@ -100,21 +101,22 @@ export default function Navbar() {
     } else {
       // navigate to the page first, then scroll once the section is mounted
       pendingSectionId.current = id;
-      navigate(VK_PATH);
+      navigate(path);
     }
   };
 
   const handleSectionClick = (
     event: MouseEvent<HTMLAnchorElement>,
-    section: { id: string; offset?: number },
-  ) => goToSection(event, section.id, section.offset);
+    section: { id: string; offset?: number; path?: string },
+  ) => goToSection(event, section.id, section.offset, section.path);
 
   const handleHeroClick = (event: MouseEvent<HTMLAnchorElement>) =>
     goToSection(event, VK_HERO_ID, 0);
 
-  // run a pending cross-page scroll after the Voľné krídla page has rendered
+  // run a pending cross-page scroll once the target page has rendered (the
+  // section just isn't found — and the retry gives up — on any other page)
   useEffect(() => {
-    if (location.pathname !== VK_PATH || !pendingSectionId.current) return;
+    if (!pendingSectionId.current) return;
 
     const id = pendingSectionId.current;
     pendingSectionId.current = null;
@@ -225,7 +227,7 @@ export default function Navbar() {
                   {VK_SECTIONS.map((section) => (
                     <a
                       key={section.id}
-                      href={`${VK_PATH}#${section.id}`}
+                      href={`${section.path ?? VK_PATH}#${section.id}`}
                       onClick={(event) => handleSectionClick(event, section)}
                     >
                       {section.label}
@@ -273,7 +275,7 @@ export default function Navbar() {
                 isSectionItem(item) ? (
                   <a
                     key={item.label}
-                    href={`${VK_PATH}#${item.id}`}
+                    href={`${item.path ?? VK_PATH}#${item.id}`}
                     tabIndex={isMenuOpen ? undefined : -1}
                     onClick={(event) => handleSectionClick(event, item)}
                   >

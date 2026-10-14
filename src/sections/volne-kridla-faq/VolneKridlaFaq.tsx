@@ -3,7 +3,7 @@ import { useState } from "react";
 import { qna as fallbackQna, tips as fallbackTips, type QnaItem } from "./faq";
 import FaqItem from "./FaqItem";
 
-import { Box, Container, Section, Stack } from "@/ui/primitives";
+import { Container, Section, Stack } from "@/ui/primitives";
 import Badge from "@/ui/components/Badge";
 import { site } from "@/content";
 import JsonLd from "@/lib/JsonLd";
@@ -41,10 +41,6 @@ interface FaqGroupProps {
 function FaqGroup({ id, badge, items }: FaqGroupProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const middle = Math.ceil(items.length / 2);
-  const leftColumn = items.slice(0, middle);
-  const rightColumn = items.slice(middle);
-
   const toggle = (index: number) =>
     setOpenIndex((current) => (current === index ? null : index));
 
@@ -54,29 +50,23 @@ function FaqGroup({ id, badge, items }: FaqGroupProps) {
         <Badge>{badge}</Badge>
       </Stack>
 
-      <Box className={styles.columns}>
-        <Stack className={styles.column} gap="xs" reveal="stagger">
-          {leftColumn.map((item, index) => (
-            <FaqItem
-              key={item.question}
-              {...item}
-              isOpen={openIndex === index}
-              onToggle={() => toggle(index)}
-            />
-          ))}
-        </Stack>
-
-        <Stack className={styles.column} gap="xs" reveal="stagger">
-          {rightColumn.map((item, index) => (
-            <FaqItem
-              key={item.question}
-              {...item}
-              isOpen={openIndex === middle + index}
-              onToggle={() => toggle(middle + index)}
-            />
-          ))}
-        </Stack>
-      </Box>
+      {/* rows of two; flex-wrap + centring puts an odd last question in the
+          middle, however many questions the admin adds */}
+      <Stack
+        direction="row"
+        wrap="wrap"
+        justify="center"
+        align="flex-start"
+        gap="xs"
+        className={styles.list}
+        reveal="stagger"
+      >
+        {items.map((item, index) => (
+          <div key={item.question} className={styles.item}>
+            <FaqItem {...item} isOpen={openIndex === index} onToggle={() => toggle(index)} />
+          </div>
+        ))}
+      </Stack>
     </div>
   );
 }

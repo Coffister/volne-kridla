@@ -1,6 +1,7 @@
 import Hero from "@/sections/hero";
 import AboutVK from "@/sections/about-vk/AboutVK";
 import Testimonials from "@/sections/testimonials";
+import Faq from "@/sections/volne-kridla-faq";
 import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <AboutVK />
       <Testimonials />
+      <Faq />
     </>
   );
 }

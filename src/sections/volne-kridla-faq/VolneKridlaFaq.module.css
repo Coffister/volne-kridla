@@ -25,21 +25,17 @@ section {
     margin-bottom: var(--spacing-md);
 }
 
-.columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--spacing-xs);
-
+.list {
     width: 100%;
 }
 
-.column {
-    width: 100%;
+/* two per row; gap is spacing-xs (8px) */
+.item {
+    width: calc(50% - 4px);
 }
 
 @media (max-width: 768px) {
-    .columns {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
+    .item {
+        width: 100%;
     }
 }
