@@ -1,17 +1,21 @@
 // Supabase Edge Function — sends email notifications via Resend whenever a
 // visitor submits "Mám záujem" (product), the consultation modal's form, or
 // the presentation booking modal on /pre-skoly (internal notification only).
-// Called client-side, right after the row is already safely inserted
-// (see src/lib/inquiries.ts) — this is a best-effort notification, not the
-// source of truth (the database row is).
+// Called client-side right after the row is inserted (see src/lib/inquiries.ts),
+// but the request body is ignored: the function claims every row whose
+// notified_at is still null (atomically, so each row is mailed at most once)
+// and builds the mails from the database. A caller can't make it mail an
+// arbitrary address — only rows that passed the tables' checks and rate
+// limits (supabase/migrations/0016_inquiry_notifications.sql). Best-effort:
+// the row is the source of truth, a failed mail is only logged.
 //
 // For a consultation submission this sends up to 3 emails:
 //   1. internal notification to NOTIFY_EMAIL (site owner) — immediate
 //   2. branded summary to the visitor — immediate
 //   3. branded "next steps" to the visitor — scheduled a few minutes later
 //      via Resend's `scheduled_at`, so it doesn't land in the same instant
-//      as the summary. Only sent for track "konzultacia" with a known
-//      type/package combo — "kurz" (flight course) has no such content.
+//      as the summary. Only sent for a known type/package combo — "kurz"
+//      (flight course) has no such content.
 //
 // Required secrets (set with `supabase secrets set NAME=value`):
 //   RESEND_API_KEY  — from resend.com → API Keys
@@ -21,6 +25,9 @@
 // Optional:
 //   FROM_EMAIL      — verified sender, defaults to info@volnekridla.sk
 //                      (must be on a domain verified in Resend)
+// SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
+
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const NOTIFY_EMAIL = Deno.env.get("NOTIFY_EMAIL");
@@ -54,11 +61,10 @@ interface ProductInquiryPayload {
 
 interface ConsultationInquiryPayload {
   kind: "consultation";
-  trackId: string;
   trackLabel: string;
-  typeId: string | null;
+  typeId: string;
   typeLabel: string;
-  packageId: string | null;
+  packageId: string;
   packageLabel: string;
   packagePrice: string;
   parrotName: string;
@@ -87,6 +93,66 @@ interface PresentationInquiryPayload {
 }
 
 type Payload = ProductInquiryPayload | ConsultationInquiryPayload | PresentationInquiryPayload;
+
+type Row = Record<string, unknown>;
+const str = (v: unknown) => (v == null ? "" : String(v));
+
+// "2026-10-14" → "14. 10. 2026"
+const skDate = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${d}. ${m}. ${y}`;
+};
+
+function productPayload(r: Row): ProductInquiryPayload {
+  return {
+    kind: "product",
+    productName: str(r.product_name),
+    name: str(r.name),
+    email: str(r.email),
+    phone: str(r.phone),
+    variants: (r.variants as Record<string, string>) ?? {},
+  };
+}
+
+function consultationPayload(r: Row): ConsultationInquiryPayload {
+  return {
+    kind: "consultation",
+    trackLabel: str(r.track_label),
+    typeId: str(r.type_id),
+    typeLabel: str(r.type_label),
+    packageId: str(r.package_id),
+    packageLabel: str(r.package_label),
+    packagePrice: str(r.package_price),
+    parrotName: str(r.parrot_name),
+    species: str(r.species),
+    age: str(r.age),
+    topic: str(r.topic),
+    // the modal puts the free-text answer in note; details is legacy
+    details: [str(r.details), str(r.note)].filter(Boolean).join("\n"),
+    name: str(r.name),
+    email: str(r.email),
+    phone: str(r.phone),
+  };
+}
+
+function presentationPayload(r: Row): PresentationInquiryPayload {
+  const from = str(r.date_from);
+  const to = str(r.date_to);
+  return {
+    kind: "presentation",
+    inviterLabel: str(r.inviter_kind),
+    subtype: str(r.subtype),
+    orgName: str(r.org_name),
+    city: str(r.city),
+    participants: str(r.participants),
+    ageGroup: str(r.age_group),
+    dateLabel: from === to ? skDate(from) : `${skDate(from)} – ${skDate(to)}`,
+    note: str(r.note),
+    name: str(r.name),
+    email: str(r.email),
+    phone: str(r.phone),
+  };
+}
 
 function buildInternalNotification(payload: Payload): { subject: string; html: string } {
   const mailto = payload.email ? `<a href="mailto:${escapeHtml(payload.email)}">${escapeHtml(payload.email)}</a>` : "–";
@@ -456,57 +522,61 @@ async function sendEmail(args: {
   }
 }
 
+function sendsFor(payload: Payload): Promise<void>[] {
+  const { subject, html } = buildInternalNotification(payload);
+  const sends = [sendEmail({ to: NOTIFY_EMAIL!, subject, html, replyTo: payload.email || undefined })];
+
+  if (payload.kind === "consultation" && payload.email) {
+    const summary = buildSummaryEmail(payload);
+    // replies go to whoever handles inquiries — info@ has no inbox
+    sends.push(sendEmail({ to: payload.email, ...summary, replyTo: NOTIFY_EMAIL }));
+
+    const nextSteps = buildNextStepsEmail(payload);
+    if (nextSteps) {
+      const scheduledAt = new Date(Date.now() + NEXT_STEPS_DELAY_MINUTES * 60_000).toISOString();
+      sends.push(sendEmail({ to: payload.email, ...nextSteps, scheduledAt, replyTo: NOTIFY_EMAIL }));
+    }
+  }
+  return sends;
+}
+
+const TABLES = [
+  ["product_inquiries", productPayload],
+  ["consultation_inquiries", consultationPayload],
+  ["presentation_inquiries", presentationPayload],
+] as const;
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: CORS_HEADERS });
   }
 
-  if (!RESEND_API_KEY || !NOTIFY_EMAIL) {
-    console.error("send-inquiry-email: RESEND_API_KEY / NOTIFY_EMAIL not set");
-    return new Response(JSON.stringify({ error: "not configured" }), {
-      status: 500,
+  const json = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), {
+      status,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
+
+  if (!RESEND_API_KEY || !NOTIFY_EMAIL) {
+    console.error("send-inquiry-email: RESEND_API_KEY / NOTIFY_EMAIL not set");
+    return json({ error: "not configured" }, 500);
   }
 
+  const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
+    auth: { persistSession: false },
+  });
+
   try {
-    const payload = (await req.json()) as Payload;
-    if (payload.kind !== "product" && payload.kind !== "consultation" && payload.kind !== "presentation") {
-      throw new Error(`unknown kind: ${(payload as { kind?: unknown }).kind}`);
-    }
-
     const sends: Promise<void>[] = [];
-
-    const { subject: internalSubject, html: internalHtml } = buildInternalNotification(payload);
-    sends.push(
-      sendEmail({
-        to: NOTIFY_EMAIL,
-        subject: internalSubject,
-        html: internalHtml,
-        replyTo: payload.email || undefined,
-      }),
-    );
-
-    if (payload.kind === "consultation" && payload.email) {
-      const { subject: summarySubject, html: summaryHtml } = buildSummaryEmail(payload);
-      // replies go to whoever handles inquiries — info@ has no inbox
-      sends.push(
-        sendEmail({ to: payload.email, subject: summarySubject, html: summaryHtml, replyTo: NOTIFY_EMAIL }),
-      );
-
-      const nextSteps = buildNextStepsEmail(payload);
-      if (nextSteps) {
-        const scheduledAt = new Date(Date.now() + NEXT_STEPS_DELAY_MINUTES * 60_000).toISOString();
-        sends.push(
-          sendEmail({
-            to: payload.email,
-            subject: nextSteps.subject,
-            html: nextSteps.html,
-            scheduledAt,
-            replyTo: NOTIFY_EMAIL,
-          }),
-        );
-      }
+    for (const [table, toPayload] of TABLES) {
+      // claim: a concurrent call can't get the same rows back
+      const { data, error } = await db
+        .from(table)
+        .update({ notified_at: new Date().toISOString() })
+        .is("notified_at", null)
+        .select();
+      if (error) throw error;
+      for (const row of data ?? []) sends.push(...sendsFor(toPayload(row)));
     }
 
     const results = await Promise.allSettled(sends);
@@ -515,18 +585,9 @@ Deno.serve(async (req) => {
       console.error("send-inquiry-email: one send failed:", (f as PromiseRejectedResult).reason);
     }
 
-    if (failures.length === results.length) {
-      throw new Error("all sends failed");
-    }
-
-    return new Response(JSON.stringify({ ok: true, sent: results.length - failures.length, failed: failures.length }), {
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    return json({ ok: true, sent: results.length - failures.length, failed: failures.length });
   } catch (e) {
     console.error("send-inquiry-email error:", e);
-    return new Response(JSON.stringify({ error: String(e) }), {
-      status: 500,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    });
+    return json({ error: "failed" }, 500);
   }
 });

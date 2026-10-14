@@ -1,14 +1,13 @@
 import { getSupabase } from "@/lib/supabase";
 
-/** Fires the "send-inquiry-email" Edge Function so the site owner gets a
- * notification. Best-effort: the inquiry is already safely in the database
- * by the time this runs, so a failed/slow email must never surface as an
- * error to the visitor — just log it for debugging. */
-async function notifyByEmail(kind: "product" | "consultation" | "presentation", payload: Record<string, unknown>) {
+/** Pings the "send-inquiry-email" Edge Function, which mails every not-yet-
+ * notified inquiry straight from the database — it takes no payload, so it
+ * can't be used to mail arbitrary content. Best-effort: the inquiry is already
+ * safely in the database by the time this runs, so a failed/slow email must
+ * never surface as an error to the visitor — just log it for debugging. */
+async function notifyByEmail() {
   try {
-    const { error } = await getSupabase().functions.invoke("send-inquiry-email", {
-      body: { kind, ...payload },
-    });
+    const { error } = await getSupabase().functions.invoke("send-inquiry-email", { body: {} });
     if (error) console.error("send-inquiry-email failed:", error);
   } catch (e) {
     console.error("send-inquiry-email failed:", e);
@@ -35,13 +34,7 @@ export async function submitProductInquiry(input: {
   });
   if (error) throw error;
 
-  void notifyByEmail("product", {
-    productName: input.productName,
-    name: input.name.trim(),
-    email: input.email.trim(),
-    phone: input.phone?.trim() || "",
-    variants: input.variants ?? {},
-  });
+  void notifyByEmail();
 }
 
 /** Public — anyone can submit a consultation request from KonzultaciaModal,
@@ -68,8 +61,11 @@ export async function submitConsultationInquiry(input: {
 }): Promise<void> {
   const { error } = await getSupabase().from("consultation_inquiries").insert({
     track_label: input.trackLabel,
+    type_id: input.typeId ?? "",
     type_label: input.typeLabel,
+    package_id: input.packageId ?? "",
     package_label: input.packageLabel,
+    package_price: input.packagePrice,
     parrot_name: input.parrotName,
     species: input.species,
     age: input.age,
@@ -83,23 +79,7 @@ export async function submitConsultationInquiry(input: {
   });
   if (error) throw error;
 
-  void notifyByEmail("consultation", {
-    trackId: input.trackId,
-    trackLabel: input.trackLabel,
-    typeId: input.typeId,
-    typeLabel: input.typeLabel,
-    packageId: input.packageId,
-    packageLabel: input.packageLabel,
-    packagePrice: input.packagePrice,
-    parrotName: input.parrotName,
-    species: input.species,
-    age: input.age,
-    topic: input.topic,
-    details: input.details,
-    name: input.name.trim(),
-    email: input.email.trim(),
-    phone: input.phone?.trim() || "",
-  });
+  void notifyByEmail();
 }
 
 /** Public — booking request for a school / organisation presentation from
@@ -144,17 +124,5 @@ export async function submitPresentationInquiry(input: {
   const { error } = await getSupabase().from("presentation_inquiries").insert(row);
   if (error) throw error;
 
-  void notifyByEmail("presentation", {
-    inviterLabel: input.inviterLabel,
-    subtype: row.subtype,
-    orgName: row.org_name,
-    city: row.city,
-    participants: row.participants,
-    ageGroup: row.age_group,
-    dateLabel: input.dateLabel,
-    note: row.note,
-    name: row.name,
-    email: row.email,
-    phone: row.phone,
-  });
+  void notifyByEmail();
 }
