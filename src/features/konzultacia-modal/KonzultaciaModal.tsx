@@ -26,6 +26,7 @@ import {
 } from "./data";
 import { useKonzultaciaModal } from "./useKonzultaciaModal";
 import { useModalSwitch } from "@/features/modal-switch/useModalSwitch";
+import { visibility } from "@/content/visibility";
 import Confetti from "./Confetti";
 import {
   FeatherIcon,
@@ -44,8 +45,16 @@ import styles from "./KonzultaciaModal.module.css";
 
 const PHONE_FLAGS = { "+421": skFlag, "+420": czFlag };
 
+// in-person can be switched off in the admin; with a single type left it's
+// preselected, so the visitor goes straight to the packages
+const OFFERED_TYPES = CONSULT_TYPES.filter(
+  (t) => t.id !== "osobna" || visibility.showOsobnaKonzultacia,
+);
+const DEFAULT_TYPE = OFFERED_TYPES.length === 1 ? OFFERED_TYPES[0].id : null;
+
 // form.phone itself stores plain digits only (what actually gets sent) —
 // this just adds the "912 345 678" spacing back for display in the input
+
 function formatPhoneDisplay(digits: string): string {
   return digits.match(/.{1,3}/g)?.join(" ") ?? "";
 }
@@ -238,10 +247,11 @@ export default function KonzultaciaModal() {
     resetOnNextOpen.current = false;
     const initialPackages = requestedTrack ? PACKAGES[requestedTrack] : null;
     const initialType =
-      requestedTrack === "konzultacia" &&
-      CONSULT_TYPES.some((t) => t.id === requestedType)
-        ? requestedType
-        : null;
+      requestedTrack !== "konzultacia"
+        ? null
+        : OFFERED_TYPES.some((t) => t.id === requestedType)
+          ? requestedType
+          : DEFAULT_TYPE;
     const initialPackage =
       initialPackages?.length === 1
         ? initialPackages[0].id
@@ -354,12 +364,13 @@ export default function KonzultaciaModal() {
     // so switching to "kurz" and back doesn't leave a stale selection that
     // then leaks into the recap ("Kurz voľného lietania · Osobná
     // konzultácia · Kurz voľného lietania")
-    setTypeId(null);
+    const nextType = next === "konzultacia" ? DEFAULT_TYPE : null;
+    setTypeId(nextType);
     const nextPackages = PACKAGES[next];
     const nextPackageId =
       nextPackages.length === 1 ? nextPackages[0].id : null;
     setPackageId(nextPackageId);
-    setSelection({ track: next, type: null, package: nextPackageId });
+    setSelection({ track: next, type: nextType, package: nextPackageId });
   }
 
   function changeType(next: string) {
@@ -507,7 +518,7 @@ export default function KonzultaciaModal() {
                   role="radiogroup"
                   aria-label="Spôsob konzultácie"
                 >
-                  {CONSULT_TYPES.map((t) => (
+                  {OFFERED_TYPES.map((t) => (
                     <label
                       key={t.id}
                       className={styles.pillLabel}

@@ -9,54 +9,9 @@ import {
   type FaqGroup,
   type FaqRow,
 } from "../lib/faq";
-import { getSectionVisible, setSectionVisible, type SectionKey } from "../lib/sections";
+import type { SectionKey } from "../lib/sections";
+import SectionToggle from "../components/SectionToggle";
 import { msg } from "../lib/errors";
-
-/** Show/hide the whole section on the public page (not just single items). */
-function SectionToggle({ sectionKey }: { sectionKey: SectionKey }) {
-  const [visible, setVisible] = useState<boolean | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    getSectionVisible(sectionKey)
-      .then(setVisible)
-      .catch((e) => setError(msg(e)));
-  }, [sectionKey]);
-
-  async function toggle() {
-    if (visible === null) return;
-    const next = !visible;
-    setVisible(next);
-    setError(null);
-    try {
-      await setSectionVisible(sectionKey, next);
-    } catch (e) {
-      setVisible(!next);
-      setError(msg(e));
-    }
-  }
-
-  return (
-    <div>
-      <p className="admin-muted">
-        {visible === null
-          ? "Načítavam…"
-          : visible
-            ? "Sekcia je na webe zobrazená."
-            : "Sekcia je na webe skrytá (aj v menu)."}
-      </p>
-      <button
-        type="button"
-        className="admin-btn admin-btn-sm"
-        onClick={toggle}
-        disabled={visible === null}
-      >
-        {visible ? "Skryť sekciu" : "Zobraziť sekciu"}
-      </button>
-      {error && <p className="admin-error">{error}</p>}
-    </div>
-  );
-}
 
 interface FaqGroupSectionProps {
   group: FaqGroup;

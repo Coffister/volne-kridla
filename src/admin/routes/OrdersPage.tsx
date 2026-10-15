@@ -12,6 +12,7 @@ import {
   setConsultationInquiryHandled,
   type ConsultationInquiryRow,
 } from "../lib/consultations";
+import SectionToggle from "../components/SectionToggle";
 import { msg } from "../lib/errors";
 
 export default function OrdersPage() {
@@ -161,6 +162,12 @@ export default function OrdersPage() {
               : `${consultItems.length} dopytov · ${consultPendingCount} nevybavených`}
           </p>
         </div>
+        <SectionToggle
+          sectionKey="osobna"
+          noun="osobnú konzultáciu"
+          shownText="Na webe sa ponúka online aj osobná konzultácia. Zmena sa prejaví po publikovaní."
+          hiddenText="Osobná konzultácia je na webe skrytá, ponúka sa len online. Zmena sa prejaví po publikovaní."
+        />
       </header>
 
       {consultError && <p className="admin-error">{consultError}</p>}

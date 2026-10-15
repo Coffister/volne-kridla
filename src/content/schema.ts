@@ -85,6 +85,8 @@ export interface FaqContent {
 /** Whole-section visibility toggled in the admin (site_sections table). */
 export interface SectionVisibility {
   tipy: boolean;
+  /** in-person option in the consultation modal */
+  osobna: boolean;
 }
 
 /**
@@ -116,6 +118,6 @@ export const EMPTY_SITE: SiteContent = {
   heroCarousel: [],
   reviews: [],
   faq: { tipy: [], otazky: [] },
-  sections: { tipy: false },
+  sections: { tipy: false, osobna: false },
   products: [],
 };

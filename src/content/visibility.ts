@@ -7,6 +7,8 @@ import { site } from "@/content";
 export const visibility = {
   // toggled in the admin (Otázky → Tipy, triky a zaujímavosti), applied on publish
   showTipsAndTricks: site.sections.tipy,
+  // in-person option of the consultation modal (admin: Dopyty → Konzultácie)
+  showOsobnaKonzultacia: site.sections.osobna,
   // removed at the client's request; flip back to true to republish
   showTargetTraining: false,
 };

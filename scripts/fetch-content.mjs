@@ -200,6 +200,7 @@ try {
   // missing row = hidden (see 0012_site_sections.sql)
   const sections = {
     tipy: sectionRows.find((row) => row.key === "tipy")?.visible ?? false,
+    osobna: sectionRows.find((row) => row.key === "osobna")?.visible ?? false,
   };
 
   const products = productRows.map((row) => {

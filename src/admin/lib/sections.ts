@@ -1,7 +1,8 @@
 import { getSupabase } from "@/lib/supabase";
 
 // keys match the section anchor ids on /volne-kridla (see 0012_site_sections.sql)
-export type SectionKey = "tipy";
+// ("osobna" isn't a section but the in-person option of the consultation modal)
+export type SectionKey = "tipy" | "osobna";
 
 /** A missing row means hidden — same default the build uses. */
 export async function getSectionVisible(key: SectionKey): Promise<boolean> {
