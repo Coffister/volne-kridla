@@ -27,23 +27,23 @@
   "rewrites": [
     {
       "source": "/fotogaleria/:path*",
-      "destination": "/spa.html"
+      "destination": "/spa"
     },
     {
       "source": "/eshop/:path*",
-      "destination": "/spa.html"
+      "destination": "/spa"
     },
     {
       "source": "/konzultacia",
-      "destination": "/spa.html"
+      "destination": "/spa"
     },
     {
       "source": "/playground",
-      "destination": "/spa.html"
+      "destination": "/spa"
     },
     {
       "source": "/admin/:path*",
-      "destination": "/spa.html"
+      "destination": "/spa"
     }
   ],
   "headers": [
