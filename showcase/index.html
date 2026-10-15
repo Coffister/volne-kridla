@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="sk" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- vendored from the project's own gsap dependency: no CDN at render time -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Showcase frame brand. The captured site/admin keep their own fonts
+         (League Spartan + Poppins) — they're baked into the captures. */
+      @font-face {
+        font-family: "Bricolage Grotesque";
+        font-weight: 200 800;
+        src: url(assets/fonts/bricolage-grotesque-latin-ext-wght-normal.woff2) format("woff2-variations");
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F;
+      }
+      @font-face {
+        font-family: "Bricolage Grotesque";
+        font-weight: 200 800;
+        src: url(assets/fonts/bricolage-grotesque-latin-wght-normal.woff2) format("woff2-variations");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F;
+      }
+      @font-face {
+        font-family: "Poppins";
+        font-weight: 500;
+        src: url(assets/fonts/poppins-latin-ext-500-normal.woff2) format("woff2");
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F;
+      }
+      @font-face {
+        font-family: "Poppins";
+        font-weight: 500;
+        src: url(assets/fonts/poppins-latin-500-normal.woff2) format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F;
+      }
+
+      :root {
+        --bg: #f5f5f5;
+        --ink: #0c0c0c;
+        --line: rgba(12, 12, 12, 0.08);
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      #stage { position: absolute; inset: 0; }
+      #cam { position: absolute; inset: 0; transform-origin: 0 0; }
+
+      /* ---------- browser window: 1440×900 viewport + 40px chrome, 1:1 with the captures */
+      .win {
+        position: absolute;
+        left: 240px;
+        top: 70px;
+        width: 1440px;
+        height: 940px;
+        border-radius: 16px;
+        background: #fff;
+        transform-origin: 0 0;
+        box-shadow:
+          0 0 0 1px var(--line),
+          0 2px 4px rgba(12, 12, 12, 0.04),
+          0 48px 96px -48px rgba(12, 12, 12, 0.32);
+      }
+      .chrome {
+        position: relative;
+        height: 40px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dots { position: absolute; left: 18px; top: 15px; display: flex; gap: 8px; }
+      .dots i { width: 10px; height: 10px; border-radius: 50%; background: #dcdcdc; }
+      .url {
+        position: relative;
+        height: 26px;
+        min-width: 420px;
+        padding: 0 16px;
+        border-radius: 9px;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink);
+        font: 600 14px/1 "Bricolage Grotesque", sans-serif;
+        letter-spacing: -0.01em;
+      }
+      .url .path { font: 500 13px/1 "Poppins", sans-serif; color: rgba(12, 12, 12, 0.45); }
+      .url span.alt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; }
+      .vp {
+        position: absolute;
+        left: 0;
+        top: 40px;
+        width: 1440px;
+        height: 900px;
+        overflow: hidden;
+        border-radius: 0 0 16px 16px;
+        background: #73a5df;
+      }
+      .abs { position: absolute; left: 0; top: 0; display: block; }
+      .full { width: 1440px; height: 900px; }
+      .layer { position: absolute; }
+      .layer > img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+
+      #dim { position: absolute; inset: 0; background: rgba(51, 51, 51, 0.55); opacity: 0; }
+      #cardWrap { position: absolute; inset: 0; transform-origin: 720px 450px; opacity: 0; }
+      .state { opacity: 0; }
+      #admin { position: absolute; inset: 0; background: #e7f1fb; clip-path: inset(100% 0 0 0); }
+      .tile { position: absolute; overflow: hidden; border-radius: 16px; opacity: 0; background: url(assets/cap/a2.webp) no-repeat; background-size: 1440px 900px; }
+
+      #winB { z-index: 2; }
+      #cursor { position: absolute; left: 0; top: 0; opacity: 0; }
+      #cursor .ci { position: absolute; left: 0; top: 0; }
+      #cursor img { position: absolute; display: block; }
+      #cur-default { width: 27.3px; left: -1.9px; top: -1.9px; }
+      #cur-pointer { width: 38.4px; left: -12.4px; top: -2.5px; opacity: 0; }
+
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1920" data-height="1080">
+      <div id="stage" class="clip" data-start="0" data-duration="15" data-track-index="0">
+        <div id="cam">
+          <!-- ===== Window B: the public site's testimonials (closing composition) ===== -->
+          <div class="win" id="winB">
+            <div class="chrome">
+              <div class="dots"><i></i><i></i><i></i></div>
+              <div class="url"><span>volnekridla.sk</span></div>
+            </div>
+            <div class="vp">
+              <img id="siteB" class="abs" src="assets/cap/home-full.webp" width="1440" height="3754" alt="" />
+              <img class="abs" src="assets/cap/nav.webp" style="left: 211px; top: 40px; width: 1034px; height: 108px" alt="" />
+            </div>
+          </div>
+
+          <!-- ===== Window A: website → form → admin ===== -->
+          <div class="win" id="winA">
+            <div class="chrome">
+              <div class="dots"><i></i><i></i><i></i></div>
+              <div class="url">
+                <span id="url0">volnekridla.sk</span>
+                <span id="url1" class="alt">volnekridla.sk<span class="path">/admin/fotogaleria</span></span>
+                <span id="url2" class="alt">volnekridla.sk<span class="path">/admin/recenzie</span></span>
+              </div>
+            </div>
+            <div class="vp" id="vpA">
+              <!-- website: real full-page capture + the sticky navbar as its own layer -->
+              <img id="site" class="abs" src="assets/cap/home-full.webp" width="1440" height="3754" alt="" />
+              <img id="nav" class="abs" src="assets/cap/nav.webp" style="left: 211px; top: 40px; width: 1034px; height: 108px" alt="" />
+              <img id="navBase" class="abs" src="assets/cap/nav-base.webp" style="left: 211px; top: 40px; width: 1034px; height: 108px; opacity: 0" alt="" />
+              <img id="navCta" class="abs" src="assets/cap/nav-cta.webp" style="left: 1017.5px; top: 54px; width: 198.5px; height: 56px; transform-origin: 50% 50%; opacity: 0" alt="" />
+
+              <!-- consultation form: captured card states (transparent around the card) -->
+              <div id="dim"></div>
+              <div id="cardWrap">
+                <div class="layer state" id="s-f1" style="left: 398px; top: 257px; width: 644px; height: 386px">
+                  <img class="whole" src="assets/cap/f1.webp" alt="" />
+                  <img class="base" src="assets/cap/f1-base.webp" alt="" style="opacity: 0" />
+                  <img class="btn" src="assets/cap/f1-btn.webp" alt="" style="left: 36px; top: 168px; width: 141px; height: 54px; opacity: 0" />
+                </div>
+                <div class="layer state" id="s-f2" style="left: 398px; top: 224px; width: 644px; height: 452px">
+                  <img class="whole" src="assets/cap/f2.webp" alt="" />
+                  <img class="base" src="assets/cap/f2-base.webp" alt="" style="opacity: 0" />
+                  <img class="btn" src="assets/cap/f2-btn.webp" alt="" style="left: 36px; top: 269px; width: 195px; height: 54px; opacity: 0" />
+                </div>
+                <div class="layer state" id="s-f3" style="left: 398px; top: 31px; width: 644px; height: 838px">
+                  <img class="whole" src="assets/cap/f3.webp" alt="" />
+                  <img class="base" src="assets/cap/f3-base.webp" alt="" style="opacity: 0" />
+                  <img class="btn" src="assets/cap/f3-btn.webp" alt="" style="left: 326px; top: 362px; width: 282px; height: 346px; opacity: 0" />
+                </div>
+                <div class="layer state" id="s-f4" style="left: 398px; top: 31px; width: 644px; height: 838px">
+                  <img class="whole" src="assets/cap/f4.webp" alt="" />
+                  <img class="base" src="assets/cap/f4-base.webp" alt="" style="opacity: 0" />
+                  <img class="btn" src="assets/cap/f4-btn.webp" alt="" style="left: 461px; top: 748px; width: 147px; height: 60px; opacity: 0" />
+                </div>
+                <div class="layer state" id="s-f5" style="left: 398px; top: 174px; width: 644px; height: 552px">
+                  <img class="whole" src="assets/cap/f5.webp" alt="" />
+                  <!-- species select flips to its chosen value before the name field takes focus -->
+                  <div id="speciesPatch" style="position: absolute; left: 34px; top: 190px; width: 576px; height: 56px; overflow: hidden; opacity: 0">
+                    <img src="assets/cap/f6.webp" alt="" style="position: absolute; left: -34px; top: -190px; width: 644px; height: 552px" />
+                  </div>
+                </div>
+                <div class="layer state" id="s-f6" style="left: 398px; top: 174px; width: 644px; height: 552px"><img src="assets/cap/f6.webp" alt="" /></div>
+                <div class="layer state" id="s-f7-1" style="left: 398px; top: 174px; width: 644px; height: 552px"><img src="assets/cap/f7-1.webp" alt="" /></div>
+                <div class="layer state" id="s-f7-2" style="left: 398px; top: 174px; width: 644px; height: 552px"><img src="assets/cap/f7-2.webp" alt="" /></div>
+                <div class="layer state" id="s-f7-3" style="left: 398px; top: 174px; width: 644px; height: 552px"><img src="assets/cap/f7-3.webp" alt="" /></div>
+                <div class="layer state" id="s-f7-4" style="left: 398px; top: 174px; width: 644px; height: 552px"><img src="assets/cap/f7-4.webp" alt="" /></div>
+              </div>
+
+              <!-- admin panel: real admin UI, real published content -->
+              <div id="admin">
+                <img id="a1" class="abs full" src="assets/cap/a1.webp" alt="" />
+                <img id="a1base" class="abs full" src="assets/cap/a1-base.webp" alt="" style="opacity: 0" />
+                <img id="a1chip" class="abs" src="assets/cap/a1-chip.webp" alt="" style="left: 823px; top: 178px; width: 265px; height: 44px; transform-origin: 50% 50%; opacity: 0" />
+                <img id="a2empty" class="abs full" src="assets/cap/a2-empty.webp" alt="" style="opacity: 0" />
+                <div class="tile" style="left: 296px; top: 324.5px; width: 258.2px; height: 398.8px; background-position: -296px -324.5px"></div>
+                <div class="tile" style="left: 572.6px; top: 324.5px; width: 258.2px; height: 398.8px; background-position: -572.6px -324.5px"></div>
+                <div class="tile" style="left: 849.2px; top: 324.5px; width: 258.2px; height: 398.8px; background-position: -849.2px -324.5px"></div>
+                <div class="tile" style="left: 1125.8px; top: 324.5px; width: 258.2px; height: 398.8px; background-position: -1125.8px -324.5px"></div>
+                <div class="tile" style="left: 296px; top: 737.6px; width: 258.2px; height: 398.8px; background-position: -296px -737.6px"></div>
+                <div class="tile" style="left: 572.6px; top: 737.6px; width: 258.2px; height: 398.8px; background-position: -572.6px -737.6px"></div>
+                <div class="tile" style="left: 849.2px; top: 737.6px; width: 258.2px; height: 398.8px; background-position: -849.2px -737.6px"></div>
+                <div class="tile" style="left: 1125.8px; top: 737.6px; width: 258.2px; height: 398.8px; background-position: -1125.8px -737.6px"></div>
+                <img id="a2" class="abs full" src="assets/cap/a2.webp" alt="" style="opacity: 0" />
+                <img id="a2hover" class="abs full" src="assets/cap/a2-hover.webp" alt="" style="opacity: 0" />
+                <img id="a2base" class="abs full" src="assets/cap/a2-base.webp" alt="" style="opacity: 0" />
+                <img id="a2rev" class="abs" src="assets/cap/a2-rev.webp" alt="" style="left: 16px; top: 131px; width: 222px; height: 46px; transform-origin: 50% 50%; opacity: 0" />
+                <img id="a3side" class="abs full" src="assets/cap/a3.webp" alt="" style="clip-path: inset(0 1185px 0 0); opacity: 0" />
+                <img id="a3main" class="abs full" src="assets/cap/a3.webp" alt="" style="clip-path: inset(0 0 0 255px); opacity: 0" />
+              </div>
+
+              <!-- the site's own cursor art (src/assets/cursor) -->
+              <div id="cursor">
+                <div class="ci">
+                  <img id="cur-default" src="assets/cap/default.png" alt="" />
+                  <img id="cur-pointer" src="assets/cap/pointer.png" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---- deterministic damped spring as a GSAP ease (no randomness, no clock)
+      // zeta < 1 overshoots; omega sets how fast it settles inside the tween.
+      const spring = (zeta = 0.5, omega = 12) => {
+        const wd = omega * Math.sqrt(1 - zeta * zeta);
+        const end = 1 - Math.exp(-zeta * omega) * Math.cos(wd); // normalise so t=1 → 1
+        return (t) => (1 - Math.exp(-zeta * omega * t) * Math.cos(wd * t)) / end;
+      };
+      const soft = spring(0.72, 9); // settle, barely any overshoot
+      const squishy = spring(0.34, 18); // press release
+      const pop = spring(0.5, 13); // elements popping into place
+
+      const $ = (s) => document.querySelector(s);
+      const tl = gsap.timeline({ paused: true });
+
+      // camera: frame a viewport point (vx, vy) of window A at canvas centre
+      const VP = { x: 240, y: 110 };
+      const camAt = (vx, vy, s) => ({ x: 960 - s * (VP.x + vx), y: 540 - s * (VP.y + vy), scale: s });
+      const cam = (t, d, vx, vy, s, ease = "power3.inOut") => tl.to("#cam", { ...camAt(vx, vy, s), duration: d, ease }, t);
+
+      // physical press: squash, then spring back with a little wobble
+      const press = (el, t, amt = 1) => {
+        tl.to(el, { scaleX: 1 + 0.045 * amt, scaleY: 1 - 0.13 * amt, duration: 0.08, ease: "power2.out" }, t)
+          .to(el, { scaleX: 1, scaleY: 1, duration: 0.6, ease: squishy }, t + 0.08);
+      };
+
+      // cursor: x/y on different curves so the path arcs instead of sliding straight
+      const move = (t, d, x, y) => {
+        tl.to("#cursor", { x, duration: d, ease: "power2.inOut" }, t).to("#cursor", { y, duration: d, ease: "power3.inOut" }, t);
+      };
+      const click = (t) => {
+        tl.to("#cursor .ci", { scale: 0.8, duration: 0.07, ease: "power2.out", overwrite: "auto" }, t).to("#cursor .ci", { scale: 1, duration: 0.3, ease: squishy }, t + 0.07);
+      };
+      const pointer = (t, on) => {
+        tl.to("#cur-pointer", { opacity: on ? 1 : 0, duration: 0.08 }, t).to("#cur-default", { opacity: on ? 0 : 1, duration: 0.08 }, t);
+      };
+
+      // card states: swap the composited state for its "base + pressable button" twin, squish the button
+      const pressState = (id, t, amt = 1) => {
+        const s = `#s-${id}`;
+        tl.set(`${s} .whole`, { opacity: 0 }, t).set([`${s} .base`, `${s} .btn`], { opacity: 1 }, t);
+        press(`${s} .btn`, t, amt);
+      };
+      // height change between two card states: the card is centred, so reveal/collapse symmetrically
+      const box = (id) => {
+        const el = $(`#s-${id}`);
+        return { y: parseFloat(el.style.top), h: parseFloat(el.style.height) };
+      };
+      const morph = (a, b, t, d = 0.3) => {
+        const A = box(a), B = box(b);
+        const inset = (top, bot) => `inset(${top}px 0px ${bot}px 0px round 44px)`;
+        if (B.h >= A.h) {
+          const top = A.y - B.y, bot = B.y + B.h - (A.y + A.h);
+          tl.fromTo(`#s-${b}`, { opacity: 0, clipPath: inset(top, bot) }, { opacity: 1, clipPath: inset(0, 0), duration: d, ease: soft }, t);
+          tl.to(`#s-${a}`, { opacity: 0, duration: d * 0.6, ease: "power1.out" }, t + d * 0.25);
+        } else {
+          const top = B.y - A.y, bot = A.y + A.h - (B.y + B.h);
+          // collapse the old card to the new height first, then swap content in one frame (no ghosting)
+          tl.set(`#s-${b}`, { clipPath: inset(0, 0) }, t);
+          tl.to(`#s-${a}`, { clipPath: inset(top, bot), duration: d * 0.7, ease: "power3.inOut" }, t);
+          tl.set(`#s-${b}`, { opacity: 1 }, t + d * 0.7);
+          tl.set(`#s-${a}`, { opacity: 0 }, t + d * 0.7);
+        }
+        // the card body gives a little as it resizes
+        tl.to("#cardWrap", { scaleY: B.h >= A.h ? 1.012 : 0.988, scaleX: B.h >= A.h ? 0.995 : 1.005, duration: d * 0.5, ease: "power2.out", overwrite: "auto" }, t)
+          .to("#cardWrap", { scaleY: 1, scaleX: 1, duration: 0.45, ease: squishy }, t + d * 0.5);
+      };
+      const cut = (a, b, t) => tl.set(`#s-${b}`, { opacity: 1 }, t).set(`#s-${a}`, { opacity: 0 }, t);
+
+      // ================= Scene 1 — website (0–3.6s)
+      tl.set("#winB", { x: 1700, y: 300, scale: 0.6 }, 0);
+      tl.set("#cam", camAt(720, 450, 1.07), 0);
+      tl.fromTo("#winA", { clipPath: "inset(5% 7% 5% 7% round 28px)" }, { clipPath: "inset(-8% -8% -8% -8% round 16px)", duration: 1.15, ease: "expo.out" }, 0);
+      cam(0, 1.7, 720, 450, 1, "power3.out");
+      tl.to("#site", { y: -1100, duration: 2.35, ease: "power3.inOut" }, 0.55);
+
+      tl.set("#cursor", { x: 1330, y: 960, opacity: 1 }, 2.35);
+      move(2.35, 0.95, 1112, 86);
+      pointer(3.12, true);
+      tl.set("#navBase", { opacity: 1 }, 3.1).set("#navCta", { opacity: 1 }, 3.1).set("#nav", { opacity: 0 }, 3.1);
+      tl.to("#navCta", { scale: 1.04, duration: 0.15, ease: "power2.out" }, 3.15);
+      click(3.32);
+      press("#navCta", 3.32);
+
+      // modal opens over the scrolled page
+      tl.to("#dim", { opacity: 1, duration: 0.3, ease: "power1.out" }, 3.46);
+      tl.set("#s-f1", { opacity: 1 }, 3.46);
+      tl.fromTo("#cardWrap", { opacity: 0, scaleX: 0.86, scaleY: 0.8 }, { opacity: 1, scaleX: 1, scaleY: 1, duration: 0.7, ease: pop }, 3.46);
+      pointer(3.5, false);
+
+      // ================= Scene 2 — consultation form (3.9–7.4s)
+      cam(3.85, 0.7, 720, 450, 1.18);
+      move(3.75, 0.62, 506, 455);
+      pointer(4.3, true);
+      click(4.42);
+      pressState("f1", 4.42);
+      morph("f1", "f2", 4.56, 0.3);
+
+      move(4.62, 0.4, 534, 523);
+      click(5.02);
+      pressState("f2", 5.02);
+      morph("f2", "f3", 5.15, 0.38);
+
+      move(5.2, 0.4, 868, 600);
+      click(5.6);
+      pressState("f3", 5.6, 0.35);
+      tl.to("#s-f4", { opacity: 1, duration: 0.14 }, 5.7).set("#s-f3", { opacity: 0 }, 5.84);
+
+      move(5.72, 0.36, 934, 812);
+      click(6.08);
+      pressState("f4", 6.08);
+      morph("f4", "f5", 6.2, 0.32);
+
+      // close-up on the fields
+      cam(6.25, 0.6, 720, 445, 1.7);
+      move(6.3, 0.3, 860, 395);
+      click(6.58);
+      tl.to("#speciesPatch", { opacity: 1, duration: 0.1 }, 6.62);
+      pointer(6.6, false);
+      move(6.68, 0.24, 590, 478);
+      click(6.92);
+      tl.to("#s-f6", { opacity: 1, duration: 0.12 }, 6.94).set("#s-f5", { opacity: 0 }, 7.06);
+      move(7.0, 0.35, 650, 560);
+      cut("f6", "f7-1", 7.04);
+      cut("f7-1", "f7-2", 7.12);
+      cut("f7-2", "f7-3", 7.2);
+      cut("f7-3", "f7-4", 7.28);
+
+      // ================= Scene 3 — admin panel (7.45–11.2s)
+      cam(7.45, 0.8, 720, 450, 1);
+      tl.to("#cardWrap", { scale: 0.94, opacity: 0, duration: 0.32, ease: "power2.in" }, 7.45);
+      tl.to("#dim", { opacity: 0, duration: 0.35 }, 7.6);
+      tl.to("#cursor", { opacity: 0, duration: 0.15 }, 7.45);
+      tl.fromTo("#admin", { clipPath: "inset(100% 0% 0% 0% round 0px)", y: 90 }, { clipPath: "inset(0% 0% 0% 0% round 0px)", y: 0, duration: 0.8, ease: "power4.inOut" }, 7.5);
+      tl.fromTo("#admin", { scaleY: 1.04, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.9, ease: squishy }, 7.95);
+      tl.to("#url0", { opacity: 0, duration: 0.2 }, 7.7).to("#url1", { opacity: 1, duration: 0.2 }, 7.75);
+
+      cam(8.25, 0.65, 850, 380, 1.22);
+      tl.set("#cursor", { x: 1080, y: 700 }, 8.2).to("#cursor", { opacity: 1, duration: 0.15 }, 8.3);
+      move(8.3, 0.55, 960, 202);
+      pointer(8.75, true);
+      tl.set("#a1base", { opacity: 1 }, 8.9).set("#a1chip", { opacity: 1 }, 8.9).set("#a1", { opacity: 0 }, 8.9);
+      click(8.9);
+      press("#a1chip", 8.9);
+      // filter applied: header switches, photo cards re-populate one by one
+      tl.set("#a2empty", { opacity: 1 }, 9.04).set("#a1chip", { opacity: 0 }, 9.04);
+      tl.fromTo(".tile", { opacity: 0, scale: 0.9, y: 12 }, { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: pop, stagger: 0.04 }, 9.04);
+      tl.set("#a2", { opacity: 1 }, 9.75).set(".tile", { opacity: 0 }, 9.76);
+
+      cam(9.6, 0.7, 600, 400, 1.1);
+      pointer(9.65, false);
+      move(9.65, 0.5, 128, 156);
+      tl.to("#a2hover", { opacity: 1, duration: 0.1 }, 10.05);
+      pointer(10.05, true);
+      tl.set("#a2base", { opacity: 1 }, 10.22).set("#a2rev", { opacity: 1 }, 10.22);
+      click(10.22);
+      press("#a2rev", 10.22, 0.8);
+      tl.set("#a3side", { opacity: 1 }, 10.36);
+      tl.fromTo("#a3main", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: soft }, 10.36);
+      tl.to("#url1", { opacity: 0, duration: 0.2 }, 10.36).to("#url2", { opacity: 1, duration: 0.2 }, 10.4);
+      move(10.45, 0.6, 360, 560);
+      tl.to("#cursor", { opacity: 0, duration: 0.3 }, 10.7);
+      cam(10.55, 0.75, 720, 450, 1);
+
+      // ================= Scene 4 — admin and website side by side, settling (11.2–15s)
+      tl.to("#winA", { x: -170, y: 20, scale: 0.7, duration: 1.3, ease: soft }, 11.2);
+      tl.to("#winB", { x: 602, y: 262, scale: 0.7, duration: 1.25, ease: soft }, 11.5);
+      tl.fromTo("#siteB", { y: -2160 }, { y: -2215, duration: 3.5, ease: "power2.out" }, 11.5);
+      tl.to("#winA", { y: 12, duration: 2.3, ease: "sine.inOut" }, 12.5);
+      tl.to("#winB", { y: 270, duration: 2.0, ease: "sine.inOut" }, 12.75);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

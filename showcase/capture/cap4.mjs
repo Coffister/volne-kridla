@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', proxy: { server: process.env.HTTPS_PROXY }, args: ['--ignore-certificate-errors'] });
+const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, ignoreHTTPSErrors: true });
+await p.route(/umami/, r => r.abort());
+await p.goto('https://volnekridla.sk/', { waitUntil: 'networkidle', timeout: 90000 });
+await p.mouse.move(-5, -5); await p.waitForTimeout(2000);
+const cta = p.getByRole('button', { name: /Začať lietať/ }).first();
+await cta.evaluate(el => el.setAttribute('data-cap', 'cta'));
+await cta.locator('xpath=ancestor::nav[1] | ancestor::header[1]').first().evaluate(el => el.setAttribute('data-cap-nav', '1'));
+await p.addStyleTag({ content: 'html,body{background:transparent!important} body *{visibility:hidden!important} [data-cap-nav],[data-cap-nav] *{visibility:visible!important} [data-cap-nav] [data-cap=cta]{visibility:hidden!important} *::before,*::after{visibility:hidden!important}' });
+await p.waitForTimeout(500);
+await p.screenshot({ path: 'raw/nav-base.png', omitBackground: true });
+await b.close();

@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+import fs from 'fs';
+import { installMock } from './mock.mjs';
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
+await installMock(p);
+await p.goto('http://127.0.0.1:5174/admin/fotogaleria', { waitUntil: 'networkidle' }); await p.mouse.move(-5, -5); await p.waitForTimeout(1500);
+await p.getByRole('button', { name: /Spoločný piknik/ }).first().click(); await p.mouse.move(-5, -5); await p.waitForTimeout(1200);
+const tiles = await p.evaluate(() => [...document.querySelectorAll('.admin-gallery > li')].slice(0, 8).map(li => { const r = li.getBoundingClientRect(); return [r.x, r.y, r.width, r.height, getComputedStyle(li).borderRadius]; }));
+await p.addStyleTag({ content: '.admin-gallery > li{visibility:hidden}' }); await p.waitForTimeout(200);
+await p.screenshot({ path: 'raw/a2-empty.png' });
+console.log(JSON.stringify(tiles));
+await b.close();
