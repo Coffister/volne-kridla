@@ -266,7 +266,7 @@ export default function Testimonials() {
           <Text as="h2" variant="sectionTitle" className={styles.title} reveal="up">
             Vidíš ich? Tí už spravili prvý krok.
           </Text>
-          <Badge>Ty môžeš byť ďalší, kto dá svojmu papagájovi slobodu.</Badge>
+          <Badge>Ty môžeš byť ďalší!</Badge>
         </Stack>
       </Container>
 
