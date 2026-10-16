@@ -77,13 +77,15 @@ export async function createReview(input: {
 
   if (input.imageFile) image_path = await uploadPhoto(input.imageFile);
 
-  const { data: last } = await supabase
+  // newest first: the latest review is the most convincing one, and the
+  // owner sees right away that it was added
+  const { data: first } = await supabase
     .from("reviews")
     .select("sort_order")
-    .order("sort_order", { ascending: false })
+    .order("sort_order", { ascending: true })
     .limit(1)
     .maybeSingle();
-  const sort_order = (last?.sort_order ?? -1) + 1;
+  const sort_order = (first?.sort_order ?? 1) - 1;
 
   const { data, error } = await supabase
     .from("reviews")
