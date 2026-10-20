@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>04 — Podmienené otázky</title>
+    <script src="shared/gsap.min.js"></script>
+    <script src="shared/stage.js"></script>
+    <script src="assets/conditional-form/meta.js"></script>
+    <link rel="stylesheet" href="shared/stage.css" />
+  </head>
+  <body>
+    <div id="root" data-composition-id="conditional-form" data-start="0" data-width="1920" data-height="1080" data-duration="6">
+      <div id="cam">
+        <img class="layer" id="konz" src="assets/conditional-form/konzultacia.png" alt="" />
+        <img class="layer hidden step" id="kurz" src="assets/conditional-form/kurz.png" alt="" />
+        <img class="layer hidden step" id="back" src="assets/conditional-form/konzultacia-back.png" alt="" />
+        <div id="cursor">
+          <div class="shape">
+            <img class="default" src="shared/cursor/default.png" alt="" />
+            <img class="pointer" src="shared/cursor/pointer.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const M = window.META;
+      const st = Stage();
+      const rest = { x: 1000, y: 640 };
+      const kurzPill = st.center(M.kurzPill);
+      const konzPill = st.center(M.konzPill);
+      const pkg = st.center(M.kurzPkg);
+
+      st.cursorAt(rest);
+      // switch the track to the flight course
+      st.move(0.2, 0.8, kurzPill);
+      st.pointer(0.9, true);
+      st.click(1.1);
+      // the type question disappears, only the course package (340 €) stays
+      st.show(1.2, "#kurz", 0.2);
+      st.cam(1.4, 1.3, { x: pkg.x, y: pkg.y - 40, z: 1.3 });
+      // back to consultations: types and both packages return
+      st.cam(4.0, 0.6, { z: 1 });
+      st.move(4.0, 0.7, konzPill);
+      st.click(4.8);
+      st.show(4.9, "#back", 0.2);
+      st.move(5.15, 0.75, rest);
+      st.pointer(5.4, false);
+      window.__timelines["conditional-form"] = st.tl;
+    </script>
+  </body>
+</html>

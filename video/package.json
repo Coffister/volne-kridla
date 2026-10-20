@@ -1,0 +1,15 @@
+{
+  "name": "volne-kridla-video",
+  "version": "1.0.0",
+  "description": "HyperFrames micro-demos of volnekridla.sk",
+  "scripts": {
+    "capture": "node capture/capture.mjs",
+    "render": "./render.sh",
+    "verify": "python3 verify.py"
+  },
+  "devDependencies": {
+    "hyperframes": "0.8.181",
+    "playwright": "1.56.0"
+  },
+  "private": true
+}

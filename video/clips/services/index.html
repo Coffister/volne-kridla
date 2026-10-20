@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>02 — Obsah a služby</title>
+    <script src="shared/gsap.min.js"></script>
+    <script src="shared/stage.js"></script>
+    <script src="assets/services/meta.js"></script>
+    <link rel="stylesheet" href="shared/stage.css" />
+  </head>
+  <body>
+    <div id="root" data-composition-id="services" data-start="0" data-width="1920" data-height="1080" data-duration="6">
+      <div id="cam">
+        <img class="layer" id="home" src="assets/services/home.png" alt="" />
+        <img class="layer hidden step" id="hover" src="assets/services/home-hover.png" alt="" />
+        <img class="layer hidden step" id="skoly" src="assets/services/skoly.png" alt="" />
+        <video class="layer clip" id="scroll" src="assets/services/scroll.mp4" muted playsinline data-start="2.2" data-duration="2"></video>
+        <img class="layer hidden step" id="end" src="assets/services/scroll-end.png" alt="" />
+        <div id="cursor">
+          <div class="shape">
+            <img class="default" src="shared/cursor/default.png" alt="" />
+            <img class="pointer" src="shared/cursor/pointer.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const M = window.META;
+      const st = Stage();
+      const rest = { x: 1000, y: 560 };
+      const link = st.center(M.navLink);
+
+      st.cursorAt(rest);
+      // navbar → "Pre školy" (real hover state), click
+      st.move(0.2, 0.8, link);
+      st.pointer(0.95, true);
+      st.show(0.95, "#hover", 0.12);
+      st.click(1.15);
+      // the page swaps to /pre-skoly (with reduced motion the site swaps
+      // instantly); the mouse parks where the capture left it
+      st.show(1.3, "#skoly", 0.12);
+      st.move(1.35, 0.7, { x: 1100, y: 700 });
+      st.pointer(1.6, false);
+      // 2.2–4.2 real scroll to the program cards "Čo vás čaká?"
+      st.cut(4.2, "#end");
+      st.cam(4.0, 1.3, { x: 720, y: 470, z: 1.08 });
+      // 5.4–6.0 back to the home page for the loop
+      st.tl.set("#hover, #skoly", { opacity: 0 }, 5.5);
+      st.hide(5.5, "#end", 0.5);
+      st.cam(5.4, 0.6, { z: 1 });
+      st.move(5.4, 0.6, rest);
+      window.__timelines["services"] = st.tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+/* Shared stage for all Voľné krídla micro-demos.
+   The captured UI is 1440×810 CSS px (2× DPR stills); #cam maps it onto the
+   1920×1080 canvas, so every coordinate in the compositions is site CSS px. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+#cam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 810px;
+  transform-origin: 0 0;
+}
+.layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 810px;
+  display: block;
+}
+.layer.hidden {
+  opacity: 0;
+}
+#cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 1000;
+}
+#cursor .shape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+/* the site's own cursor art (src/assets/cursor), same scale and hotspots as
+   src/ui/effects/Cursor/Cursor.tsx: SCALE 0.48, default (3,3), pointer (20,4) */
+#cursor .default {
+  position: absolute;
+  left: -1.44px;
+  top: -1.44px;
+  width: 21.12px;
+}
+#cursor .pointer {
+  position: absolute;
+  left: -9.6px;
+  top: -1.92px;
+  width: 29.76px;
+  opacity: 0;
+}

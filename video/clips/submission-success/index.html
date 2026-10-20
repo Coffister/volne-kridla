@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>05 — Odoslanie dopytu</title>
+    <script src="shared/gsap.min.js"></script>
+    <script src="shared/stage.js"></script>
+    <script src="assets/submission-success/meta.js"></script>
+    <link rel="stylesheet" href="shared/stage.css" />
+  </head>
+  <body>
+    <div id="root" data-composition-id="submission-success" data-start="0" data-width="1920" data-height="1080" data-duration="6">
+      <div id="cam">
+        <img class="layer" id="filled" src="assets/submission-success/filled.png" alt="" />
+        <img class="layer hidden step" id="consent" src="assets/submission-success/consent.png" alt="" />
+        <img class="layer hidden step" id="success" src="assets/submission-success/success.png" alt="" />
+        <div id="cursor">
+          <div class="shape">
+            <img class="default" src="shared/cursor/default.png" alt="" />
+            <img class="pointer" src="shared/cursor/pointer.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const M = window.META;
+      const base = { x: 720, y: 430, z: 1.22 };
+      const st = Stage(base);
+      const rest = { x: 1060, y: 700 };
+      const box = { x: M.consent.x + 8, y: M.consent.y + 10 };
+      const submit = st.center(M.submit);
+      const ok = st.center(M.success);
+
+      st.cursorAt(rest);
+      // tick the GDPR consent
+      st.move(0.2, 0.8, box);
+      st.pointer(0.95, true);
+      st.click(1.1);
+      st.show(1.15, "#consent", 0.1);
+      // send — the real success step after the insert is accepted
+      st.move(1.35, 0.65, submit);
+      st.click(2.1);
+      st.show(2.25, "#success", 0.3);
+      st.move(2.45, 0.6, rest);
+      st.pointer(2.7, false);
+      st.cam(2.6, 1.2, { x: ok.x, y: ok.y, z: 1.55 });
+      // 5.3–6.0 back to the filled form for the loop
+      st.tl.set("#consent", { opacity: 0 }, 5.3);
+      st.hide(5.3, "#success", 0.7);
+      st.cam(5.3, 0.7, base);
+      window.__timelines["submission-success"] = st.tl;
+    </script>
+  </body>
+</html>
