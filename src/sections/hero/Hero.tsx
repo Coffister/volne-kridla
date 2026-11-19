@@ -14,7 +14,7 @@ import styles from "./Hero.module.css";
 // home hero only (the Voľné krídla intro keeps the original order):
 // photo 2 leads, photo 1 moves to fourth place
 const [photo1, photo2, photo3, photo4, ...restPhotos] = heroCarouselImages;
-const heroSlides = [photo2, photo3, photo4, photo1, ...restPhotos];
+const heroSlides = [photo2];
 
 const tags = [
   "Konzultácia výživy",
@@ -68,11 +68,11 @@ export default function Hero() {
               </Text>
 
               <Text as="h1" variant="sectionTitle" className={styles.headline}>
-                Dopraj svojmu operencovi voľnosť letu, ktorú si zaslúži.
+                Učím vás porozumieť vášmu papagájovi.
               </Text>
 
               <Text as="p" variant="body" className={styles.quote}>
-                „Sloboda nie je len možnosť lietať, ale aj vedieť, kam sa vrátiť.“
+                Od individuálneho tréningu cez riešenie problémového správania, agresivity či sebapoškodzovania až po voľné lietanie.<br />Pomáham budovať zdravý vzťah medzi človekom a papagájom založený na dôvere, rešpekte a pochopení jeho prirodzených potrieb.
               </Text>
 
               <Stack direction="row" align="center" gap="lg" className={styles.actions}>
