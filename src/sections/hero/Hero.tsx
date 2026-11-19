@@ -13,7 +13,7 @@ import styles from "./Hero.module.css";
 
 // home hero only (the Voľné krídla intro keeps the original order):
 // photo 2 leads, photo 1 moves to fourth place
-const [photo1, photo2, photo3, photo4, ...restPhotos] = heroCarouselImages;
+const [photo2] = heroCarouselImages;
 const heroSlides = [photo2];
 
 const tags = [
