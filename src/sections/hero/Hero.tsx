@@ -63,10 +63,6 @@ export default function Hero() {
         >
           <Box className={styles.card}>
             <Stack direction="column" gap="sm" className={styles.content} reveal="stagger">
-              <Text as="span" variant="caption" className={styles.eyebrow}>
-                Tréning voľných krídel
-              </Text>
-
               <Text as="h1" variant="sectionTitle" className={styles.headline}>
                 Učím vás porozumieť vášmu papagájovi.
               </Text>
