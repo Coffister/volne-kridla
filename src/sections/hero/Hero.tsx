@@ -72,7 +72,7 @@ export default function Hero() {
               </Text>
 
               <Text as="p" variant="body" className={styles.quote}>
-                Od individuálneho tréningu cez riešenie problémového správania, agresivity či sebapoškodzovania až po voľné lietanie.<br />Pomáham budovať zdravý vzťah medzi človekom a papagájom založený na dôvere, rešpekte a pochopení jeho prirodzených potrieb.
+                Od individuálneho tréningu cez riešenie problémového správania, agresivity či sebapoškodzovania až po voľné lietanie.<br /><br />Pomáham budovať zdravý vzťah medzi človekom a papagájom založený na dôvere, rešpekte a pochopení jeho prirodzených potrieb.
               </Text>
 
               <Stack direction="row" align="center" gap="lg" className={styles.actions}>
