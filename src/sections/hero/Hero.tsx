@@ -75,7 +75,7 @@ export default function Hero() {
                 Od individuálneho tréningu cez riešenie problémového správania, agresivity či sebapoškodzovania až po voľné lietanie.<br /><br />Pomáham budovať zdravý vzťah medzi človekom a papagájom založený na dôvere, rešpekte a pochopení jeho prirodzených potrieb.
               </Text>
 
-              <Stack direction="row" align="center" gap="lg" className={styles.actions}>
+              <Stack direction="row" align="center" gap="md" className={styles.actions}>
                 {/* the course is the pricier package → the orange, more prominent CTA */}
                 <Button
                   variant="primary"
